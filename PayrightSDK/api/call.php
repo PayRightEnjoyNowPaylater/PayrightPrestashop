@@ -99,7 +99,7 @@ class Call
 
     
         try {
-            $response =  $this->execute('http://ecommerceapi.payright.local/api/v1/intialiseTransaction', $paramsPayright, "Bearer", $accessToken);
+            $response =  $this->execute('https://betaonlineapi.payright.com.au/api/v1/intialiseTransaction', $paramsPayright, "Bearer", $accessToken);
             return $response;
         } catch (Exception $e) {
             throw new Exception("Invalid Response from Payright API");
@@ -192,7 +192,7 @@ class Call
         $payRightAuthObj = json_decode($payRightAuthToken);
 
         try {
-            $response =  $this->execute('http://ecommerceapi.payright.local/api/v1/getEcomTokenData', $paramsPayright, "Bearer", $payRightAuthObj->access_token);
+            $response =  $this->execute('https://betaonlineapi.payright.com.au/api/v1/getEcomTokenData', $paramsPayright, "Bearer", $payRightAuthObj->access_token);
             return $response;
         } catch (Exception $e) {
             throw new Exception("Invalid Response from Payright API");
@@ -226,7 +226,7 @@ class Call
         ];
        
         try {
-            $updatePlanStatus =  $this->execute('http://ecommerceapi.payright.local/api/v1/changePlanStatus', $paramsPayright, "Bearer", $payRightAuthObj->access_token);
+            $updatePlanStatus =  $this->execute('https://betaonlineapi.payright.com.au/api/v1/changePlanStatus', $paramsPayright, "Bearer", $payRightAuthObj->access_token);
             return $updatePlanStatus;
         } catch (Exception $e) {
             throw new Exception("Invalid Response from Payright API");
