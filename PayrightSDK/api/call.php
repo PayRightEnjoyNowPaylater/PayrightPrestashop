@@ -1,5 +1,6 @@
 <?php
 namespace Payright\api;
+
 /**
     * Class PayrightConfig
     * Placeholder for Payright API Settings.
@@ -14,286 +15,291 @@ class Call
 * CONFIG OBJECT
 */
 
-protected $configObj;
-protected $payrightAuthObj;
-protected $payrightConfigObj;
+    protected $configObj;
+    protected $payrightAuthObj;
+    protected $payrightConfigObj;
 
-public function getCallEndApi()
-{
-	$curlURL = $this->apiConfigObj->getOrderUrl(); 
-	$curlResponse = $this->execute($curlURL,'POST',$orderObject);
-	return $curlResponse;
-
-}
-
-
-public function __construct()
-{
+    public function getCallEndApi()
+    {
+        $curlURL = $this->apiConfigObj->getOrderUrl();
+        $curlResponse = $this->execute($curlURL, 'POST', $orderObject);
+        return $curlResponse;
+    }
 
 
-	
-}
+    public function __construct()
+    {
+    }
 
-public function PayRightAuth($configObj)
-{
+    public function PayRightAuth($configObj)
+    {
+        $AuthFields = array(
+        'username' => $configObj->getUsername(),
+        'password' => $configObj->getPassword(),
+        'grant_type' => 'password',
+        'client_id' => $configObj->getClientID(),
+        'client_secret' => $configObj->getApiKey()
+        //'client_secret' => uBtLxIXPUMs4a0l0ViqxP1QVBGr62FG8YIGi5iMl
+    );
 
-	
-	$AuthFields = array(
-		'username' => $configObj->getUsername(),
-		'password' => $configObj->getPassword(),
-		'grant_type' => 'password',
-		'client_id' => $configObj->getClientID(),
-		'client_secret' => $configObj->getApiKey()
-		//'client_secret' => uBtLxIXPUMs4a0l0ViqxP1QVBGr62FG8YIGi5iMl
-	);	
-
-	try {
-		$responseAuth =  $this->execute($configObj->getAuthUrl(),$AuthFields,FALSE,NULL);
-		
-		## now set this object
-		$this->setPayrightAuthObj($responseAuth); 
-		return $responseAuth;
-
-	} catch (Exception $e) {
-		throw new Exception("Invalid Response from Payright API");
-	}
-
-
-}
+        try {
+            $responseAuth =  $this->execute($configObj->getAuthUrl(), $AuthFields, false, null);
+        
+            ## now set this object
+            $this->setPayrightAuthObj($responseAuth);
+            return $responseAuth;
+        } catch (Exception $e) {
+            throw new Exception("Invalid Response from Payright API");
+        }
+    }
 
 
-public function PayRightConfigurationTokenMethod($cookieObj,$configobj,$paraAccessToken)
-{
-
-	$ConfigFields = array(
-		'merchantusername' => $configobj->getMerchantusername(),
-		'merchantpassword' => $configobj->getMerchantpassword()
-	); 
-
-	try {
-		$response =  json_decode($this->execute($configobj->getConfigUrl(),$ConfigFields,"Bearer",$paraAccessToken));
+    public function PayRightConfigurationTokenMethod($cookieObj, $configobj, $paraAccessToken)
+    {
+        $ConfigFields = array(
+        'merchantusername' => $configobj->getMerchantusername(),
+        'merchantpassword' => $configobj->getMerchantpassword()
+    );
 
 
-		$returnArray = array();
-		$returnArray['auth'] = $response->data->auth;
-		$returnArray['configToken'] = $response->data->configToken;
-		$returnArray['store'] = $response->data->store;
-		$returnArray['rates'] = $response->data->rates;
-		$returnArray['conf'] = $response->data->conf;
-		$returnArray['establishment_fee'] = $response->data->establishment_fee; 
-		$this->setSessionValues($response,$cookieObj);
-		return $returnArray;
+
+            
+        try {
+            $response =  json_decode($this->execute($configobj->getConfigUrl(), $ConfigFields, "Bearer", $paraAccessToken));
+
+            $returnArray = array();
+            $returnArray['auth'] = $response->data->auth;
+            $returnArray['configToken'] = $response->data->configToken;
+            $returnArray['store'] = $response->data->store;
+            $returnArray['rates'] = $response->data->rates;
+            $returnArray['conf'] = $response->data->conf;
+            $returnArray['establishment_fee'] = $response->data->establishment_fee;
+            $this->setSessionValues($response, $cookieObj);
+            return $returnArray;
+        } catch (Exception $e) {
+            throw new Exception("Invalid Response from Payright API");
+        }
+    }
 
 
-	} catch (Exception $e) {
-		throw new Exception("Invalid Response from Payright API");
-	}
-
-}
-
-
-public function intializeTransaction($orderTotal,$accessToken,$transActionData)
-{
-	$transactionDataArray['platform_type'] = 'prestashop';
-	$transactionDataArray['transactionTotal'] = number_format((float)$orderTotal, 2, '.', '');
-	$transactionDataArray['merchantreference'] = $transActionData['transactionRef'];
+    public function intializeTransaction($orderTotal, $accessToken, $transActionData)
+    {
+        $transactionDataArray['platform_type'] = 'prestashop';
+        $transactionDataArray['transactionTotal'] = number_format((float)$orderTotal, 2, '.', '');
+        $transactionDataArray['merchantreference'] = $transActionData['transactionRef'];
  
-	$paramsPayright = [
-		'Token' => $_POST['sugarauthtoken'],
-		'ConfigToken' =>   $_POST['configtoken'],
-		'transactiondata' => json_encode($transactionDataArray),
-		'totalAmount' => number_format((float)$orderTotal, 2, '.', ''),
-		'merchantReference' => $transActionData['transactionRef'],
-		'clientId' => $transActionData['clientId']
-	]; 
+        $paramsPayright = [
+        'Token' => $_POST['sugarauthtoken'],
+        'ConfigToken' =>   $_POST['configtoken'],
+        'transactiondata' => json_encode($transactionDataArray),
+        'totalAmount' => number_format((float)$orderTotal, 2, '.', ''),
+        'merchantReference' => $transActionData['transactionRef'],
+        'clientId' => $transActionData['clientId']
+    ];
 
-	
-	try {
-		$response =  $this->execute('https://betaonlineapi.payright.com.au/api/v1/intialiseTransaction',$paramsPayright,"Bearer",$accessToken);
-		return $response;
+    
+        try {
+            $response =  $this->execute('http://ecommerceapi.payright.local/api/v1/intialiseTransaction', $paramsPayright, "Bearer", $accessToken);
+            return $response;
+        } catch (Exception $e) {
+            throw new Exception("Invalid Response from Payright API");
+        }
+    }
 
-	} catch (Exception $e) {
-		throw new Exception("Invalid Response from Payright API");
-	} 
 
+
+    /**
+        * Execute API Request
+        * @param string $curlURL:q!
+        * @param string $curlMethod
+        * @param Object $dataObject
+        * @throws PayrightConfigurationException
+        *
+        * @return array
+     */
+    protected function execute($curlURL, $fields, $tokenAuth, $paraAccess_token = null)
+    {
+        //Check if CURL module exists.
+        if (!function_exists("curl_init")) {
+            throw new Exception("Curl module is not available on this system");
+        }
+
+        //url-ify the data for the POST
+        $fields_string = '';
+        foreach ($fields as $key=>$value) {
+            $fields_string .= $key.'='.$value.'&';
+        }
+        rtrim($fields_string, '&');
+
+        //open connection
+        try {
+            $ch = curl_init();
+
+            if ($tokenAuth == 'Bearer') {
+                //$authObj = json_decode($this->getPayrightAuthObj());
+                if ($paraAccess_token == null) {
+                    $access_token = $authObj->access_token;
+                } else {
+                    $access_token = $paraAccess_token;
+                }
+
+
+                // return;
+
+                $headers = array(
+                "Authorization: Bearer ".$access_token,
+            );
+
+                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+            }
+
+            curl_setopt_array($ch, array(
+              CURLOPT_URL => $curlURL,
+              CURLOPT_RETURNTRANSFER => true,
+              CURLOPT_ENCODING => "",
+              CURLOPT_MAXREDIRS => 10,
+              CURLOPT_TIMEOUT => 30,
+              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+              CURLOPT_CUSTOMREQUEST => "POST",
+              CURLOPT_POSTFIELDS => $fields_string
+        ));
+
+            $response = curl_exec($ch);
+            $err = curl_error($ch);
+
+
+
+            curl_close($ch);
+
+            if ($err) {
+                throw new Exception("Invalid Response from Payright API".$err);
+            } else {
+                return $response;
+            }
+        } catch (Exception $e) {
+            throw new Exception("Something went wrong in Payright API Connection");
+        }
+    }
+
+
+    public function GetPlanDataByToken($ecommerceToken, $configObj)
+    {
+        $paramsPayright = [
+        'ecomToken' => $ecommerceToken
+    ];
+
+        $payRightAuthToken = $this->PayRightAuth($configObj);
+        $payRightAuthObj = json_decode($payRightAuthToken);
+
+        try {
+            $response =  $this->execute('http://ecommerceapi.payright.local/api/v1/getEcomTokenData', $paramsPayright, "Bearer", $payRightAuthObj->access_token);
+            return $response;
+        } catch (Exception $e) {
+            throw new Exception("Invalid Response from Payright API");
+        }
+    }
+
+    /**
+        * Create a function for change the status of plan
+        * @param integer PlanId
+        * @return array return the plan array with change status
+        */
+
+
+    public function planStatusChange($ecommerceToken, $configObj, $planId)
+    {
+        
+
+        $payRightAuthToken = $this->PayRightAuth($configObj);
+        $payRightAuthObj = json_decode($payRightAuthToken);
+
+        $ConfigFields = array(
+        'merchantusername' => $configObj->getMerchantusername(),
+        'merchantpassword' => $configObj->getMerchantpassword()
+         );
+       
+        $response =  json_decode($this->execute($configObj->getConfigUrl(), $ConfigFields, "Bearer", $payRightAuthObj->access_token));
+        $paramsPayright = [
+        'id' => $planId,
+        'status' => 'Cancelled',
+        'Token' => $response->data->auth->{'auth-token'}
+        ];
+       
+        try {
+            $updatePlanStatus =  $this->execute('http://ecommerceapi.payright.local/api/v1/changePlanStatus', $paramsPayright, "Bearer", $payRightAuthObj->access_token);
+            return $updatePlanStatus;
+        } catch (Exception $e) {
+            throw new Exception("Invalid Response from Payright API");
+        }
+    }
+
+
+    /**
+     * @return mixed
+     */
+    public function getConfigObj()
+    {
+        return $this->configObj;
+    }
+
+    /**
+     * @param mixed $configObj
+     *
+     * @return self
+     */
+    public function setConfigObj($configObj)
+    {
+        $this->configObj = $configObj;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPayrightAuthObj()
+    {
+        return $this->payrightAuthObj;
+    }
+
+    /**
+     * @param mixed $payrightAuthObj
+     *
+     * @return self
+     */
+    public function setPayrightAuthObj($payrightAuthObj)
+    {
+        $this->payrightAuthObj = $payrightAuthObj;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPayrightConfigObj()
+    {
+        return $this->payrightConfigObj;
+    }
+
+    /**
+     * @param mixed $payrightConfigObj
+     *
+     * @return self
+     */
+    public function setPayrightConfigObj($payrightConfigObj)
+    {
+        $this->payrightConfigObj = $payrightConfigObj;
+
+        return $this;
+    }
+
+
+    public function setSessionValues($configValues, $cookieObj)
+    {
+        $cookieObj->AccountKeepingfees = $configValues->data->conf->{'Monthly Account Keeping Fee'};
+        $cookieObj->PayrightRates = serialize($configValues->data->rates);
+        $cookieObj->establishmentFeeArray = serialize($configValues->data->establishment_fee);
+        $cookieObj->PaymentProcessingFee = $configValues->data->conf->{'Payment Processing Fee'};
+    }
 }
-
-
-
-/**
-	* Execute API Request
-	* @param string $curlURL:q!
-	* @param string $curlMethod
-	* @param Object $dataObject
-	* @throws PayrightConfigurationException
-	*
-	* @return array
- */
-protected function execute($curlURL,$fields,$tokenAuth,$paraAccess_token = null)
-{
-	//Check if CURL module exists. 
-	if (!function_exists("curl_init")) {
-			throw new Exception("Curl module is not available on this system");
-	}
-	//url-ify the data for the POST
-	$fields_string = '';
-	foreach($fields as $key=>$value) { $fields_string .= $key.'='.$value.'&'; }
-	rtrim($fields_string, '&');
-
-	//open connection
-	try {
-
-		$ch = curl_init();
-
-		if($tokenAuth == 'Bearer')
-		{
-			//$authObj = json_decode($this->getPayrightAuthObj());
-			if($paraAccess_token == null)
-			{
-				$access_token = $authObj->access_token;
-			}
-			else
-			{
-				$access_token = $paraAccess_token;
-			}
-
-
-			// return;
-
-			$headers = array(
-				"Authorization: Bearer ".$access_token,
-			);
-
-			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-		}
-
-		curl_setopt_array($ch, array(
-			  CURLOPT_URL => $curlURL,
-			  CURLOPT_RETURNTRANSFER => true,
-			  CURLOPT_ENCODING => "",
-			  CURLOPT_MAXREDIRS => 10,
-			  CURLOPT_TIMEOUT => 30,
-			  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-			  CURLOPT_CUSTOMREQUEST => "POST",
-			  CURLOPT_POSTFIELDS => $fields_string
-		));
-
-	 	$response = curl_exec($ch);
-		$err = curl_error($ch);
-
-
-
-		curl_close($ch);
-
-		if ($err) {
-		 throw new Exception("Invalid Response from Payright API".$err);
-		} else {
-		   return $response;
-		}
-
-
-
-
-
-
-	} catch (Exception $e) {
-		throw new Exception("Something went wrong in Payright API Connection");
-	}
-
-
-}
-
-
-public function GetPlanDataByToken($ecommerceToken,$configObj)
-{
-
-	$paramsPayright = [
-		'ecomToken' => $ecommerceToken
-	]; 
-
-	$payRightAuthToken = $this->PayRightAuth($configObj);
-	$payRightAuthObj = json_decode($payRightAuthToken);
-
-	try {
-		$response =  $this->execute('https://betaonlineapi.payright.com.au/api/v1/getEcomTokenData',$paramsPayright,"Bearer",$payRightAuthObj->access_token);
-		return $response;
-	} catch (Exception $e) {
-		throw new Exception("Invalid Response from Payright API");
-	} 
-
-}
-
-
-
-/**
- * @return mixed
- */
-public function getConfigObj()
-{
-    return $this->configObj;
-}
-
-/**
- * @param mixed $configObj
- *
- * @return self
- */
-public function setConfigObj($configObj)
-{
-    $this->configObj = $configObj;
-
-    return $this;
-}
-
-/**
- * @return mixed
- */
-public function getPayrightAuthObj()
-{
-    return $this->payrightAuthObj;
-}
-
-/**
- * @param mixed $payrightAuthObj
- *
- * @return self
- */
-public function setPayrightAuthObj($payrightAuthObj)
-{
-    $this->payrightAuthObj = $payrightAuthObj;
-
-    return $this;
-}
-
-/**
- * @return mixed
- */
-public function getPayrightConfigObj()
-{
-    return $this->payrightConfigObj;
-}
-
-/**
- * @param mixed $payrightConfigObj
- *
- * @return self
- */
-public function setPayrightConfigObj($payrightConfigObj)
-{
-    $this->payrightConfigObj = $payrightConfigObj;
-
-    return $this;
-}
-
-
-public function setSessionValues($configValues,$cookieObj)
-{	
-	$cookieObj->AccountKeepingfees = $configValues->data->conf->{'Monthly Account Keeping Fee'};
-	$cookieObj->PayrightRates = serialize($configValues->data->rates);
-	$cookieObj->establishmentFeeArray = serialize($configValues->data->establishment_fee); 
-	$cookieObj->PaymentProcessingFee = $configValues->data->conf->{'Payment Processing Fee'}; 
-
-}
-
-}
-?>
