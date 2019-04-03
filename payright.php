@@ -87,9 +87,9 @@ class Payright extends PaymentModule
             return;
         }
 
-        $payment_options = [
+        $payment_options = array(
             $this->getExternalPaymentOption()
-        ];
+        );
 
         return $payment_options;
     }
