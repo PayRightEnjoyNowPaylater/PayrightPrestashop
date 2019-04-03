@@ -1,6 +1,6 @@
 <?php
-/*
-* 2007-2015 PrestaShop
+/**
+* 2007-2019 PrestaShop
 *
 * NOTICE OF LICENSE
 *
@@ -27,14 +27,14 @@
 /**
  * @since 1.5.0
  */
-class payrightIframeModuleFrontController extends ModuleFrontController
+class PayrightIframeModuleFrontController extends ModuleFrontController
 {
     public function initContent()
     {
         parent::initContent();
-        $this->context->smarty->assign([
+        $this->context->smarty->assign(array(
             'src' => 'http://www.prestashop.com',
-        ]);
+        ));
 
         $this->setTemplate('module:payright/views/templates/front/iframe.tpl');
     }

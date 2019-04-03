@@ -1,12 +1,17 @@
 <?php
-namespace Payright\api;
 /**
- *  
+ * Payright Calculationss
+ *
+ * @author Payright
+ * @copyright 2016-2019 https://www.payright.com.au
+ * @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
+
+namespace Payright\api;
+
 class Calculations
 {
-    
-    function __construct()
+    public function __construct()
     {
         # code...
     }
@@ -16,18 +21,18 @@ class Calculations
      * @param int $saleAmount amount of purchased product
      * @return calculated installment of sale amount
      */
-    public function calculateSingleProductInstallment($rates,$saleAmount,$cookieObj)
+    public function calculateSingleProductInstallment($rates, $saleAmount, $cookieObj)
     {
         $unserializeRatesArray = unserialize($rates);
         $payrightInstallmentApproval = $this->getMaximumSaleAmount($unserializeRatesArray, $saleAmount);
 
-        // echo "<pre>"; 
+        // echo "<pre>";
         //     print_r($payrightInstallmentApproval);
-        // echo "</pre>"; 
+        // echo "</pre>";
         
         if ($payrightInstallmentApproval == 0) {
             $accountKeepingFees = $cookieObj->AccountKeepingfees;
-            $paymentProcessingFee = $cookieObj->PaymentProcessingFee; 
+            $paymentProcessingFee = $cookieObj->PaymentProcessingFee;
      
             $LoanTerm = $this->fetchLoanTermForSale($unserializeRatesArray, $saleAmount);
 
@@ -43,7 +48,7 @@ class Calculations
 
             $formatedLoanAmount = number_format((float)$LoanAmount, 2, '.', '');
 
-            $resEstablishmentFees = $this->getEstablishmentFees($LoanTerm,$cookieObj->establishmentFeeArray);
+            $resEstablishmentFees = $this->getEstablishmentFees($LoanTerm, $cookieObj->establishmentFeeArray);
 
             // var_dump($resEstablishmentFees);
 
@@ -61,9 +66,12 @@ class Calculations
             // var_dump($CalculateRepayments);
 
             $dataResponseArray['LoanAmount'] = $LoanAmount;
-            $dataResponseArray['EstablishmentFee'] = $resEstablishmentFees; 
+            $dataResponseArray['EstablishmentFee'] = $resEstablishmentFees;
             $dataResponseArray['minDeposit'] = $getMinDeposit;
-            $dataResponseArray['TotalCreditRequired'] = $this->TotalCreditRequired($formatedLoanAmount,$resEstablishmentFees);
+            $dataResponseArray['TotalCreditRequired'] = $this->totalCreditRequired(
+                $formatedLoanAmount,
+                $resEstablishmentFees
+            );
             $dataResponseArray['Accountkeepfees'] = $cookieObj->AccountKeepingfees;
             $dataResponseArray['processingfees'] = $cookieObj->PaymentProcessingFee;
             $dataResponseArray['saleAmount'] =  $saleAmount;
@@ -76,14 +84,12 @@ class Calculations
         // } else {
         //     return "exceed_amount";
         // }
-        }
-        else
-        {
+        } else {
             throw new Exception("Payright exception");
         }
     }
 
-      /**
+    /**
      * Get the maximum limit for sale amount
      * @param array $getRates get the rates for merchant
      * @param float $saleAmount price of purchased amount
@@ -114,7 +120,7 @@ class Calculations
 
     public function fetchLoanTermForSale($rates, $saleAmount)
     {
-        $ratesArray = array(); 
+        $ratesArray = array();
 
         foreach ($rates as $key => $rate) {
             $ratesArray[$key]['Term'] = $rate['2'];
@@ -131,9 +137,9 @@ class Calculations
     }
 
 
-        /**
+    /**
      * Calculate Minimum deposit trhat needs to be pay for sale amount
-     * @param array $getRates 
+     * @param array $getRates
      * @param int $saleAmount amount for purchased product
      * @return float mindeposit
      */
@@ -141,34 +147,26 @@ class Calculations
 
     public function calculateMinDeposit($getRates, $saleAmount, $loanTerm)
     {
-        
-
         for ($i = 0; $i < count($getRates); $i++) {
             for ($l = 0; $l < count($getRates[$i]); $l++) {
-                
-                if ($getRates[$i][2] == $loanTerm)  {
-
-                 $per[] = $getRates[$i][1];
+                if ($getRates[$i][2] == $loanTerm) {
+                    $per[] = $getRates[$i][1];
                 }
-                     
             }
         }
 
-         $percentage = min($per);
-         $value = $percentage/100*$saleAmount;
-          return money_format('%.2n', $value);
-
-
-
+        $percentage = min($per);
+        $value = $percentage/100*$saleAmount;
+        return money_format('%.2n', $value);
     }
 
 
-     /**
-     * Payment frequancy for loan amount
-     * @param float $accountKeepingFees account keeping fees
-     * @param int $LoanTerm loan term
-     * @param array $returnArray noofpayments and accountkeeping fees
-     */
+    /**
+    * Payment frequancy for loan amount
+    * @param float $accountKeepingFees account keeping fees
+    * @param int $LoanTerm loan term
+    * @param array $returnArray noofpayments and accountkeeping fees
+    */
 
     public function getPaymentFrequency($accountKeepingFees, $LoanTerm)
     {
@@ -188,7 +186,7 @@ class Calculations
         }
 
         if ($RepaymentFrequecy == 'Monthly') {
-            $j = parseInt(k);
+            $j = intval(k);
             $o = $accountKeepingFees;
         }
 
@@ -208,15 +206,14 @@ class Calculations
      * @return  calculated establishment fees
      */
 
-    public function getEstablishmentFees($LoanTerm,$establishmentFeeArray)
+    public function getEstablishmentFees($LoanTerm, $establishmentFeeArray)
     {
         $establishmentFees = (array) unserialize($establishmentFeeArray);
 
-         $fee_bandArray = array();
-         $feebandCalculator = 0;
+        $fee_bandArray = array();
+        $feebandCalculator = 0;
        
         foreach ($establishmentFees['records'] as $key => $row) {
-
             $fee_bandArray[$key]['term'] = $row->term;
             $fee_bandArray[$key]['initial_est_fee'] = $row->initial_est_fee;
             $fee_bandArray[$key]['repeat_est_fee'] = $row->repeat_est_fee;
@@ -231,21 +228,27 @@ class Calculations
     }
 
 
-      /**
+    /**
      * Calculate Repayment installment
      * @param int $numberOfRepayments term for sale amount
      * @param int $AccountKeepingFees account keeping fees
      * @param int $establishmentFees establishment fees
      * @param int $LoanAmount loan amount
      * @param int $paymentProcessingFee processing fees for loan amount
-     * 
+     *
      */
 
-    public function calculateRepayment($numberOfRepayments, $AccountKeepingFees, $establishmentFees, $LoanAmount, $paymentProcessingFee)
-    {
+    public function calculateRepayment(
+        $numberOfRepayments,
+        $AccountKeepingFees,
+        $establishmentFees,
+        $LoanAmount,
+        $paymentProcessingFee
+    ) {
         $RepaymentAmountInit = ((floatval($establishmentFees) + floatval($LoanAmount)) / $numberOfRepayments);
-        $RepaymentAmount = floatval($RepaymentAmountInit) + floatval($AccountKeepingFees) + floatval($paymentProcessingFee);
-        return bcdiv($RepaymentAmount, 1, 2);
+        $RepaymentAmount = floatval($RepaymentAmountInit) + floatval($AccountKeepingFees);
+        $RepaymentAmountCalc = $RepaymentAmount + floatval($paymentProcessingFee);
+        return @bcdiv($RepaymentAmountCalc, 1, 2);
     }
 
 
@@ -254,12 +257,11 @@ class Calculations
      * @param int $loanAmount lending amount
      * @param float $establishmentFees establishmentFees
      * @return float total credit allowed
-     */ 
+     */
 
-    public static function TotalCreditRequired($LoanAmount,$establishmentFees)
+    public static function totalCreditRequired($LoanAmount, $establishmentFees)
     {
         $totalCreditRequired = (floatval($LoanAmount) + floatval($establishmentFees)) ;
         return number_format((float)$totalCreditRequired, 2, '.', '');
     }
-
 }

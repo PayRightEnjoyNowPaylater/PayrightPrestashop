@@ -1,12 +1,15 @@
 <?php
+/**
+ * Payright Payment Status
+ *
+ * @author Payright
+ * @copyright 2016-2019 https://www.payright.com.au
+ * @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+
 namespace Payright\api;
 
-/**
-    * Class PayrightConfig
-    * Placeholder for Payright API Settings.
-    *
-    * @package Payright\Core
-*/
+ini_set("display_errors", "1");
 
 class Call
 {
@@ -31,7 +34,7 @@ class Call
     {
     }
 
-    public function PayRightAuth($configObj)
+    public function payRightAuth($configObj)
     {
         $AuthFields = array(
         'username' => $configObj->getUsername(),
@@ -40,7 +43,7 @@ class Call
         'client_id' => $configObj->getClientID(),
         'client_secret' => $configObj->getApiKey()
         //'client_secret' => uBtLxIXPUMs4a0l0ViqxP1QVBGr62FG8YIGi5iMl
-    );
+        );
 
         try {
             $responseAuth =  $this->execute($configObj->getAuthUrl(), $AuthFields, false, null);
@@ -54,18 +57,24 @@ class Call
     }
 
 
-    public function PayRightConfigurationTokenMethod($cookieObj, $configobj, $paraAccessToken)
+    public function payRightConfigurationTokenMethod($cookieObj, $configobj, $paraAccessToken)
     {
         $ConfigFields = array(
         'merchantusername' => $configobj->getMerchantusername(),
         'merchantpassword' => $configobj->getMerchantpassword()
-    );
-
+        );
 
 
             
         try {
-            $response =  json_decode($this->execute($configobj->getConfigUrl(), $ConfigFields, "Bearer", $paraAccessToken));
+            $response =  json_decode(
+                $this->execute(
+                    $configobj->getConfigUrl(),
+                    $ConfigFields,
+                    "Bearer",
+                    $paraAccessToken
+                )
+            );
 
             $returnArray = array();
             $returnArray['auth'] = $response->data->auth;
@@ -88,18 +97,23 @@ class Call
         $transactionDataArray['transactionTotal'] = number_format((float)$orderTotal, 2, '.', '');
         $transactionDataArray['merchantreference'] = $transActionData['transactionRef'];
  
-        $paramsPayright = [
-        'Token' => $_POST['sugarauthtoken'],
-        'ConfigToken' =>   $_POST['configtoken'],
+        $paramsPayright = array(
+        'Token' => $_REQUEST['sugarauthtoken'],
+        'ConfigToken' =>   $_REQUEST['configtoken'],
         'transactiondata' => json_encode($transactionDataArray),
         'totalAmount' => number_format((float)$orderTotal, 2, '.', ''),
         'merchantReference' => $transActionData['transactionRef'],
         'clientId' => $transActionData['clientId']
-    ];
+        );
 
-    
+   
         try {
-            $response =  $this->execute('https://betaonlineapi.payright.com.au/api/v1/intialiseTransaction', $paramsPayright, "Bearer", $accessToken);
+            $response =  $this->execute(
+                'https://betaonlineapi.payright.com.au/api/v1/intialiseTransaction',
+                $paramsPayright,
+                "Bearer",
+                $accessToken
+            );
             return $response;
         } catch (Exception $e) {
             throw new Exception("Invalid Response from Payright API");
@@ -126,7 +140,7 @@ class Call
 
         //url-ify the data for the POST
         $fields_string = '';
-        foreach ($fields as $key=>$value) {
+        foreach ($fields as $key => $value) {
             $fields_string .= $key.'='.$value.'&';
         }
         rtrim($fields_string, '&');
@@ -148,7 +162,7 @@ class Call
 
                 $headers = array(
                 "Authorization: Bearer ".$access_token,
-            );
+                );
 
                 curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
             }
@@ -162,7 +176,7 @@ class Call
               CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
               CURLOPT_CUSTOMREQUEST => "POST",
               CURLOPT_POSTFIELDS => $fields_string
-        ));
+            ));
 
             $response = curl_exec($ch);
             $err = curl_error($ch);
@@ -182,17 +196,22 @@ class Call
     }
 
 
-    public function GetPlanDataByToken($ecommerceToken, $configObj)
+    public function getPlanDataByToken($ecommerceToken, $configObj)
     {
-        $paramsPayright = [
+        $paramsPayright = array(
         'ecomToken' => $ecommerceToken
-    ];
+        );
 
-        $payRightAuthToken = $this->PayRightAuth($configObj);
+        $payRightAuthToken = $this->payRightAuth($configObj);
         $payRightAuthObj = json_decode($payRightAuthToken);
 
         try {
-            $response =  $this->execute('https://betaonlineapi.payright.com.au/api/v1/getEcomTokenData', $paramsPayright, "Bearer", $payRightAuthObj->access_token);
+            $response =  $this->execute(
+                'https://betaonlineapi.payright.com.au/api/v1/getEcomTokenData',
+                $paramsPayright,
+                "Bearer",
+                $payRightAuthObj->access_token
+            );
             return $response;
         } catch (Exception $e) {
             throw new Exception("Invalid Response from Payright API");
@@ -208,9 +227,7 @@ class Call
 
     public function planStatusChange($ecommerceToken, $configObj, $planId)
     {
-        
-
-        $payRightAuthToken = $this->PayRightAuth($configObj);
+        $payRightAuthToken = $this->payRightAuth($configObj);
         $payRightAuthObj = json_decode($payRightAuthToken);
 
         $ConfigFields = array(
@@ -218,15 +235,25 @@ class Call
         'merchantpassword' => $configObj->getMerchantpassword()
          );
        
-        $response =  json_decode($this->execute($configObj->getConfigUrl(), $ConfigFields, "Bearer", $payRightAuthObj->access_token));
-        $paramsPayright = [
+        $response =  json_decode($this->execute(
+            $configObj->getConfigUrl(),
+            $ConfigFields,
+            "Bearer",
+            $payRightAuthObj->access_token
+        ));
+        $paramsPayright = array(
         'id' => $planId,
         'status' => 'Cancelled',
         'Token' => $response->data->auth->{'auth-token'}
-        ];
+        );
        
         try {
-            $updatePlanStatus =  $this->execute('https://betaonlineapi.payright.com.au/api/v1/changePlanStatus', $paramsPayright, "Bearer", $payRightAuthObj->access_token);
+            $updatePlanStatus =  $this->execute(
+                'https://betaonlineapi.payright.com.au/api/v1/changePlanStatus',
+                $paramsPayright,
+                "Bearer",
+                $payRightAuthObj->access_token
+            );
             return $updatePlanStatus;
         } catch (Exception $e) {
             throw new Exception("Invalid Response from Payright API");

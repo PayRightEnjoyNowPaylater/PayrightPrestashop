@@ -1,9 +1,10 @@
-
-  // jQuery(document).ready(function(){
-  // //if(jQuery('div.woocommerce-product-details__short-description').length > 0)
-  // if(jQuery('div.modal-content').length > 0)
-  // {
-  
+/**
+ * Placeholder for JS
+ *
+ * @author Payright
+ * @copyright 2016-2019 https://www.payright.com.au
+ * @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
 
     var modal = document.getElementById('myModal');
     var opener = document.getElementById("opener");

@@ -1,36 +1,35 @@
 <?php
-
 /**
- * Class AfterpayCapture
+ * Payright capture class
  *
- * Afterpay PrestaShop Module API Capture class 
- * Utilise Afterpay API V1
+ * @author Payright
+ * @copyright 2016-2019 https://www.payright.com.au
+ * @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
+
 class PayrightCapture
 {
+    public function __construct()
+    {
+    }
+
+    public function createCapturePayment($planName)
+    {
+        $this->createOrder($planName);
+        $return['error']     =   false;
+
+        return $return;
+    }
 
 
-  public function __construct() 
-  {
-
-  }
-
-  public function createCapturePayment($planName) {
-  		 $this->_createOrder($planName);
-       $return['error']     =   false;
-
-       return $return;
-  }
-
-
-   /**
-    * Create Order function
-    * Create the PrestaShop Order after a successful Capture
-    * @param string $afterpay_order_id
-    * since 1.0.0
-    */
-    private function _createOrder($payrightPlanName) {
-
+    /**
+     * Create Order function
+     * Create the PrestaShop Order after a successful Capture
+     * @param string $afterpay_order_id
+     * since 1.0.0
+     */
+    private function createOrder($payrightPlanName)
+    {
         $cart = Context::getContext()->cart;
 
         $order_status = (int)Configuration::get("PS_OS_PAYMENT");
@@ -43,11 +42,20 @@ class PayrightCapture
                             "planName"    =>  $payrightPlanName
                         );
 
-        $module->validateOrder($cart->id, $order_status, $order_total, "payright", null, $extra_vars, null, false, $cart->secure_key);
+        $module->validateOrder(
+            $cart->id,
+            $order_status,
+            $order_total,
+            "payright",
+            null,
+            $extra_vars,
+            null,
+            false,
+            $cart->secure_key
+        );
         
-        $message = "Payright Order Captured Successfully - Order ID: " . $payrightPlanName . "; PrestaShop Cart ID: " . $cart->id;
-        PrestaShopLogger::addLog($message, 1, NULL, "Payright", 1);
-
+        $message = "Payright Order Captured Successfully - Order ID: " .
+        $payrightPlanName . "; PrestaShop Cart ID: " . $cart->id;
+        PrestaShopLogger::addLog($message, 1, null, "Payright", 1);
     }
-
 }

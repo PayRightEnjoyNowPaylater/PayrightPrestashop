@@ -1,32 +1,15 @@
 <?php
-/*
-* 2007-2015 PrestaShop
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Academic Free License (AFL 3.0)
-* that is bundled with this package in the file LICENSE.txt.
-* It is also available through the world-wide-web at this URL:
-* http://opensource.org/licenses/afl-3.0.php
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to license@prestashop.com so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit or add to this file if you wish to upgrade PrestaShop to newer
-* versions in the future. If you wish to customize PrestaShop for your
-* needs please refer to http://www.prestashop.com for more information.
-*
-*  @author PrestaShop SA <contact@prestashop.com>
-*  @copyright  2007-2015 PrestaShop SA
-*  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
-*  International Registered Trademark & Property of PrestaShop SA
-*/
+/**
+ * Placeholder for Payright module
+ *
+ * @author Payright
+ * @copyright 2016-2019 https://www.payright.com.au
+ * @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
 
-require_once( _PS_MODULE_DIR_.'payright/PayrightSDK/api/PayRightConfig.php');
-require_once( _PS_MODULE_DIR_.'payright/PayrightSDK/api/call.php');
-require_once( _PS_MODULE_DIR_.'payright/PayrightSDK/api/Calculations.php');
+require_once(_PS_MODULE_DIR_.'payright/PayrightSDK/api/PayRightConfig.php');
+require_once(_PS_MODULE_DIR_.'payright/PayrightSDK/api/call.php');
+require_once(_PS_MODULE_DIR_.'payright/PayrightSDK/api/Calculations.php');
 
 
 use Payright\api\PayRightConfig;
@@ -39,8 +22,8 @@ if (!defined('_PS_VERSION_')) {
 
 class Payright extends PaymentModule
 {
-    protected $_html = '';
-    protected $_postErrors = array();
+    protected $html = '';
+    protected $postErrors = array();
 
     public $details;
     public $owner;
@@ -96,7 +79,6 @@ class Payright extends PaymentModule
 
     public function hookPaymentOptions($params)
     {
-        
         if (!$this->active) {
             return;
         }
@@ -132,7 +114,8 @@ class Payright extends PaymentModule
         $offlineOption = new PaymentOption();
         $offlineOption->setCallToActionText($this->l('Pay offline'))
                       ->setAction($this->context->link->getModuleLink($this->name, 'validation', array(), true))
-                      ->setAdditionalInformation($this->context->smarty->fetch('module:payright/views/templates/front/payment_infos.tpl'))
+                      ->setAdditionalInformation($this->context->smarty->
+                        fetch('module:payright/views/templates/front/payment_infos.tpl'))
                       ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/payment.jpg'));
 
         return $offlineOption;
@@ -140,8 +123,7 @@ class Payright extends PaymentModule
 
     public function getExternalPaymentOption()
     {
-        global $cookie ;
-
+       
 
         $payRightMode = Configuration::get('PAYRIGHT_LIVE_MODE');
         $arraykeys = array(
@@ -154,9 +136,8 @@ class Payright extends PaymentModule
         );
 
         $ConfigValues = $this->getConfigFormValues();
-        $PayRightConfig = new Payright\api\PayRightConfig(null,$ConfigValues);
- 
-
+        $PayRightConfig = new Payright\api\PayRightConfig($ConfigValues, null);
+      
         $PayRightApiCall = new Payright\api\Call($PayRightConfig);
         $PayRightCalculations = new Payright\api\Calculations();
 
@@ -164,57 +145,68 @@ class Payright extends PaymentModule
 
         ### perform the api authentication
 
-        $payRightAuth =  $PayRightApiCall->PayRightAuth($PayRightConfig);
+        $payRightAuth =  $PayRightApiCall->payRightAuth($PayRightConfig);
         $payRightAuthObj = json_decode($payRightAuth);
         
         ### now do the config call.
-        $payRightConfig = $PayRightApiCall->PayRightConfigurationTokenMethod($cookie,$PayRightConfig,$payRightAuthObj->access_token);
+        $payRightConfig = $PayRightApiCall->payRightConfigurationTokenMethod(
+            $this->context->cookie,
+            $PayRightConfig,
+            $payRightAuthObj->access_token
+        );
 
 
      
-        $payRightAuthToken = $payRightAuthObj->access_token; 
+        $payRightAuthToken = $payRightAuthObj->access_token;
         $sugarAuthToken = $payRightConfig['auth']->{'auth-token'};
         $configToken =  $payRightConfig['configToken'];
 
         $orderTotal = $this->context->cart->getOrderTotal();
 
+
+
         $PayrightCalculations =  $PayRightCalculations->calculateSingleProductInstallment(
-                $this->context->cookie->PayrightRates,
-                $orderTotal,
-                $this->context->cookie
-            );
+            $this->context->cookie->PayrightRates,
+            $orderTotal,
+            $this->context->cookie
+        );
 
 
-        $this->context->smarty->assign($PayrightCalculations); 
+        $this->context->smarty->assign($PayrightCalculations);
         $externalOption = new PaymentOption();
 
         $externalOption->setCallToActionText($this->l('Payright - Interest Free Payment Plan'))
-                       ->setAction($this->context->link->getModuleLink($this->name,
-                        'validation', 
-                        array(), true))
-                       ->setInputs([
-                            'payrightauthtoken' => [
+                       ->setAction($this->context->link->getModuleLink(
+                           $this->name,
+                           'validation',
+                           array(),
+                           true
+                       ))
+                       ->setInputs(array(
+                            'payrightauthtoken' => array(
                                 'name' =>'payrightauth',
                                 'type' =>'hidden',
                                 'value' => $payRightAuthObj->access_token
-                            ],
-                            'sugarauthtoken' => [
+                            ),
+                            'sugarauthtoken' => array(
                                 'name' =>'sugarauthtoken',
                                 'type' =>'hidden',
                                 'value' => $sugarAuthToken
-                            ],
-                            'configtoken' => [
+                            ),
+                            'configtoken' => array(
                                 'name' =>'configtoken',
                                 'type' =>'hidden',
                                 'value' => $configToken
-                            ],  
-                            'clientid' => [
+                            ),
+                            'clientid' => array(
                                 'name' =>'clientid',
                                 'type' =>'hidden',
                                 'value' => $ConfigValues['PS_PAYRIGHT_CLIENTID']
-                            ] 
-                        ]) 
-                       ->setAdditionalInformation($this->context->smarty->fetch('module:payright/views/templates/front/payment_infos.tpl'))
+                            )
+                        ))
+                       ->setAdditionalInformation(
+                           $this->context->smarty->fetch('module:payright/views/templates/front/payment_infos.tpl')
+                       )
                        ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/views/img/PayRight_FC_Logo.png'));
 
         return $externalOption;
@@ -225,8 +217,10 @@ class Payright extends PaymentModule
         $embeddedOption = new PaymentOption();
         $embeddedOption->setCallToActionText($this->l('Pay embedded'))
                        ->setForm($this->generateForm())
-                       ->setAdditionalInformation($this->context->smarty->fetch('module:payright/views/templates/front/payment_infos.tpl'))
-                       ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/payment.jpg')); 
+                       ->setAdditionalInformation(
+                           $this->context->smarty->fetch('module:payright/views/templates/front/payment_infos.tpl')
+                       )
+                       ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/payment.jpg'));
 
         return $embeddedOption;
     }
@@ -236,7 +230,9 @@ class Payright extends PaymentModule
         $iframeOption = new PaymentOption();
         $iframeOption->setCallToActionText($this->l('Pay iframe'))
                      ->setAction($this->context->link->getModuleLink($this->name, 'iframe', array(), true))
-                     ->setAdditionalInformation($this->context->smarty->fetch('module:payright/views/templates/front/payment_infos.tpl'))
+                     ->setAdditionalInformation(
+                         $this->context->smarty->fetch('module:payright/views/templates/front/payment_infos.tpl')
+                     )
                      ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/payment.jpg'));
 
         return $iframeOption;
@@ -244,26 +240,26 @@ class Payright extends PaymentModule
 
     protected function generateForm()
     {
-        $months = [];
+        $months = array();
         for ($i = 1; $i <= 12; $i++) {
             $months[] = sprintf("%02d", $i);
         }
 
-        $years = [];
+        $years = array();
         for ($i = 0; $i <= 10; $i++) {
             $years[] = date('Y', strtotime('+'.$i.' years'));
         }
 
-        $this->context->smarty->assign([
+        $this->context->smarty->assign(array(
             'action' => $this->context->link->getModuleLink($this->name, 'validation', array(), true),
             'months' => $months,
             'years' => $years,
-        ]);
+        ));
 
         return $this->context->smarty->fetch('module:payright/views/templates/front/payment_form.tpl');
     }
 
-        /**
+    /**
      * Create the form that will be displayed in the configuration of your module.
      */
     protected function renderForm()
@@ -296,7 +292,6 @@ class Payright extends PaymentModule
      */
     protected function getConfigForm()
     {
-
         $productPageOptions = array(
         array(
             'id_option' => 1,       // The value of the 'value' attribute of the <option> tag.
@@ -359,28 +354,28 @@ class Payright extends PaymentModule
                         ),
                     ),
                     array(
-                      'type'     => 'text',                             // This is a regular <input> tag.
-                      'label'    => $this->l('API KEY'),                   // The <label> for this <input> tag.
-                      'name'     => 'PS_PAYRIGHT_APIKEY',                             // The content of the 'id' attribute of the <input> tag.
-                      'col'    => '3',                                // The content of the 'class' attribute of the <input> tag. To set the size of the element, use these: sm, md, lg, xl, or xxl.
-                      'required' => true,                               // If set to true, this option must be set.
-                      'desc'     => $this->l('Please enter your API Key') // A help text, displayed right next to the <input> tag.
+                      'type'     => 'text',
+                      'label'    => $this->l('API KEY'),
+                      'name'     => 'PS_PAYRIGHT_APIKEY',
+                      'col'    => '3',
+                      'required' => true,
+                      'desc'     => $this->l('Please enter your API Key')
                     ),
                     array(
-                      'type'     => 'text',                             // This is a regular <input> tag.
-                      'label'    => $this->l('CLIENT ID'),                   // The <label> for this <input> tag.
-                      'name'     => 'PS_PAYRIGHT_CLIENTID',                             // The content of the 'id' attribute of the <input> tag.
-                      'col'    => '3',                                // The content of the 'class' attribute of the <input> tag. To set the size of the element, use these: sm, md, lg, xl, or xxl.
-                      'required' => true,                               // If set to true, this option must be set.
-                      'desc'     => $this->l('Please enter your Client ID') // A help text, displayed right next to the <input> tag.
+                      'type'     => 'text',
+                      'label'    => $this->l('CLIENT ID'),
+                      'name'     => 'PS_PAYRIGHT_CLIENTID',
+                      'col'    => '3',
+                      'required' => true,
+                      'desc'     => $this->l('Please enter your Client ID')
                     ),
                      array(
-                      'type'     => 'text',                             // This is a regular <input> tag.
-                      'label'    => $this->l('USERNAME'),                   // The <label> for this <input> tag.
-                      'name'     => 'PS_PAYRIGHT_USERNAME',                             // The content of the 'id' attribute of the <input> tag.
-                      'col'    => '3',                                // The content of the 'class' attribute of the <input> tag. To set the size of the element, use these: sm, md, lg, xl, or xxl.
-                      'required' => true,                               // If set to true, this option must be set.
-                      'desc'     => $this->l('Please enter your username provided by Payright') // A help text, displayed right next to the <input> tag.
+                      'type'     => 'text',
+                      'label'    => $this->l('USERNAME'),
+                      'name'     => 'PS_PAYRIGHT_USERNAME',
+                      'col'    => '3',
+                      'required' => true,
+                      'desc'     => $this->l('Please enter your username provided by Payright')
                     ),
                     array(
                         'type' => 'password',
@@ -402,41 +397,41 @@ class Payright extends PaymentModule
                         'desc' => $this->l('Enter your merchant password'),
                         'name' => 'PAYRIGHT_MERCHANTPASSWORD',
                         'label' => $this->l('Merchant Password'),
-                    ), 
+                    ),
                     array(
-                        'type' => 'select',                              // This is a <select> tag.
-                        'label' => $this->l('Product Page'),         // The <label> for this <select> tag.
-                        'desc' => $this->l('Show Payright Installments information on product page'),  // A help text, displayed right next to the <select> tag.
-                        'name' => 'PRODUCTPAGE_PAYRIGHTINSTALLMENTS',                     // The content of the 'id' attribute of the <select> tag.
-                        'required' => true,                              // If set to true, this option must be set.
+                        'type' => 'select',
+                        'label' => $this->l('Product Page'),
+                        'desc' => $this->l('Show Payright Installments information on product page'),
+                        'name' => 'PRODUCTPAGE_PAYRIGHTINSTALLMENTS',
+                        'required' => true,
                         'options' => array(
-                            'query' => $productPageOptions,                           // $options contains the data itself.
-                              'id' => 'id_option',                          
-                              'name' => 'name'  
+                            'query' => $productPageOptions,
+                              'id' => 'id_option',
+                              'name' => 'name'
                             )
                     ),
                     array(
-                        'type' => 'select',                              // This is a <select> tag.
-                        'label' => $this->l('Category Page'),         // The <label> for this <select> tag.
-                        'desc' => $this->l('Show Payright Installments information on category page'),  // A help text, displayed right next to the <select> tag.
-                        'name' => 'CATEGORYPAGE_PAYRIGHTINSTALLMENTS',                     // The content of the 'id' attribute of the <select> tag.
-                        'required' => true,                              // If set to true, this option must be set.
+                        'type' => 'select',
+                        'label' => $this->l('Category Page'),
+                        'desc' => $this->l('Show Payright Installments information on category page'),
+                        'name' => 'CATEGORYPAGE_PAYRIGHTINSTALLMENTS',
+                        'required' => true,
                         'options' => array(
-                            'query' => $categoryPageOptions,                           // $options contains the data itself.
-                              'id' => 'id_option',                          
-                              'name' => 'name'  
+                            'query' => $categoryPageOptions,
+                              'id' => 'id_option',
+                              'name' => 'name'
                             )
                     ),
                       array(
-                        'type' => 'select',                              // This is a <select> tag.
-                        'label' => $this->l('Payright Modal Option'),         // The <label> for this <select> tag.
-                        'desc' => $this->l('Pick info modal template'),  // A help text, displayed right next to the <select> tag.
-                        'name' => 'INFOMODAL_TEMPLATE',                     // The content of the 'id' attribute of the <select> tag.
-                        'required' => true,                              // If set to true, this option must be set.
+                        'type' => 'select',
+                        'label' => $this->l('Payright Modal Option'),
+                        'desc' => $this->l('Pick info modal template'),
+                        'name' => 'INFOMODAL_TEMPLATE',
+                        'required' => true,
                         'options' => array(
-                            'query' => $modalOptions,                           // $options contains the data itself.
-                              'id' => 'id_option',                          
-                              'name' => 'name'  
+                            'query' => $modalOptions,
+                              'id' => 'id_option',
+                              'name' => 'name'
                             )
                     )
                     
@@ -468,7 +463,7 @@ class Payright extends PaymentModule
 
         );
     }
-      /**
+    /**
     * Add the CSS & JavaScript files you want to be loaded in the BO.s
     */
     public function hookBackOfficeHeader()
@@ -484,12 +479,12 @@ class Payright extends PaymentModule
      */
     public function hookDisplayHeader()
     {
-          $this->getSessionValue = $this->getSessionValue();
-          $this->context->smarty->assign("payright_base_url", Context::getContext()->shop->getBaseURL(true) );    
+        $this->getSessionValue = $this->getSessionValue();
+        $this->context->smarty->assign("payright_base_url", Context::getContext()->shop->getBaseURL(true));
     }
 
 
-        /**
+    /**
      * Save form data.
      */
     protected function postProcess()
@@ -502,7 +497,7 @@ class Payright extends PaymentModule
     }
 
 
-        /**
+    /**
      * Load the configuration form
      */
     public function getContent()
@@ -533,33 +528,27 @@ class Payright extends PaymentModule
     * @return TPL
     * since 1.0.0
     */
-    public function hookDisplayProductPriceBlock($params) {
-
+    public function hookDisplayProductPriceBlock($params)
+    {
         $current_controller = Tools::getValue('controller');
         $ConfigValues = $this->getConfigFormValues();
-        $templateValue = $ConfigValues['INFOMODAL_TEMPLATE']; 
+        $templateValue = $ConfigValues['INFOMODAL_TEMPLATE'];
 
-          if($current_controller == 'category'  && $params["type"] == 'unit_price')
-         {
-              $payRightInstallmentBreakDown =  $this->_getCurrentInstalmentsDisplay($params["product"]["price_amount"]);
-              $this->context->smarty->assign("payright_instalment_breakdown",$payRightInstallmentBreakDown); 
-              return $this->context->smarty->fetch("module:payright/views/templates/front/product_thumbnail.tpl");
-         }
-        if($current_controller == "product" && $params["type"] == "after_price")
-        {
-            $payRightInstallmentBreakDown =  $this->_getCurrentInstalmentsDisplay($params["product"]["price_amount"]);
-            $this->context->smarty->assign("payright_instalment_breakdown",$payRightInstallmentBreakDown);
-            $this->context->smarty->assign("templateValue", $templateValue); 
+        if ($current_controller == 'category'  && $params["type"] == 'unit_price') {
+            $payRightInstallmentBreakDown =  $this->getCurrentInstalmentsDisplay($params["product"]["price_amount"]);
+            $this->context->smarty->assign("payright_instalment_breakdown", $payRightInstallmentBreakDown);
+            return $this->context->smarty->fetch("module:payright/views/templates/front/product_thumbnail.tpl");
+        }
+        if ($current_controller == "product" && $params["type"] == "after_price") {
+            $payRightInstallmentBreakDown =  $this->getCurrentInstalmentsDisplay($params["product"]["price_amount"]);
+            $this->context->smarty->assign("payright_instalment_breakdown", $payRightInstallmentBreakDown);
+            $this->context->smarty->assign("templateValue", $templateValue);
             return $this->context->smarty->fetch("module:payright/views/templates/front/product_page.tpl");
         }
-     
-
     }
 
-    public function _getCurrentInstalmentsDisplay($productTotal)
+    public function getCurrentInstalmentsDisplay($productTotal)
     {
-        global $cookie;
-
         $arraykeys = array(
             'PAYRIGHT_LIVE_MODE','PAYRIGHT_ACCOUNT_EMAIL','PAYRIGHT_ACCOUNT_PASSWORD',
             'PS_PAYRIGHT_APIKEY','PS_PAYRIGHT_USERNAME',
@@ -569,41 +558,40 @@ class Payright extends PaymentModule
             'INFOMODAL_TEMPLATE'
         );
 
-         $rateCard = $this->context->cookie->PayrightRates;
-         $rateUnserialized = unserialize($rateCard);
-         if (!empty($rateUnserialized)) {
+        $rateCard = $this->context->cookie->PayrightRates;
+        $rateUnserialized = unserialize($rateCard);
+        if (!empty($rateUnserialized)) {
             $PayRightCalculations = new Payright\api\Calculations();
             $PayrightCalculations =  $PayRightCalculations->calculateSingleProductInstallment(
-               $this->context->cookie->PayrightRates,
-               $productTotal,
-               $this->context->cookie
-             );
+                $this->context->cookie->PayrightRates,
+                $productTotal,
+                $this->context->cookie
+            );
             return $PayrightCalculations;
-         } else {
+        } else {
             return 0;
-         }
+        }
     }
 
-    public function getSessionValue() {
-
-        global $cookie;
-
+    public function getSessionValue()
+    {
         $ConfigValues = $this->getConfigFormValues();
-        $PayRightConfig = new Payright\api\PayRightConfig(null,$ConfigValues);
+
+
+        $PayRightConfig = new Payright\api\PayRightConfig($ConfigValues, null);
         $PayRightApiCall = new Payright\api\Call($PayRightConfig);
      
-        $payRightAuth =  $PayRightApiCall->PayRightAuth($PayRightConfig);
+        $payRightAuth =  $PayRightApiCall->payRightAuth($PayRightConfig);
+
+        
+
         $payRightAuthObj = json_decode($payRightAuth);
         if (isset($payRightAuthObj->access_token)) {
-             $payRightConfig = $PayRightApiCall->PayRightConfigurationTokenMethod($cookie,$PayRightConfig,$payRightAuthObj->access_token);
+            $payRightConfig = $PayRightApiCall->payRightConfigurationTokenMethod(
+                $this->context->cookie,
+                $PayRightConfig,
+                $payRightAuthObj->access_token
+            );
         }
-
     }
-
-
-
-
-
-
-
 }

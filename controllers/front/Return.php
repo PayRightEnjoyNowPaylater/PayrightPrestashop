@@ -1,18 +1,25 @@
-<?php 
+<?php
+/**
+ * Placeholder Return the response
+ *
+ * @author Payright
+ * @copyright 2016-2019 https://www.payright.com.au
+ * @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
 
-require_once( _PS_MODULE_DIR_ . 'payright/classes/PayrightCapture.php' );
-require_once( _PS_MODULE_DIR_.'payright/PayrightSDK/api/call.php');
-require_once( _PS_MODULE_DIR_.'payright/PayrightSDK/api/Response.php');
-require_once( _PS_MODULE_DIR_.'payright/PayrightSDK/api/PayRightConfig.php');
+require_once(_PS_MODULE_DIR_ . 'payright/classes/PayrightCapture.php');
+require_once(_PS_MODULE_DIR_.'payright/PayrightSDK/api/call.php');
+require_once(_PS_MODULE_DIR_.'payright/PayrightSDK/api/Response.php');
+require_once(_PS_MODULE_DIR_.'payright/PayrightSDK/api/PayRightConfig.php');
 
 use Payright\api\Call;
 use Payright\api\Response;
 use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 use Payright\api\PayRightConfig;
-class payrightReturnModuleFrontController extends ModuleFrontController
-{
 
-	private $params;
+class PayrightReturnModuleFrontController extends ModuleFrontController
+{
+    private $params;
 
     private $payright_merchant_id;
     private $payright_merchant_key;
@@ -20,7 +27,7 @@ class payrightReturnModuleFrontController extends ModuleFrontController
     private $payright_user_agent;
 
 
-    private $payrightLiveMode; 
+    private $payrightLiveMode;
     private $payrightAccountEmail;
     private $payrightAccountPassword;
     private $payrightApiKey;
@@ -34,115 +41,114 @@ class payrightReturnModuleFrontController extends ModuleFrontController
 
 
 
-	
+    
 
-	private function _validateCredentials($params) {
+    private function validateCredentials($params)
+    {
         $error = array();
 
-        if(empty($params["ecommtoken"]) ) {
+        if (empty($params["ecommtoken"])) {
             $error[] = "No Payright Ecommerce Token Found !";
         }
         return $error;
     }
 
-      /**
+    /**
      * @see FrontController::postProcess()
      */
     public function postProcess()
     {
         $this->params = $_REQUEST;
 
-        $this->context->smarty->assign([
+        $this->context->smarty->assign(array(
             "params" => $this->params,
-        ]);
+        ));
 
         $params = $_REQUEST;
-        $validate_error = $this->_validateCredentials($params);
+        $validate_error = $this->validateCredentials($params);
 
-        if( count($validate_error) ) {
-            $error["message"] = $this->module->l("Invalid Response: Missing Payright transaction " . implode($validate_error, ", ") , "validation");
-            $this->_checkoutErrorRedirect($error);
+        if (count($validate_error)) {
+            $error["message"] = $this->module->l("Invalid Response: Missing Payright transaction "
+             . implode($validate_error, ", "), "validation");
+            $this->checkoutErrorRedirect($error);
         }
 
-        $this->_retrievePayrightConfiguration();
+        $this->retrievePayrightConfiguration();
         $ConfigValues = $this->getConfigFormValues();
 
        
 
-        $PayRightConfig = new Payright\api\PayRightConfig(null,$ConfigValues);
+        $PayRightConfig = new Payright\api\PayRightConfig($ConfigValues, null);
         $PayRightApiCall = new Payright\api\Call($PayRightConfig);
 
         $ecommerceToken = $this->params['ecommtoken'];
 
-        $GetTokenData = $PayRightApiCall->GetPlanDataByToken($ecommerceToken,$PayRightConfig);
+        $GetTokenData = $PayRightApiCall->getPlanDataByToken($ecommerceToken, $PayRightConfig);
         $TokenObject = json_decode($GetTokenData);
 
-        $transactionObj = json_decode($TokenObject->transactionResult); 
+        $transactionObj = json_decode($TokenObject->transactionResult);
 
-        $transactionStatus = strtoupper($transactionObj->prtransactionStatus);
+        $transactionStatus = Tools::strtoupper($transactionObj->prtransactionStatus);
 
 
         switch ($transactionStatus) {
-            case  Payright\api\Response::RESPONSE_STATUS_SUCCESS:
+            case Payright\api\Response::RESPONSE_STATUS_SUCCESS:
                 //// this is the response status
-                $results = $this->_doCapture($TokenObject->transactionGeneratePlanname);
-            break;
-
-            case  Payright\api\Response::RESPONSE_STATUS_DECLINED:
+                $results = $this->doCapture($TokenObject->transactionGeneratePlanname);
+                break;
+            case Payright\api\Response::RESPONSE_STATUS_DECLINED:
                 $error["error"]     =   true;
-                $error["message"]   =   "Payright Transaction Declined, please try again with an alternative payment provider";
-            break;
-
-            case  Payright\api\Response::RESPONSE_STATUS_CANCELLED:
-                $error["error"]     =   true;
-                $error["message"]   =   "Payright Transaction Failed, please contact Payright 1300 338 496";
-                # code...
-            break;
-
-            case  Payright\api\Response::RESPONSE_STATUS_REVIEW:
+                $error["message"]   =   "Payright Transaction Declined, 
+                please try again with an alternative payment provider";
+                break;
+            case Payright\api\Response::RESPONSE_STATUS_CANCELLED:
                 $error["error"]     =   true;
                 $error["message"]   =   "Payright Transaction Failed, please contact Payright 1300 338 496";
-                # code...
-            break;
-
-            case  Payright\api\Response::RESPONSE_APPROVED_PENDINGID:
+                break;
+      
+            case Payright\api\Response::RESPONSE_STATUS_REVIEW:
                 $error["error"]     =   true;
                 $error["message"]   =   "Payright Transaction Failed, please contact Payright 1300 338 496";
-            break;
-    
-    
+                break;
+     
+            case Payright\api\Response::RESPONSE_APPROVED_PENDINGID:
+                $error["error"]     =   true;
+                $error["message"]   =   "Payright Transaction Failed, please contact Payright 1300 338 496";
+                break;
         }
 
-        if(!empty($error["error"]) && $error["error"] ) {
-                ### redirect to the error page 
-              $this->_checkoutErrorRedirect($error);
-        }
-        else
-        {
+        if (!empty($error["error"]) && $error["error"]) {
+            ### redirect to the error page
+            $this->checkoutErrorRedirect($error);
+        } else {
             $customer = new Customer($this->context->cart->id_customer);
-            Tools::redirect('index.php?controller=order-confirmation&id_cart='.$this->context->cart->id.'&id_module='.$this->module->id.'&id_order='.$this->module->currentOrder.'&key='.$customer->secure_key);
+            Tools::redirect('index.php?controller=order-confirmation&
+                id_cart='.$this->context->cart->id.'&
+                id_module='.$this->module->id.'&
+                id_order='.$this->module->currentOrder.'&
+                key='.$customer->secure_key);
         }
 
-        //$results = $this->_doCapture();
         $this->setTemplate("module:payright/views/templates/front/payment_return.tpl");
- 
     }
 
-    private function _doCapture($planName)
+    private function doCapture($planName)
     {
-    	$payright_capture = new PayrightCapture();  
-    	$results = $payright_capture->createCapturePayment($planName);
-    } 
+        $payright_capture = new PayrightCapture();
+        $results = $payright_capture->createCapturePayment($planName);
+    }
 
-    private function _checkoutErrorRedirect($results) {
-        if( !empty($results["message"]) ) {
-            $this->errors[] = $this->l( $results["message"] );
+    private function checkoutErrorRedirect($results)
+    {
+        if (!empty($results["message"])) {
+            $this->errors[] = $this->l($results["message"]);
         }
         $this->redirectWithNotifications('index.php?controller=order&step=1');
     }
 
-    private function _retrievePayrightConfiguration() {
-        ### 
+    private function retrievePayrightConfiguration()
+    {
+        ###
         $this->payrightLiveMode     =   Configuration::get('PAYRIGHT_LIVE_MODE');
         $this->payrightAccountEmail  = Configuration::get('PAYRIGHT_ACCOUNT_EMAIL');
 
@@ -156,8 +162,7 @@ class payrightReturnModuleFrontController extends ModuleFrontController
         $this->payrightinfoModal = Configuration::get('INFOMODAL_TEMPLATE');
 
         $this->payrightMerchantUsername = Configuration::get('PAYRIGHT_MERCHANTUSERNAME');
-        $this->payrightMerchantPassword = Configuration::get('PAYRIGHT_MERCHANTPASSWORD'); 
-
+        $this->payrightMerchantPassword = Configuration::get('PAYRIGHT_MERCHANTPASSWORD');
     }
 
 
@@ -175,14 +180,6 @@ class payrightReturnModuleFrontController extends ModuleFrontController
             'INFOMODAL_TEMPLATE' => Configuration::get('INFOMODAL_TEMPLATE', null) ,
             'PAYRIGHT_MERCHANTUSERNAME' => Configuration::get('PAYRIGHT_MERCHANTUSERNAME', null),
             'PAYRIGHT_MERCHANTPASSWORD' => Configuration::get('PAYRIGHT_MERCHANTPASSWORD', null)
-        );  
+        );
     }
-
-
-
-
-
-
-
-
 }
