@@ -165,9 +165,9 @@ class PayRightConfig
     {
         //Set Merchant Id, Secret Key and Callback Url
         if ($mode == 'dev') {
-            $this->setAuthUrl('http://ecommerceapi.payright.local/oauth/token');
-            $this->setConfigUrl('http://ecommerceapi.payright.local/api/v1/configuration');
-            $this->setIntialiseTransactionUrl('http://ecommerceapi.payright.local/api/v1/intialiseTransaction');
+            $this->setAuthUrl('https://betaonlineapi.payright.com.au/oauth/token');
+            $this->setConfigUrl('https://betaonlineapi.payright.com.au/api/v1/configuration');
+            $this->setIntialiseTransactionUrl('https://betaonlineapi.payright.com.au/api/v1/intialiseTransaction');
         } elseif ($mode == 'sandbox') {
             $this->setAuthUrl('https://betaonlineapi.payright.com.au/oauth/token');
             $this->setConfigUrl('https://betaonlineapi.payright.com.au/api/v1/configuration');
