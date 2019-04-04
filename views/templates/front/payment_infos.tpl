@@ -24,10 +24,10 @@
 *}
 
 <section>
-  <h2>{$noofrepayments} {$repaymentfrequency} Installments of ${$LoanAmountPerPayment}</h2>
-  <p>{l s='Excluding deposit'  mod='mypaymentmodule'}
+  <h2>{$noofrepayments|escape:'htmlall':'UTF-8'} {$repaymentfrequency} Installments of ${$LoanAmountPerPayment}</h2>
+  <p>{l s='Excluding deposit'  mod='payright'}
   	<br>
-  	{l s='You will be directed to the PayRight website to complete the application process'  mod='mypaymentmodule'}
+  	{l s='You will be directed to the PayRight website to complete the application process'  mod='payright'}
   	<br>
   	Once approved you will return to our page
   	<br>

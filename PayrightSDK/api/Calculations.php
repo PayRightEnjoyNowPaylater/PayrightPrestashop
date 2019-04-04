@@ -50,10 +50,9 @@ class Calculations
 
             $resEstablishmentFees = $this->getEstablishmentFees($LoanTerm, $cookieObj->establishmentFeeArray);
 
-            // var_dump($resEstablishmentFees);
 
-            $establishmentFeePerPayment = $resEstablishmentFees / $calculatedNoofRepayments;
-            $loanAmountPerPayment = $formatedLoanAmount / $calculatedNoofRepayments;
+       
+
 
             $CalculateRepayments  = $this->calculateRepayment(
                 $calculatedNoofRepayments,
@@ -64,7 +63,7 @@ class Calculations
             );
 
             // var_dump($CalculateRepayments);
-
+            $dataResponseArray = array();
             $dataResponseArray['LoanAmount'] = $LoanAmount;
             $dataResponseArray['EstablishmentFee'] = $resEstablishmentFees;
             $dataResponseArray['minDeposit'] = $getMinDeposit;
@@ -101,7 +100,7 @@ class Calculations
         $chkLoanlimit = 0;
        
         $keys = array_keys($getRates);
-
+        $getVal = array();
         for ($i = 0; $i < count($getRates); $i++) {
             foreach ($getRates[$keys[$i]] as $key => $value) {
                 if ($key == 4) {
@@ -121,7 +120,7 @@ class Calculations
     public function fetchLoanTermForSale($rates, $saleAmount)
     {
         $ratesArray = array();
-
+        $generateLoanTerm = array();
         foreach ($rates as $key => $rate) {
             $ratesArray[$key]['Term'] = $rate['2'];
             $ratesArray[$key]['Min'] = $rate['3'];
@@ -147,6 +146,7 @@ class Calculations
 
     public function calculateMinDeposit($getRates, $saleAmount, $loanTerm)
     {
+        $per = array();
         for ($i = 0; $i < count($getRates); $i++) {
             for ($l = 0; $l < count($getRates[$i]); $l++) {
                 if ($getRates[$i][2] == $loanTerm) {
@@ -185,14 +185,11 @@ class Calculations
             $o = $accountKeepingFees * 12 / 26;
         }
 
-        if ($RepaymentFrequecy == 'Monthly') {
-            $j = intval(k);
-            $o = $accountKeepingFees;
-        }
+        
 
         $numberofRepayments = $j;
         $accountKeepingFees = $o;
-
+        $returnArray = array();
         $returnArray['numberofRepayments'] = $numberofRepayments;
         $returnArray['accountKeepingFees'] = round($accountKeepingFees, 2);
 
@@ -245,10 +242,21 @@ class Calculations
         $LoanAmount,
         $paymentProcessingFee
     ) {
-        $RepaymentAmountInit = ((floatval($establishmentFees) + floatval($LoanAmount)) / $numberOfRepayments);
-        $RepaymentAmount = floatval($RepaymentAmountInit) + floatval($AccountKeepingFees);
-        $RepaymentAmountCalc = $RepaymentAmount + floatval($paymentProcessingFee);
-        return @bcdiv($RepaymentAmountCalc, 1, 2);
+        $establishmentFees = (float)$establishmentFees;
+        $LoanAmount = (float)$LoanAmount;
+        $AccountKeepingFees = (float)$AccountKeepingFees;
+        $paymentProcessingFee = (float)$paymentProcessingFee;
+
+
+
+        $RepaymentAmountInit = (($establishmentFees + $LoanAmount) / $numberOfRepayments);
+        $RepaymentAmountInit = (float)$RepaymentAmountInit;
+        $RepaymentAmount = $RepaymentAmountInit + $AccountKeepingFees;
+
+        $RepaymentAmountCalc = $RepaymentAmount + $paymentProcessingFee;
+
+        $RepaymentAmountCalc = $RepaymentAmountCalc / 1;
+        return number_format((float)$RepaymentAmountCalc, 2, '.', '');
     }
 
 
@@ -261,7 +269,10 @@ class Calculations
 
     public static function totalCreditRequired($LoanAmount, $establishmentFees)
     {
-        $totalCreditRequired = (floatval($LoanAmount) + floatval($establishmentFees)) ;
+        $LoanAmount = (float)$LoanAmount;
+        $establishmentFees = (float)$establishmentFees;
+
+        $totalCreditRequired = ($LoanAmount + $establishmentFees) ;
         return number_format((float)$totalCreditRequired, 2, '.', '');
     }
 }

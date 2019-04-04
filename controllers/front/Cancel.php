@@ -63,7 +63,7 @@ class PayrightCancelModuleFrontController extends ModuleFrontController
 
         $params = $_REQUEST;
         $validate_error = $this->validateCredentials($params);
-
+        $error = array();
         if (count($validate_error)) {
             $error["message"] = $this->module->l("Invalid Response: Missing Payright transaction " .
                 implode($validate_error, ", "), "validation");
@@ -89,7 +89,7 @@ class PayrightCancelModuleFrontController extends ModuleFrontController
         $error["message"]   =   "Payright Transaction Failed, please contact Payright 1300 338 496";
 
         if (isset($transactionObj->planId)) {
-            $PayRightApiCall->planStatusChange($ecommerceToken, $PayRightConfig, $transactionObj->planId);
+            $PayRightApiCall->planStatusChange($PayRightConfig, $transactionObj->planId);
         }
 
        

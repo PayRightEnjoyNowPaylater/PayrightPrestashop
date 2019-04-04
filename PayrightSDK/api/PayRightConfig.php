@@ -72,13 +72,9 @@ class PayRightConfig
             $validateConfigResponse = $this->validateConfigFile($filename);
             //If Config.ini is valid and all values are set properly.
             if ($validateConfigResponse) {
-                //Set Config params, if mode is sandbox or production.
-                $ini_array = parse_ini_file($filename, true);
-
                 /// setting the enviroment
                 $this->setEnvironment('dev');
-
-                $this->setConfigParams($ini_array, $payrightMode);
+                $this->setConfigParams($payrightMode);
             } else {
                 echo "Please check if config.ini exists and all values are set properly.
                 Please make sure mode should be either sandbox or production";
@@ -147,7 +143,7 @@ class PayRightConfig
     /**
     * Set Payright URL's based on the selected mode (sandbox or production)
     */
-    protected function setConfigParams($configArray, $mode)
+    protected function setConfigParams($mode)
     {
         $allConfig = $mode;
 

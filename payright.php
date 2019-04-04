@@ -125,15 +125,8 @@ class Payright extends PaymentModule
     {
        
 
-        $payRightMode = Configuration::get('PAYRIGHT_LIVE_MODE');
-        $arraykeys = array(
-            'PAYRIGHT_LIVE_MODE','PAYRIGHT_ACCOUNT_EMAIL','PAYRIGHT_ACCOUNT_PASSWORD',
-            'PS_PAYRIGHT_APIKEY','PS_PAYRIGHT_USERNAME',
-            'PS_PAYRIGHT_CLIENTID',
-            'PRODUCTPAGE_PAYRIGHTINSTALLMENTS',
-            'CATEGORYPAGE_PAYRIGHTINSTALLMENTS',
-            'INFOMODAL_TEMPLATE'
-        );
+   
+     
 
         $ConfigValues = $this->getConfigFormValues();
         $PayRightConfig = new Payright\api\PayRightConfig($ConfigValues, null);
@@ -157,7 +150,6 @@ class Payright extends PaymentModule
 
 
      
-        $payRightAuthToken = $payRightAuthObj->access_token;
         $sugarAuthToken = $payRightConfig['auth']->{'auth-token'};
         $configToken =  $payRightConfig['configToken'];
 
@@ -532,7 +524,10 @@ class Payright extends PaymentModule
     {
         $current_controller = Tools::getValue('controller');
         $ConfigValues = $this->getConfigFormValues();
+
         $templateValue = $ConfigValues['INFOMODAL_TEMPLATE'];
+
+
 
         if ($current_controller == 'category'  && $params["type"] == 'unit_price') {
             $payRightInstallmentBreakDown =  $this->getCurrentInstalmentsDisplay($params["product"]["price_amount"]);
@@ -549,14 +544,7 @@ class Payright extends PaymentModule
 
     public function getCurrentInstalmentsDisplay($productTotal)
     {
-        $arraykeys = array(
-            'PAYRIGHT_LIVE_MODE','PAYRIGHT_ACCOUNT_EMAIL','PAYRIGHT_ACCOUNT_PASSWORD',
-            'PS_PAYRIGHT_APIKEY','PS_PAYRIGHT_USERNAME',
-            'PS_PAYRIGHT_CLIENTID',
-            'PRODUCTPAGE_PAYRIGHTINSTALLMENTS',
-            'CATEGORYPAGE_PAYRIGHTINSTALLMENTS',
-            'INFOMODAL_TEMPLATE'
-        );
+        
 
         $rateCard = $this->context->cookie->PayrightRates;
         $rateUnserialized = unserialize($rateCard);
@@ -587,7 +575,7 @@ class Payright extends PaymentModule
 
         $payRightAuthObj = json_decode($payRightAuth);
         if (isset($payRightAuthObj->access_token)) {
-            $payRightConfig = $PayRightApiCall->payRightConfigurationTokenMethod(
+            $PayRightApiCall->payRightConfigurationTokenMethod(
                 $this->context->cookie,
                 $PayRightConfig,
                 $payRightAuthObj->access_token

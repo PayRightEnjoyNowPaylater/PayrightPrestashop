@@ -66,7 +66,7 @@ class PayrightReturnModuleFrontController extends ModuleFrontController
 
         $params = $_REQUEST;
         $validate_error = $this->validateCredentials($params);
-
+        $error = array();
         if (count($validate_error)) {
             $error["message"] = $this->module->l("Invalid Response: Missing Payright transaction "
              . implode($validate_error, ", "), "validation");
@@ -94,7 +94,7 @@ class PayrightReturnModuleFrontController extends ModuleFrontController
         switch ($transactionStatus) {
             case Payright\api\Response::RESPONSE_STATUS_SUCCESS:
                 //// this is the response status
-                $results = $this->doCapture($TokenObject->transactionGeneratePlanname);
+                $this->doCapture($TokenObject->transactionGeneratePlanname);
                 break;
             case Payright\api\Response::RESPONSE_STATUS_DECLINED:
                 $error["error"]     =   true;
@@ -135,7 +135,7 @@ class PayrightReturnModuleFrontController extends ModuleFrontController
     private function doCapture($planName)
     {
         $payright_capture = new PayrightCapture();
-        $results = $payright_capture->createCapturePayment($planName);
+        $payright_capture->createCapturePayment($planName);
     }
 
     private function checkoutErrorRedirect($results)

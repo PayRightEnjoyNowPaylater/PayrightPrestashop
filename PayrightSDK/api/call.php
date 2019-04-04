@@ -25,7 +25,7 @@ class Call
     public function getCallEndApi()
     {
         $curlURL = $this->apiConfigObj->getOrderUrl();
-        $curlResponse = $this->execute($curlURL, 'POST', $orderObject);
+        $curlResponse = $this->execute($curlURL, 'POST');
         return $curlResponse;
     }
 
@@ -93,6 +93,7 @@ class Call
 
     public function intializeTransaction($orderTotal, $accessToken, $transActionData)
     {
+        $transactionDataArray = array();
         $transactionDataArray['platform_type'] = 'prestashop';
         $transactionDataArray['transactionTotal'] = number_format((float)$orderTotal, 2, '.', '');
         $transactionDataArray['merchantreference'] = $transActionData['transactionRef'];
@@ -152,7 +153,7 @@ class Call
             if ($tokenAuth == 'Bearer') {
                 //$authObj = json_decode($this->getPayrightAuthObj());
                 if ($paraAccess_token == null) {
-                    $access_token = $authObj->access_token;
+                    $access_token = '';
                 } else {
                     $access_token = $paraAccess_token;
                 }
@@ -225,7 +226,7 @@ class Call
         */
 
 
-    public function planStatusChange($ecommerceToken, $configObj, $planId)
+    public function planStatusChange($configObj, $planId)
     {
         $payRightAuthToken = $this->payRightAuth($configObj);
         $payRightAuthObj = json_decode($payRightAuthToken);

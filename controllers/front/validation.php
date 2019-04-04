@@ -46,12 +46,13 @@ class PayrightValidationModuleFrontController extends ModuleFrontController
 
          
         $payrightAccessToken = $_REQUEST['payrightauth'];
-        $payrightSugarToken = $_REQUEST['sugarauthtoken'];
+
         $clientId = $_REQUEST['clientid'];
 
 
 
         $PayRightApiCall = new Payright\api\Call();
+        $transactionData = array();
         $transactionData['transactionRef'] = $cart->id."_".$clientId.rand();
         $transactionData['clientId'] = $clientId;
 
