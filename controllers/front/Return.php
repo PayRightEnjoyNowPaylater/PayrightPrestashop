@@ -122,11 +122,7 @@ class PayrightReturnModuleFrontController extends ModuleFrontController
             $this->checkoutErrorRedirect($error);
         } else {
             $customer = new Customer($this->context->cart->id_customer);
-            Tools::redirect('index.php?controller=order-confirmation&
-                id_cart='.$this->context->cart->id.'&
-                id_module='.$this->module->id.'&
-                id_order='.$this->module->currentOrder.'&
-                key='.$customer->secure_key);
+            Tools::redirect('index.php?controller=order-confirmation&id_cart='.$this->context->cart->id.'&id_module='.$this->module->id.'&id_order='.$this->module->currentOrder.'&key='.$customer->secure_key);
         }
 
         $this->setTemplate("module:payright/views/templates/front/payment_return.tpl");
