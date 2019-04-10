@@ -22,7 +22,10 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 *}
+{block name=head}
+   <link href="/modules/payright/views/css/sample.css" rel="stylesheet" type="text/css"/>
 
+{/block}
 <span>
 	<p>
 {if $payright_instalment_breakdown != 0}
@@ -36,17 +39,18 @@
 
 <!-- overiding prestashop default css -->
 <style type="text/css">
-	#products .product-description, .featured-products .product-description, .product-accessories .product-description, .product-miniature .product-description {
-    position: absolute;
-    z-index: 1;
-    background: #fff;
-    width: 257px;
-    bottom: 0;
+/*#products .product-description, .featured-products .product-description, .product-accessories .product-description, .product-miniature .product-description {
+ 
     height: auto;
+}
+#products .highlighted-informations, .featured-products .highlighted-informations, .product-accessories .highlighted-informations, .product-miniature .highlighted-informations {
+    
+    height: 6.125rem;
+   
 }
 
 .payright-logo
 {
 	height:20px;
-}
+}*/
 </style>
