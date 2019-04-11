@@ -38,6 +38,11 @@ img.payRightimg{
 
 }
 
+
+#payment-logo{
+
+  max-height: 100px;
+}
 body,
 button,
 input,
@@ -664,7 +669,7 @@ text-decoration-line: underline;
 
 .payright-logo
 {
-  height:20px;
+  height:30px;
 }
 
 

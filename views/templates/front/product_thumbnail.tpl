@@ -30,7 +30,7 @@
 	<p>
 {if $payright_instalment_breakdown != 0}
 <small>or {$payright_instalment_breakdown['noofrepayments']|escape:'htmlall':'UTF-8'} {$payright_instalment_breakdown['repaymentfrequency']|escape:'htmlall':'UTF-8'} Instalments of ${$payright_instalment_breakdown['LoanAmountPerPayment']|escape:'htmlall':'UTF-8'}</small>
-<img class="payright-logo" src="{$payright_base_url|escape:'htmlall':'UTF-8'}modules/payright/views/img/payrightlogo.png">
+<img class="payright-logo" src="{$payright_base_url|escape:'htmlall':'UTF-8'}modules/payright/views/img/payrightlogo_rgb.png">
 
 
 {/if}
@@ -45,12 +45,13 @@
 }
 #products .highlighted-informations, .featured-products .highlighted-informations, .product-accessories .highlighted-informations, .product-miniature .highlighted-informations {
     
-    height: 6.125rem;
+    height: 7.125rem;
    
 }
 
 .payright-logo
 {
-	height:20px;
+	height:30px;
+	
 }*/
 </style>
