@@ -356,6 +356,9 @@ color: #ffffff;
 	.imgPayRight img {
 		width: 60%;
 	}
+	.payRightimg {
+     width: 60%; 
+}
 	.payRight_blueStrip2 img {
 		width: 80%;
 	}
