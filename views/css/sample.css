@@ -39,10 +39,7 @@ img.payRightimg{
 }
 
 
-#payment-logo{
 
-  max-height: 100px;
-}
 body,
 button,
 input,
@@ -663,7 +660,7 @@ text-decoration-line: underline;
 }
 #products .highlighted-informations, .featured-products .highlighted-informations, .product-accessories .highlighted-informations, .product-miniature .highlighted-informations {
     
-    height: 6.125rem;
+    height: 7.125rem;
    
 }
 
