@@ -8,7 +8,7 @@
  */
 
 require_once(_PS_MODULE_DIR_ . 'payright/classes/PayrightCapture.php');
-require_once(_PS_MODULE_DIR_.'payright/PayrightSDK/api/call.php');
+require_once(_PS_MODULE_DIR_.'payright/PayrightSDK/api/Call.php');
 require_once(_PS_MODULE_DIR_.'payright/PayrightSDK/api/Response.php');
 require_once(_PS_MODULE_DIR_.'payright/PayrightSDK/api/PayRightConfig.php');
 
