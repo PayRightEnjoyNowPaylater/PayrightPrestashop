@@ -12,7 +12,7 @@ require_once(_PS_MODULE_DIR_.'payright/PayrightSDK/api/call.php');
 require_once(_PS_MODULE_DIR_.'payright/PayrightSDK/api/Response.php');
 require_once(_PS_MODULE_DIR_.'payright/PayrightSDK/api/PayRightConfig.php');
 
-use Payright\api\Call;
+//use Payright\api\Call;
 use Payright\api\Response;
 use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 use Payright\api\PayRightConfig;
