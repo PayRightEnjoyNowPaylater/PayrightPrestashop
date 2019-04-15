@@ -318,7 +318,6 @@ class Call
     public function setPayrightConfigObj($payrightConfigObj)
     {
         $this->payrightConfigObj = $payrightConfigObj;
-
         return $this;
     }
 
