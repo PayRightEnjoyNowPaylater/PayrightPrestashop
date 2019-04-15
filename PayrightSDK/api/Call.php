@@ -47,7 +47,7 @@ class Call
 
         try {
             $responseAuth =  $this->execute($configObj->getAuthUrl(), $AuthFields, false, null);
-        
+           
             ## now set this object
             $this->setPayrightAuthObj($responseAuth);
             return $responseAuth;
@@ -64,8 +64,7 @@ class Call
         'merchantpassword' => $configobj->getMerchantpassword()
         );
 
-
-            
+       
         try {
             $response =  json_decode(
                 $this->execute(
@@ -83,6 +82,7 @@ class Call
             $returnArray['rates'] = $response->data->rates;
             $returnArray['conf'] = $response->data->conf;
             $returnArray['establishment_fee'] = $response->data->establishment_fee;
+            $returnArray['client_id'] = $configobj->getClientID();
             $this->setSessionValues($response, $cookieObj);
             return $returnArray;
         } catch (Exception $e) {
@@ -97,17 +97,29 @@ class Call
         $transactionDataArray['platform_type'] = 'prestashop';
         $transactionDataArray['transactionTotal'] = number_format((float)$orderTotal, 2, '.', '');
         $transactionDataArray['merchantreference'] = $transActionData['transactionRef'];
+
+        if (!isset($_REQUEST['sugarauthtoken'])) {
+            $sugarAuthToken = $transActionData['sugarAuthToken'];
+        } else {
+            $sugarAuthToken = $_REQUEST['sugarauthtoken'];
+        }
+
+        if (!isset($_REQUEST['configtoken'])) {
+            $configToken = $transActionData['configToken'];
+        } else {
+            $configToken = $_REQUEST['configtoken'];
+        }
  
         $paramsPayright = array(
-        'Token' => $_REQUEST['sugarauthtoken'],
-        'ConfigToken' =>   $_REQUEST['configtoken'],
+        'Token' => $sugarAuthToken,
+        'ConfigToken' =>   $configToken,
         'transactiondata' => json_encode($transactionDataArray),
         'totalAmount' => number_format((float)$orderTotal, 2, '.', ''),
         'merchantReference' => $transActionData['transactionRef'],
         'clientId' => $transActionData['clientId']
         );
 
-   
+      
         try {
             $response =  $this->execute(
                 'https://betaonlineapi.payright.com.au/api/v1/intialiseTransaction',
@@ -318,6 +330,7 @@ class Call
     public function setPayrightConfigObj($payrightConfigObj)
     {
         $this->payrightConfigObj = $payrightConfigObj;
+
         return $this;
     }
 
