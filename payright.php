@@ -485,7 +485,7 @@ class Payright extends PaymentModule
 
             $cart = $this->context->cart;
 
-            $allowPlan = $this->getCurrentInstalmentsDisplay($cart->getOrderTotal());
+            //$allowPlan = $this->getCurrentInstalmentsDisplay($cart->getOrderTotal());
 
             $PayRightApiCall = new Payright\api\Call();
 
@@ -512,7 +512,7 @@ class Payright extends PaymentModule
             $moduleShow = false;
         }
 
-        if ($moduleShow == true && $allowPlan != 0) {
+        if ($moduleShow == true) {
             return  $this->context->smarty->fetch("module:payright/views/templates/hook/cart_payright.tpl");
         }
     }
