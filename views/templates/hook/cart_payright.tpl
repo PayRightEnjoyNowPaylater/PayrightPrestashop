@@ -1,7 +1,7 @@
 
 <div id="grid">
 
-<div id="btn2"><a href="https://www.payright.com.au/"><img src="http://betacustomerportal.payright.com.au/img/Payright_LOGO_RGB.png"/>Buy Now Pay Later</a></div>
+<div id="btn2"><a href="{$redirectUrl}"><img src="http://betacustomerportal.payright.com.au/img/Payright_LOGO_RGB.png"/>Buy Now Pay Later</a></div>
 <!-- <div id="btn2"><a href="https://www.payright.com.au/"><img src="http://betacustomerportal.payright.com.au/img/Payright_LOGO_RGB.png"/>Interest Free Payments</a></div> -->
 
 </div>

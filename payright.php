@@ -125,11 +125,6 @@ class Payright extends PaymentModule
 
     public function getExternalPaymentOption()
     {
-       
-
-   
-     
-
         $ConfigValues = $this->getConfigFormValues();
         $PayRightConfig = new Payright\api\PayRightConfig($ConfigValues, null);
       
@@ -479,7 +474,47 @@ class Payright extends PaymentModule
 
     public function hookDisplayShoppingCartFooter($params)
     {
-    return  $this->context->smarty->fetch("module:payright/views/templates/hook/cart_payright.tpl");
+        $getSessionValue = $this->getSessionValue();
+
+        if (isset($this->context->cookie->access_token)) {
+            $sugarAuthToken= $getSessionValue['auth']->{'auth-token'};
+            $configToken = $getSessionValue['configToken'];
+            $payrightAccessToken = $this->context->cookie->access_token;
+   
+            $clientId = $getSessionValue['client_id'];
+
+            $cart = $this->context->cart;
+
+            $allowPlan = $this->getCurrentInstalmentsDisplay($cart->getOrderTotal());
+
+            $PayRightApiCall = new Payright\api\Call();
+
+
+            $transactionData = array();
+            $transactionData['transactionRef'] = $cart->id."_".$clientId.rand();
+            $transactionData['clientId'] = $clientId;
+            $transactionData['sugarAuthToken'] = $sugarAuthToken;
+            $transactionData['configToken'] = $configToken;
+
+            $intializeTransaction = $PayRightApiCall->intializeTransaction(
+            $cart->getOrderTotal(),
+            $payrightAccessToken,
+            $transactionData
+        );
+            $intializeTransactionData = json_decode($intializeTransaction);
+
+            $ecommToken = $intializeTransactionData->ecommToken;
+
+            $moduleShow = true;
+        
+            $this->context->smarty->assign('redirectUrl', 'https://betadocsonlineapi.payright.com.au/loan/new/'.$ecommToken);
+        } else {
+            $moduleShow = false;
+        }
+
+        if ($moduleShow == true && $allowPlan != 0) {
+            return  $this->context->smarty->fetch("module:payright/views/templates/hook/cart_payright.tpl");
+        }
     }
 
 
@@ -553,8 +588,6 @@ class Payright extends PaymentModule
 
     public function getCurrentInstalmentsDisplay($productTotal)
     {
-        
-
         $rateCard = $this->context->cookie->PayrightRates;
         $rateUnserialized = unserialize($rateCard);
         if (!empty($rateUnserialized)) {
@@ -580,15 +613,17 @@ class Payright extends PaymentModule
      
         $payRightAuth =  $PayRightApiCall->payRightAuth($PayRightConfig);
 
-        
-
         $payRightAuthObj = json_decode($payRightAuth);
+
+        $this->context->cookie->access_token = $payRightAuthObj->access_token;
+
         if (isset($payRightAuthObj->access_token)) {
-            $PayRightApiCall->payRightConfigurationTokenMethod(
+            $configVal = $PayRightApiCall->payRightConfigurationTokenMethod(
                 $this->context->cookie,
                 $PayRightConfig,
                 $payRightAuthObj->access_token
             );
+            return $configVal;
         }
     }
 }
