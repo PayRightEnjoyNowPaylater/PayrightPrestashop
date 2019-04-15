@@ -8,7 +8,7 @@
  */
 
 require_once(_PS_MODULE_DIR_.'payright/PayrightSDK/api/PayRightConfig.php');
-require_once(_PS_MODULE_DIR_.'payright/PayrightSDK/api/call.php');
+require_once(_PS_MODULE_DIR_.'payright/PayrightSDK/api/Call.php');
 require_once(_PS_MODULE_DIR_.'payright/PayrightSDK/api/Calculations.php');
 
 
@@ -59,10 +59,12 @@ class Payright extends PaymentModule
     {
         $this->registerHook('backOfficeHeader');
         $this->registerHook('header');
+        $this->registerHook('displayShoppingCartFooter');
 
         if (!parent::install() || !$this->registerHook('paymentOptions') || !$this->registerHook('paymentReturn')
             || !$this->registerHook('displayProductPriceBlock')
             || !$this->registerHook('displayHeader')
+            || !$this->registerHook('displayShoppingCartFooter')
             || !Configuration::updateValue('PAYRIGHT_LIVE_MODE', '')
             || !Configuration::updateValue('PAYRIGHT_ACCOUNT_EMAIL', '')
             || !Configuration::updateValue('PAYRIGHT_ACCOUNT_PASSWORD', '')
@@ -199,7 +201,7 @@ class Payright extends PaymentModule
                        ->setAdditionalInformation(
                            $this->context->smarty->fetch('module:payright/views/templates/front/payment_infos.tpl')
                        )
-                       ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/views/img/PayRight_FC_Logo.png'));
+                       ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/views/img/payrightpayment.png'));
 
         return $externalOption;
     }
@@ -475,6 +477,11 @@ class Payright extends PaymentModule
         $this->context->smarty->assign("payright_base_url", Context::getContext()->shop->getBaseURL(true));
     }
 
+    public function hookDisplayShoppingCartFooter($params)
+    {
+    return  $this->context->smarty->fetch("module:payright/views/templates/hook/cart_payright.tpl");
+    }
+
 
     /**
      * Save form data.
@@ -541,6 +548,8 @@ class Payright extends PaymentModule
             return $this->context->smarty->fetch("module:payright/views/templates/front/product_page.tpl");
         }
     }
+
+    
 
     public function getCurrentInstalmentsDisplay($productTotal)
     {

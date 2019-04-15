@@ -25,7 +25,7 @@
 
 <div class="panel">
 	<div class="row payright-header">
-		<div class="col-md-4"><img src="/modules/payright/views/img/payrightlogo_admin.png" class="text-center" id="payment-logo"></div>
+		<div class="col-md-4"><img src="/modules/payright/views/img/payrightlogo_rgb.png" class="text-center" id="payment-logo"></div>
 		<div class="col-xs-6 col-md-4 text-center">
 			<h4>{l s='Online payment processing' mod='payright'}</h4>
 			<h4>{l s='Enjoy Now.Pay Later' mod='payright'}</h4>
@@ -92,3 +92,11 @@
 		</div>
 	</div>
 </div>
+
+<style type="text/css">
+	#payment-logo{
+
+  max-height: 100px;
+}
+	
+</style>

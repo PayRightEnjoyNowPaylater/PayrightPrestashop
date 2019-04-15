@@ -22,12 +22,15 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 *}
+{block name=head}
+   <link href="/modules/payright/views/css/sample.css" rel="stylesheet" type="text/css"/>
 
+{/block}
 <span>
 	<p>
 {if $payright_instalment_breakdown != 0}
-<small>or {$payright_instalment_breakdown['noofrepayments']|escape:'htmlall':'UTF-8'} {$payright_instalment_breakdown['repaymentfrequency']|escape:'htmlall':'UTF-8'} Installments of ${$payright_instalment_breakdown['LoanAmountPerPayment']|escape:'htmlall':'UTF-8'}</small>
-<img class="payright-logo" src="{$payright_base_url|escape:'htmlall':'UTF-8'}modules/payright/views/img/payrightlogo.png">
+<small>or {$payright_instalment_breakdown['noofrepayments']|escape:'htmlall':'UTF-8'} {$payright_instalment_breakdown['repaymentfrequency']|escape:'htmlall':'UTF-8'} Instalments of ${$payright_instalment_breakdown['LoanAmountPerPayment']|escape:'htmlall':'UTF-8'}</small>
+<img class="payright-logo" src="{$payright_base_url|escape:'htmlall':'UTF-8'}modules/payright/views/img/payrightlogo_rgb.png">
 
 
 {/if}
@@ -36,17 +39,19 @@
 
 <!-- overiding prestashop default css -->
 <style type="text/css">
-	#products .product-description, .featured-products .product-description, .product-accessories .product-description, .product-miniature .product-description {
-    position: absolute;
-    z-index: 1;
-    background: #fff;
-    width: 257px;
-    bottom: 0;
+/*#products .product-description, .featured-products .product-description, .product-accessories .product-description, .product-miniature .product-description {
+ 
     height: auto;
+}
+#products .highlighted-informations, .featured-products .highlighted-informations, .product-accessories .highlighted-informations, .product-miniature .highlighted-informations {
+    
+    height: 7.125rem;
+   
 }
 
 .payright-logo
 {
-	height:20px;
-}
+	height:30px;
+	
+}*/
 </style>

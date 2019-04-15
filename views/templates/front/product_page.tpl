@@ -32,10 +32,10 @@ htn{*
 {/block}
 
 <p>
-<small>or {$payright_instalment_breakdown['noofrepayments']|escape:'htmlall':'UTF-8'} {$payright_instalment_breakdown['repaymentfrequency']|escape:'htmlall':'UTF-8'} Installments of ${$payright_instalment_breakdown['LoanAmountPerPayment']|escape:'htmlall':'UTF-8'} </small>
+<small>or {$payright_instalment_breakdown['noofrepayments']|escape:'htmlall':'UTF-8'} {$payright_instalment_breakdown['repaymentfrequency']|escape:'htmlall':'UTF-8'} Instalments of ${$payright_instalment_breakdown['LoanAmountPerPayment']|escape:'htmlall':'UTF-8'} </small>
 
 
-<img class="payright-logo2" id=prlogo2 src="{$payright_base_url|escape:'htmlall':'UTF-8'}modules/payright/views/img/payrightlogo.png" />
+<img class="payright-logo2" id=prlogo2 src="{$payright_base_url|escape:'htmlall':'UTF-8'}modules/payright/views/img/payrightlogo_rgb.png" />
 {if $templateValue == '1'}
 <a style='color:#275f95' id="opener"  class="payright-modal-popup-trigger" > Info</a> </p>
 {else}

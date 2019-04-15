@@ -34,3 +34,10 @@
   	See PayRight terms & conditions for further information.
   </p>
 </section>
+
+<style type="text/css">
+label{
+text-align: left;
+
+}
+</style>
