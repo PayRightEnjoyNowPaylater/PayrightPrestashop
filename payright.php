@@ -485,7 +485,7 @@ class Payright extends PaymentModule
 
             $cart = $this->context->cart;
 
-            $allowPlan = $this->getCurrentInstalmentsDisplay($params["product"]["price_amount"]);
+            $allowPlan = $this->getCurrentInstalmentsDisplay($cart->getOrderTotal());
 
             $PayRightApiCall = new Payright\api\Call();
 
