@@ -49,6 +49,9 @@ class PayrightValidationModuleFrontController extends ModuleFrontController
 
         $clientId = $_REQUEST['clientid'];
 
+        $ConfigValues = $this->getConfigFormValues();
+        $PayRightConfig = new Payright\api\PayRightConfig($ConfigValues, null);
+
 
 
         $PayRightApiCall = new Payright\api\Call();
@@ -59,10 +62,32 @@ class PayrightValidationModuleFrontController extends ModuleFrontController
         $intializeTransaction = $PayRightApiCall->intializeTransaction(
             $cart->getOrderTotal(),
             $payrightAccessToken,
-            $transactionData
+            $transactionData,
+            $PayRightConfig
         );
         $intializeTransactionData = json_decode($intializeTransaction);
         $ecommToken = $intializeTransactionData->ecommToken;
-        Tools::redirect('https://betadocsonlineapi.payright.com.au/loan/new/'.$ecommToken);
+        Tools::redirect($PayRightConfig->ecomUrl.$ecommToken);
+    }
+
+      /**
+     * Set values for the inputs.
+     */
+    protected function getConfigFormValues()
+    {
+        return array(
+            'PAYRIGHT_LIVE_MODE' => Configuration::get('PAYRIGHT_LIVE_MODE', true),
+            'PAYRIGHT_ACCOUNT_EMAIL' => Configuration::get('PAYRIGHT_ACCOUNT_EMAIL', 'contact@prestashop.com'),
+            'PAYRIGHT_ACCOUNT_PASSWORD' => Configuration::get('PAYRIGHT_ACCOUNT_PASSWORD', null),
+            'PS_PAYRIGHT_APIKEY' => Configuration::get('PS_PAYRIGHT_APIKEY', null),
+            'PS_PAYRIGHT_USERNAME'=> Configuration::get('PS_PAYRIGHT_USERNAME', null),
+            'PS_PAYRIGHT_CLIENTID'=> Configuration::get('PS_PAYRIGHT_CLIENTID', null),
+            'PRODUCTPAGE_PAYRIGHTINSTALLMENTS' => Configuration::get('PS_PAYRIGHT_CLIENTID', null),
+            'CATEGORYPAGE_PAYRIGHTINSTALLMENTS' => Configuration::get('CATEGORYPAGE_PAYRIGHTINSTALLMENTS', null),
+            'INFOMODAL_TEMPLATE' => Configuration::get('INFOMODAL_TEMPLATE', null) ,
+            'PAYRIGHT_MERCHANTUSERNAME' => Configuration::get('PAYRIGHT_MERCHANTUSERNAME', null),
+            'PAYRIGHT_MERCHANTPASSWORD' => Configuration::get('PAYRIGHT_MERCHANTPASSWORD', null)
+
+        );
     }
 }

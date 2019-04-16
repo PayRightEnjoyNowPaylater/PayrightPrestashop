@@ -50,10 +50,6 @@ class Calculations
 
             $resEstablishmentFees = $this->getEstablishmentFees($LoanTerm, $cookieObj->establishmentFeeArray);
 
-
-       
-
-
             $CalculateRepayments  = $this->calculateRepayment(
                 $calculatedNoofRepayments,
                 $calculatedAccountKeepingFees,
@@ -84,7 +80,7 @@ class Calculations
         //     return "exceed_amount";
         // }
         } else {
-            throw new Exception("Payright exception");
+            return "exceed_amount";
         }
     }
 

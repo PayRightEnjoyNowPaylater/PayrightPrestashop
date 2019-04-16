@@ -164,18 +164,27 @@ class PayRightConfig
     protected function setEnvironment($mode)
     {
         //Set Merchant Id, Secret Key and Callback Url
+        //
         if ($mode == 'dev') {
-            $this->setAuthUrl('https://betaonlineapi.payright.com.au/oauth/token');
-            $this->setConfigUrl('https://betaonlineapi.payright.com.au/api/v1/configuration');
-            $this->setIntialiseTransactionUrl('https://betaonlineapi.payright.com.au/api/v1/intialiseTransaction');
+            $this->setAuthUrl('http://ecommerceapi.payright.local/oauth/token');
+            $this->setConfigUrl('http://ecommerceapi.payright.local/api/v1/configuration');
+            $this->setIntialiseTransactionUrl('http://ecommerceapi.payright.local/api/v1/intialiseTransaction');
+            $this->setEcomTokenDataUrl('http://ecommerceapi.payright.local/api/v1/getEcomTokenData');
+            $this->setEcomUrl('http://customerpayrightportal.local/loan/new/');
         } elseif ($mode == 'sandbox') {
             $this->setAuthUrl('https://betaonlineapi.payright.com.au/oauth/token');
             $this->setConfigUrl('https://betaonlineapi.payright.com.au/api/v1/configuration');
+            $this->setIntialiseTransactionUrl('https://betaonlineapi.payright.com.au/api/v1/intialiseTransaction');
+            $this->setEcomTokenDataUrl('https://betaonlineapi.payright.com.au/api/v1/getEcomTokenData');
+            $this->setEcomUrl('https://betadocsonlineapi.payright.com.au/loan/new/');
         } elseif ($mode == 'beta') {
             $this->setAuthUrl('https://betaonlineapi.payright.com.au/oauth/token');
             $this->setConfigUrl('https://betaonlineapi.payright.com.au/api/v1/configuration');
             $this->setIntialiseTransactionUrl('https://betaonlineapi.payright.com.au/api/v1/intialiseTransaction');
+            $this->setEcomTokenDataUrl('https://betaonlineapi.payright.com.au/api/v1/getEcomTokenData');
+            $this->setEcomUrl('https://betadocsonlineapi.payright.com.au/loan/new/');
         }
+
         return $this;
     }
 
@@ -403,6 +412,47 @@ class PayRightConfig
     public function setIntialiseTransactionUrl($intialiseTransactionUrl)
     {
         $this->intialiseTransactionUrl = $intialiseTransactionUrl;
+
+        return $this;
+    }
+
+
+     /**
+     * @return mixed
+     */
+    public function getEcomTokenDataUrl()
+    {
+        return $this->ecomTokenDataUrl;
+    }
+
+    /**
+     * @param mixed $intialiseTransactionUrl
+     *
+     * @return self
+     */
+    public function setEcomTokenDataUrl($ecomTokenDataUrl)
+    {
+        $this->ecomTokenDataUrl = $ecomTokenDataUrl;
+
+        return $this;
+    }
+
+     /**
+     * @return mixed
+     */
+    public function getEcomUrl()
+    {
+        return $this->ecomUrl;
+    }
+
+    /**
+     * @param mixed $intialiseTransactionUrl
+     *
+     * @return self
+     */
+    public function setEcomUrl($ecomUrl)
+    {
+        $this->ecomUrl = $ecomUrl;
 
         return $this;
     }

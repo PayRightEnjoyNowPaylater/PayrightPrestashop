@@ -51,8 +51,8 @@ class Call
             ## now set this object
             $this->setPayrightAuthObj($responseAuth);
             return $responseAuth;
-        } catch (Exception $e) {
-            throw new Exception("Invalid Response from Payright API");
+        } catch (PrestaShopDatabaseException $e) {
+            throw new PrestaShopDatabaseException("Invalid Response from Payright API");
         }
     }
 
@@ -85,13 +85,13 @@ class Call
             $returnArray['client_id'] = $configobj->getClientID();
             $this->setSessionValues($response, $cookieObj);
             return $returnArray;
-        } catch (Exception $e) {
-            throw new Exception("Invalid Response from Payright API");
+        } catch (PrestaShopDatabaseException $e) {
+            throw new PrestaShopDatabaseException("Invalid Response from Payright API");
         }
     }
 
 
-    public function intializeTransaction($orderTotal, $accessToken, $transActionData)
+    public function intializeTransaction($orderTotal, $accessToken, $transActionData, $configobj)
     {
         $transactionDataArray = array();
         $transactionDataArray['platform_type'] = 'prestashop';
@@ -122,14 +122,14 @@ class Call
       
         try {
             $response =  $this->execute(
-                'https://betaonlineapi.payright.com.au/api/v1/intialiseTransaction',
+                $configobj->getIntialiseTransactionUrl(),
                 $paramsPayright,
                 "Bearer",
                 $accessToken
             );
             return $response;
-        } catch (Exception $e) {
-            throw new Exception("Invalid Response from Payright API");
+        } catch (PrestaShopDatabaseException $e) {
+            throw new PrestaShopDatabaseException("Invalid Response from Payright API");
         }
     }
 
@@ -148,7 +148,7 @@ class Call
     {
         //Check if CURL module exists.
         if (!function_exists("curl_init")) {
-            throw new Exception("Curl module is not available on this system");
+            throw new PrestaShopDatabaseException("Curl module is not available on this system");
         }
 
         //url-ify the data for the POST
@@ -199,12 +199,12 @@ class Call
             curl_close($ch);
 
             if ($err) {
-                throw new Exception("Invalid Response from Payright API".$err);
+                throw new PrestaShopDatabaseException("Invalid Response from Payright API".$err);
             } else {
                 return $response;
             }
-        } catch (Exception $e) {
-            throw new Exception("Something went wrong in Payright API Connection");
+        } catch (PrestaShopDatabaseException $e) {
+            throw new PrestaShopDatabaseException("Something went wrong in Payright API Connection");
         }
     }
 
@@ -220,14 +220,14 @@ class Call
 
         try {
             $response =  $this->execute(
-                'https://betaonlineapi.payright.com.au/api/v1/getEcomTokenData',
+                $configObj->getEcomTokenDataUrl(),
                 $paramsPayright,
                 "Bearer",
                 $payRightAuthObj->access_token
             );
             return $response;
-        } catch (Exception $e) {
-            throw new Exception("Invalid Response from Payright API");
+        } catch (PrestaShopDatabaseException $e) {
+            throw new PrestaShopDatabaseException("Invalid Response from Payright API");
         }
     }
 
@@ -262,14 +262,14 @@ class Call
        
         try {
             $updatePlanStatus =  $this->execute(
-                'https://betaonlineapi.payright.com.au/api/v1/changePlanStatus',
+                'http://ecommerceapi.payright.local/api/v1/changePlanStatus',
                 $paramsPayright,
                 "Bearer",
                 $payRightAuthObj->access_token
             );
             return $updatePlanStatus;
-        } catch (Exception $e) {
-            throw new Exception("Invalid Response from Payright API");
+        } catch (PrestaShopDatabaseException $e) {
+            throw new PrestaShopDatabaseException("Invalid Response from Payright API");
         }
     }
 

@@ -485,10 +485,15 @@ class Payright extends PaymentModule
 
             $cart = $this->context->cart;
 
-            //$allowPlan = $this->getCurrentInstalmentsDisplay($cart->getOrderTotal());
+            $allowPlan = $this->getCurrentInstalmentsDisplay($cart->getOrderTotal());
+
+
 
             $PayRightApiCall = new Payright\api\Call();
 
+
+            $ConfigValues = $this->getConfigFormValues();
+            $PayRightConfig = new Payright\api\PayRightConfig($ConfigValues, null);
 
             $transactionData = array();
             $transactionData['transactionRef'] = $cart->id."_".$clientId.rand();
@@ -497,22 +502,24 @@ class Payright extends PaymentModule
             $transactionData['configToken'] = $configToken;
 
             $intializeTransaction = $PayRightApiCall->intializeTransaction(
-            $cart->getOrderTotal(),
-            $payrightAccessToken,
-            $transactionData
-        );
+                $cart->getOrderTotal(),
+                $payrightAccessToken,
+                $transactionData,
+                $PayRightConfig
+            );
             $intializeTransactionData = json_decode($intializeTransaction);
 
             $ecommToken = $intializeTransactionData->ecommToken;
 
             $moduleShow = true;
         
-            $this->context->smarty->assign('redirectUrl', 'https://betadocsonlineapi.payright.com.au/loan/new/'.$ecommToken);
+            $this->context->smarty->assign('redirectUrl', $PayRightConfig->ecomUrl.$ecommToken);
         } else {
             $moduleShow = false;
         }
 
-        if ($moduleShow == true) {
+ 
+        if ($moduleShow == 1 && $allowPlan != 'exceed_amount') {
             return  $this->context->smarty->fetch("module:payright/views/templates/hook/cart_payright.tpl");
         }
     }
@@ -573,12 +580,16 @@ class Payright extends PaymentModule
 
         if ($current_controller == 'category'  && $params["type"] == 'unit_price') {
             $payRightInstallmentBreakDown =  $this->getCurrentInstalmentsDisplay($params["product"]["price_amount"]);
-            $this->context->smarty->assign("payright_instalment_breakdown", $payRightInstallmentBreakDown);
+            if ($payRightInstallmentBreakDown != 'exceed_amount') {
+                $this->context->smarty->assign("payright_instalment_breakdown", $payRightInstallmentBreakDown);
+            }
             return $this->context->smarty->fetch("module:payright/views/templates/front/product_thumbnail.tpl");
         }
         if ($current_controller == "product" && $params["type"] == "after_price") {
             $payRightInstallmentBreakDown =  $this->getCurrentInstalmentsDisplay($params["product"]["price_amount"]);
-            $this->context->smarty->assign("payright_instalment_breakdown", $payRightInstallmentBreakDown);
+            if ($payRightInstallmentBreakDown != 'exceed_amount') {
+                $this->context->smarty->assign("payright_instalment_breakdown", $payRightInstallmentBreakDown);
+            }
             $this->context->smarty->assign("templateValue", $templateValue);
             return $this->context->smarty->fetch("module:payright/views/templates/front/product_page.tpl");
         }

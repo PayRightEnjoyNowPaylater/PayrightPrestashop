@@ -1,4 +1,4 @@
-htn{*
+{*
 * 2007-2019 PrestaShop
 *
 * NOTICE OF LICENSE
@@ -28,6 +28,7 @@ htn{*
    <link href="/modules/payright/views/css/sample.css" rel="stylesheet" type="text/css"/>
    <link href="/modules/payright/views/css/main1.css" rel="stylesheet" type="text/css"/>
    <link href="/modules/payright/views/css/main2.css" rel="stylesheet" type="text/css"/>
+   <link href="/modules/payright/views/css/payright-modal.css" rel="stylesheet" type="text/css"/>
 
 {/block}
 
@@ -37,9 +38,9 @@ htn{*
 
 <img class="payright-logo2" id=prlogo2 src="{$payright_base_url|escape:'htmlall':'UTF-8'}modules/payright/views/img/payrightlogo_rgb.png" />
 {if $templateValue == '1'}
-<a style='color:#275f95' id="opener"  class="payright-modal-popup-trigger" > Info</a> </p>
-{else}
 <a style='color:#275f95' id="opener"  class="payright-modal-popup-trigger2" > Info</a> </p>
+{else}
+<a style='color:#275f95' id="opener"  class="payright-modal-popup-trigger" > Info</a> </p>
 {/if}
 <!-- The Modal -->
 <div id='myModal' class='payrightmodal'>
@@ -48,148 +49,65 @@ htn{*
   <div class='modal-content'>
     <div class='modal-body'>
     <div id='close'>X</div>
-     <div class="payRight_container" id="PayrightHowitWorksmodalPopup2">
-    <header>
-        <div class="payRight_columns">
-            <div class="insideColumns">
-            </div>
-            <div class="insideColumns payright_is-3 imgPayRight">
-                <img class="payRightimg" src="https://betaonlineapi.payright.com.au/images/PayRight_FC_Logo.png" alt="PayRight logo" />
-            </div>
-            <div class="insideColumns payRight_headerLast">
-            </div>
-        </div>
-        <div class="payRight_columns">
-            <div class="insideColumns">
-                    <h4 class="payRightH4 op2">Buy now and pay for your purchase over time with Payright</h4>
-            </div>
-        </div>
-
-
-    </header>
-
-    <article>
-        <div class="payRight_columns payRight_blueStrip2 payRight_blueStripTop2">
-            <div class="insideColumns payRight_topleft2">
-                <img src="https://betaonlineapi.payright.com.au/images/icon-payright-tick.png" alt="" />
-                <p class="payRightp">Select PayRight as your<br/>preferred payment option</p>
-            </div>
-            <div class="insideColumns">
-                <img src="https://betaonlineapi.payright.com.au/images/icon-computer.png" alt="" />
-                <p class="payRightp">Enter your contact details to sign up<br/>or sign in to your Payright account</p>
-            </div>
-        </div>
-        <div class="payRight_columns payRight_blueStrip2 payRight_blueStripBottom2">
-        
-            <div class="insideColumns">
-                <img src="https://betaonlineapi.payright.com.au/images/icon-delivery.png" alt="PayRight logo"  alt="test" }"/>
-                <p class="payRightp">Once approved, your purchase<br/>will be scheduled for dispatch</p>
-            </div>
-            <div class="insideColumns payRight_bottomright2">
-                <img src="https://betaonlineapi.payright.com.au/images/icon-calendar.png" alt="" />
-                <p class="payRightp">Pay over time with<br/>Interest Free payments</p>
-            </div>
-        </div>
-    </article>
-
-    <article>
-        <div class="payRight_columns info2">
-            <div class="insideColumns">
-                <h5 class="payRightH5">Important Information:</h5>
-                <p class="payRightp">We want to ensure you have a positive payment experience and have made the checkout process simple. We take responsible lending seriously so credit is only extended to approved customers. Please ensure you read the terms and conditions for further information and note that Payright is not available on all purchases.</p>
-            </div>
-        </div>
-    </article>
-
-</div>
-<!--begining of modal-->
-<div id="PayrightHowitWorksmodalPopup" class="payRight_container">
-    <div class="payRight_container">
-  <header>
-    <div class="payRight_columns">
-      <div class="insideColumns imgPayRight">
-        <img class="payRightimg" src="https://betaonlineapi.payright.com.au/images/PayRight_FC_Logo.png" alt="PayRight logo" />
-      </div>
-      <div class="insideColumns payRight_is-three-quarters">
-        <h1 class="payRightH1" id="merchantname">Merchant<br/>HAS PARTNERED WITH</h1>
-      </div>
-      
-    </div>
-  </header>
-
-  <article>
-    <div class="payRight_columns payRight_blueStrip">
-      <div class="insideColumns">
-        <h2 class="payRightH2works">How PayRight works:</h2>
-
-        <div class="PointsInBlueStrip">
-        
-          <div class="payRight_columns">
-            <div class="insideColumns payRight_is-5 payRight_is-offset-1">
-              <span class="numC">1</span>
-              <p class="payRightp"> Select your<br/>purchase online</p>
-            </div>
-            <div class="insideColumns payRight_is-5">
-              <span class="numC">2</span>
-              <p class="payRightp"> Select PayRight as your<br/>preferred payment option</p>
-            </div>
-          </div>
-      
-          <div class="payRight_columns">
-            <div class="insideColumns payRight_is-5 payRight_is-offset-1">
-              <span class="numC">3</span>
-              <p class="payRightp">Enter your contact details to sign up<br/>or sign in to your PayRight account</p>
-            </div>
-            <div class="insideColumns payRight_is-5">
-              <span class="numC">4</span>
-              <p class="payRightp">Once approved, (insert merchant name)<br/>will dispatch your purchase</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </article>
-
-  <article>
-    <div class="payRight_columns">
-      <div class="insideColumns">
-        <h2 class="payRightH2why">Why PayRight?</h2>
-        <h4 class="payRightH4">Buy now and pay for your purchase over time with PayRight</h4>
-        <div class="payRight_columns payRight_points">
-          <div class="insideColumns">
-            <p class="payRightpwhy">Easy instalments<br/>that are always<br/>interest free</p>
-          </div>
-          <div class="insideColumns pointsCenter">
-            <p class="payRightpwhy" >Get what you<br/>want today and<br/>pay over time</p>
-          </div>
-          <div class="insideColumns">
-            <p class="payRightpwhy" >Quick, Simple &<br/>Secure sign up and<br/>check out process</p>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </article>
-
-  <article>
-    <div class="payRight_columns info">
-      <div class="insideColumns">
-        <h5 class="payRightH5">Important Information:</h5>
-        <p class="payRightpimportant" >We want to ensure you have a positive payment experience and have made the checkout process simple. We take responsible lending seriously so credit is only extended to approved customers. Please ensure you read the terms and conditions for further information and note that PayRight is not available on all purchases.</p>
-      </div>
-    </div>
-  </article>
-
-  <article>
-    <div class="payRight_columns">
-      <div class="insideColumns payRight_is-one-third payRight_is-offset-one-third">
-        <button class="payrightbutton"><a href="https://www.payright.com.au/" id="tellmemore">Tell me more</a></button>
-      </div>
-    </div>
     
-  </article>
-</div>
-</div>
+<!--begining of modal-->
+
+
+                    <!-- ***** START MODAL ***** -->
+                    <div id="PayrightHowitWorksmodalPopup" class="payRight_container">
+                        <header>
+                            <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="280px" height="60px" viewBox="0 0 280 60"><defs><clipPath id="clip-path"><path d="M58.0918,13.71A15.48,15.48,0,0,0,44.3883.6493q-.39-.04-.7855-.06T42.81.57a15.475,15.475,0,0,0-15.46,15.4593v27.73a9.7139,9.7139,0,0,1-2.68,6.7042,9.3623,9.3623,0,0,1-3.2456,2.223c-.0842.0343-.1684.0683-.2536.1-.1715.064-.3452.1219-.52.1756a9.1072,9.1072,0,0,1-1.6075.34q-.4568.0537-.9226.0617c-.0537.0008-.1076.0015-.1612.0015A9.405,9.405,0,0,1,8.6156,44.906q-.0453-.4614-.0454-.9312a9.4029,9.4029,0,0,1,8.4309-9.3412c.1108-.0113.2269-.02.35-.0277l.0154-.0006c.119-.0067.2438-.0118.3775-.0145h.319a2.9378,2.9378,0,0,0,2.9344-2.934v-.203a2.9372,2.9372,0,0,0-2.9338-2.934l-.0442-.0024h0c-.0569-.0036-.1152-.002-.1723,0h0c-.0313.0012-.0624.002-.0939.0024h-.0173l-.0143.0008A15.4752,15.4752,0,0,0,2.5,43.9744v0a15.4809,15.4809,0,0,0,13.8811,15.38q.39.04.7855.06t.7931.02A15.4749,15.4749,0,0,0,33.42,43.9748V16.245A9.7121,9.7121,0,0,1,36.1,9.5408a9.3612,9.3612,0,0,1,3.2456-2.2231c.0842-.0343.1684-.0683.2536-.1.1715-.0641.3452-.122.52-.1756q.2382-.0729.48-.1326c.1867-.0462.3748-.0872.5647-.1216.1863-.0336.3734-.0636.5624-.0858q.4567-.0536.9226-.0615c.0537-.0008.1076-.0016.1612-.0016a9.4119,9.4119,0,0,1,9.208,7.5463,9.4026,9.4026,0,0,1-8.25,11.1849c-.1108.0112-.2269.02-.35.0276l-.0154.0006c-.119.0067-.2438.0118-.3775.0146h-.319a2.9376,2.9376,0,0,0-2.9344,2.934v.203a2.9372,2.9372,0,0,0,2.9338,2.934l.0442.0024h0c.0563.0031.1146.0016.1723,0h0c.0313-.0012.0624-.002.0939-.0024h.0173l.0143-.0008a15.4752,15.4752,0,0,0,15.221-15.4538v0A15.4519,15.4519,0,0,0,58.0918,13.71Z" style="fill:none"/></clipPath><clipPath id="clip-path-2"><rect x="-2.5" y="-4.4307" width="65.7695" height="68.8652" style="fill:none"/></clipPath></defs><path d="M192.8712,10.5382a3.2211,3.2211,0,1,1-3.221-3.2211A3.2211,3.2211,0,0,1,192.8712,10.5382ZM171.63,20.6933a2.9992,2.9992,0,0,0-2.8608-2.5,2.9562,2.9562,0,0,0-3.0178,2.2442,5.7308,5.7308,0,0,0-.1407,1.3433q-.0134,8.6786-.0059,17.3569c0,.8912-.01,1.7825.0034,2.6735a3.5847,3.5847,0,0,0,.5128,2.0432,3.0479,3.0479,0,0,0,3.4131,1.1908,2.7261,2.7261,0,0,0,2.0913-2.2884,5.9141,5.9141,0,0,0,.0742-.9395c.0311-3.8648.0278-7.73.0981-11.5943a9.8906,9.8906,0,0,1,.8915-4.0282,4.4644,4.4644,0,0,1,3.2483-2.6447,7.7872,7.7872,0,0,1,2.86-.0517,3.0067,3.0067,0,0,0,1.625-.0673,2.5641,2.5641,0,0,0,1.6939-2.1933,2.4178,2.4178,0,0,0-1.01-2.295,3.6722,3.6722,0,0,0-1.6541-.6863,7.0675,7.0675,0,0,0-3.3588.3713,8.892,8.892,0,0,0-3.8656,2.4855c-.1462.1551-.2929.31-.4818.5094C171.701,21.255,171.6783,20.9719,171.63,20.6933ZM99.5,31.6524c0,8.0647-5.9423,14.4317-13.6432,14.4317A11.0746,11.0746,0,0,1,77.61,42.567a.66.66,0,0,0-1.1521.4852l0,12.43a3.0323,3.0323,0,0,1-3.0322,3.0323h0a3.0323,3.0323,0,0,1-3.0323-3.0322l.0005-34.5087a2.7827,2.7827,0,0,1,2.782-2.7826h0a2.7825,2.7825,0,0,1,2.7816,2.6918l.0151.4618c.0606.5457.667.6669,1.0914.182a10.752,10.752,0,0,1,8.7922-4.2446C93.5574,17.2818,99.5,23.5879,99.5,31.6524Zm-6.0635,0a8.4894,8.4894,0,1,0-8.4893,8.55A8.4884,8.4884,0,0,0,93.4362,31.6524Zm39.0026-10.6508V42.3678A2.8118,2.8118,0,0,1,129.627,45.18h0a2.8118,2.8118,0,0,1-2.81-2.7184l-.0167-.5006c-.0606-.5456-.667-.6668-1.0308-.1212a10.7523,10.7523,0,0,1-8.7924,4.2447c-7.7007,0-13.6432-6.367-13.6432-14.4317s5.9425-14.3706,13.6432-14.3706a10.5906,10.5906,0,0,1,8.7924,4.2446c.3638.4849.97.3637,1.0308-.182l.0149-.4382a2.8128,2.8128,0,0,1,2.8111-2.7174h0A2.8128,2.8128,0,0,1,132.4388,21.0016Zm-6.0634,10.6508a8.4893,8.4893,0,1,0-8.4891,8.55A8.4882,8.4882,0,0,0,126.3754,31.6524ZM158.4191,18.18h0a2.8021,2.8021,0,0,0-2.5935,1.7411l-6.0122,14.6947a.6316.6316,0,0,1-1.2127,0l-5.8441-14.5126a3.07,3.07,0,0,0-2.8478-1.9232h0a3.07,3.07,0,0,0-2.835,4.2479L145.69,43.1656a1.6961,1.6961,0,0,1,0,1.334l-4.3122,10.0638a2.8268,2.8268,0,0,0,2.6,3.94h0a2.8268,2.8268,0,0,0,2.6085-1.7421l14.42-34.7035A2.8022,2.8022,0,0,0,158.4191,18.18Zm28.1974,3.0417.0022,20.9206a3.0326,3.0326,0,0,0,3.0326,3.0322h0a3.0325,3.0325,0,0,0,3.0325-3.0325V21.2213a3.0325,3.0325,0,0,0-3.0325-3.0325h-.0022A3.0326,3.0326,0,0,0,186.6165,21.2217Zm85.063-3.03a.849.849,0,0,1-.8494-.8488l-.0023-9.4607a3.0314,3.0314,0,0,0-3.0313-3.0307h0a3.0315,3.0315,0,0,0-3.0314,3.0317l.0011,9.46a.7483.7483,0,0,1-.7561.8464h-1.85a2.851,2.851,0,0,0-2.851,2.8522h0a2.8509,2.8509,0,0,0,2.85,2.85l1.8185.0005a.7881.7881,0,0,1,.788.7881l.0012,17.4655a3.03,3.03,0,0,0,3.03,3.03h0a3.03,3.03,0,0,0,3.03-3.03L270.83,24.68a.751.751,0,0,1,.8488-.7884l2.9715-.0006a2.85,2.85,0,0,0,2.85-2.85h0a2.85,2.85,0,0,0-2.8515-2.85Zm-23.7637-.91a9.5115,9.5115,0,0,0-7.0943,3.2138.63.63,0,0,1-1.0916-.4246L239.7333,3.6A3.0334,3.0334,0,0,0,236.7.5659h0a3.0334,3.0334,0,0,0-3.0335,3.0334l.0026,38.5434a3.0321,3.0321,0,0,0,3.0321,3.0318h0a3.032,3.032,0,0,0,3.0321-3.0328L239.73,28.3782a2.4293,2.4293,0,0,1,.4852-1.3946c1.6372-2.4861,3.5775-3.82,5.7-3.82,2.668,0,4.4263,1.516,4.4263,4.9116l-.0009,14.067a3.0322,3.0322,0,0,0,3.0322,3.0324h0a3.0321,3.0321,0,0,0,3.0322-3.0322V26.1347C256.4048,20.4956,253.0093,17.2818,247.9158,17.2818ZM227.1365,45.6593c0,8.4287-6.3063,13.7646-14.4318,13.7646a17.8789,17.8789,0,0,1-2.039-.1154,16.2665,16.2665,0,0,1-3.0295-.6393,14.3622,14.3622,0,0,1-2.68-1.1483,12.5992,12.5992,0,0,1-2.2573-1.5995,11.1305,11.1305,0,0,1-1.7627-1.9929c-.0712,0-.2521-.3684-.2894-.429q-.1537-.25-.2919-.5085a9.599,9.599,0,0,1-.4882-1.0655,3.7374,3.7374,0,0,1-.3125-1.7015,2.4593,2.4593,0,0,1,.3251-.9864,2.7561,2.7561,0,0,1,3.68-1.0318,3.3032,3.3032,0,0,1,1.19,1.2911,10.6261,10.6261,0,0,0,1.196,1.63,7.7528,7.7528,0,0,0,3.8806,2.4448l.0335.0077a12.0538,12.0538,0,0,0,4.18.3591,9.0075,9.0075,0,0,0,1.6784-.3759c3.1612-1.0407,5.3546-3.811,5.3546-7.9031V42.4458a.7.7,0,0,0-1.2128-.4852,10.9373,10.9373,0,0,1-8.1858,3.5171c-7.7007,0-13.643-6.3063-13.643-14.1285a13.7592,13.7592,0,0,1,13.643-14.0674,10.8407,10.8407,0,0,1,8.7922,4.2446c.364.4849.9544.3721,1.0308-.182.0065-.0474.0118-.197.016-.407a2.806,2.806,0,0,1,5.6114.056Zm-6.0639-14.1281a8.4893,8.4893,0,1,0-8.4891,8.55A8.45,8.45,0,0,0,221.0726,31.5312ZM202.6279,49.3519a2.7091,2.7091,0,0,0-.2005-.3356C202.4916,49.1268,202.5593,49.2389,202.6279,49.3519Zm-148.1337.4925L45.018,40.1333a3.007,3.007,0,0,0-2.1346-.9141h-.041a3.0349,3.0349,0,0,0-2.17,5.153l9.4764,9.7116a3.0093,3.0093,0,0,0,1.6907.8767,3.0513,3.0513,0,0,0,2.6016-.824,3.0348,3.0348,0,0,0,.053-4.2921Z" style="fill:#ee2657"/><g style="clip-path:url(#clip-path)"><g style="clip-path:url(#clip-path-2)"><image width="138" height="145" transform="translate(-2.88 -4.8) scale(0.48)" xlink:href="data:image/png;base64,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"/></g></g><path d="M20.0963,15.63,10.6205,5.9186a3.0351,3.0351,0,1,0-4.3453,4.2385l9.4762,9.7116a3.0351,3.0351,0,1,0,4.3449-4.239Z" style="fill:#524fa1"/></svg>
+                        </header>
+
+                        <article>
+                            <h1>Enjoy what you want, right now, with easy, bitesized, installments</h1>
+                            <ul class="icon-container">
+                                <li>
+                                    <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="70px" height="70px" viewBox="0 0 70 70"><path d="M50.9733,19.0117c-1.6664-3.3328-4.8235-5.1682-8.89-5.1682H19.9964a11.97,11.97,0,0,0-4.9446,1.223c-3.3328,1.6663-5.1682,4.8234-5.1682,8.89V46.0437a11.9728,11.9728,0,0,0,1.223,4.9446c1.6664,3.3328,4.8235,5.1682,8.89,5.1682H42.0835a11.97,11.97,0,0,0,4.9446-1.223c3.3327-1.6663,5.1682-4.8234,5.1682-8.89V41.4665a2.1175,2.1175,0,1,0-4.235,0v4.5772c0,2.4366-.89,4.0877-2.7213,5.0478a7.9042,7.9042,0,0,1-3.1663.83H19.9964c-2.4365,0-4.0876-.89-5.0477-2.7212a7.906,7.906,0,0,1-.83-3.1664V23.9563c0-2.4366.89-4.0877,2.7212-5.0478a7.9064,7.9064,0,0,1,3.166-.83H42.0835c2.4365,0,4.0876.89,5.0477,2.7212a7.8887,7.8887,0,0,1,.8079,2.8261l3.5114-3.5114A11.037,11.037,0,0,0,50.9733,19.0117Z" style="fill:#ee2657"/><path d="M59.4962,15.0634a2.1172,2.1172,0,0,0-2.9946,0l-5.0511,5.051-3.5114,3.5114L33.977,37.588l-7.1331-7.1334a2.1175,2.1175,0,1,0-2.9947,2.9944L32.48,42.08a2.1175,2.1175,0,0,0,1.4973.62h0a2.1175,2.1175,0,0,0,1.4973-.62l24.022-24.022A2.1174,2.1174,0,0,0,59.4962,15.0634Z" style="fill:#271952"/></svg></div>
+                                    <div class="number-text">
+                                        <div class="number">1.</div>
+                                        <div class="text">Select your purchase online</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="70px" height="70px" viewBox="0 0 70 70"><path d="M10.4162,10.4162h26.812A22.3555,22.3555,0,0,1,59.5838,32.7717v4.4566A22.3555,22.3555,0,0,1,37.2283,59.5838H32.7717A22.3555,22.3555,0,0,1,10.4162,37.2283V10.4162A0,0,0,0,1,10.4162,10.4162Z" transform="translate(0 70) rotate(-90)" style="fill:none;stroke:#ed2557;stroke-miterlimit:10;stroke-width:4.4px"/><path d="M39.8683,39.8815a1.5027,1.5027,0,0,0-.025,2.0792l4.4616,4.7039a1.402,1.402,0,0,0,2.0208.0251,1.5,1.5,0,0,0,.025-2.0788L41.889,39.907a1.3955,1.3955,0,0,0-1.0048-.4425h-.0191a1.3981,1.3981,0,0,0-.9968.417m-9.737-9.7638a1.5007,1.5007,0,0,0,.0251-2.0792l-4.4613-4.704a1.4045,1.4045,0,0,0-2.0208-.0258,1.5009,1.5009,0,0,0-.025,2.0792l4.4617,4.7035a1.4008,1.4008,0,0,0,2.02.0263M46.03,33.485a7.55,7.55,0,0,0,2.0973-5.2528,7.7077,7.7077,0,0,0-.0833-1.1235,7.5659,7.5659,0,0,0-1.81-3.9092,7.1933,7.1933,0,0,0-4.6419-2.4169q-.1839-.0189-.37-.0291t-.3735-.01a6.9678,6.9678,0,0,0-.7432.0388A7.1933,7.1933,0,0,0,35.4641,23.2,7.51,7.51,0,0,0,34.23,25.1254a7.6481,7.6481,0,0,0-.6587,3.1068V41.663a4.7842,4.7842,0,0,1-.712,2.5237,4.6612,4.6612,0,0,1-.55.7235,4.398,4.398,0,0,1-1.5278,1.0766c-.04.0166-.0794.0332-.12.049-.0805.0307-.1623.0594-.2448.0845a4.0889,4.0889,0,0,1-.7568.165,4.1764,4.1764,0,0,1-.4345.03c-.025,0-.05.0008-.0758.0008a4.3238,4.3238,0,0,1-3.124-1.3342,4.5712,4.5712,0,0,1-1.2746-2.7631q-.0214-.2238-.0215-.4513a4.6083,4.6083,0,0,1,1.15-3.0559,4.3707,4.3707,0,0,1,2.82-1.4685c.0524-.0057.1068-.01.1647-.0134h.0072c.0563-.004.1151-.0064.1778-.0072h.15a1.3567,1.3567,0,0,0,.9762-.417,1.4391,1.4391,0,0,0,.4052-1.0038v-.0991A1.4029,1.4029,0,0,0,29.2,34.2821l-.0211-.0008a.5461.5461,0,0,0-.0809,0h0l-.0445.0008h-.0146A7.1421,7.1421,0,0,0,23.97,36.5142a7.5519,7.5519,0,0,0-2.0973,5.2536,7.6646,7.6646,0,0,0,.0484.846,7.5672,7.5672,0,0,0,1.8445,4.1867,7.1951,7.1951,0,0,0,4.6423,2.4169c.1222.013.2456.0223.3694.0287s.2488.01.3735.01a7.1327,7.1327,0,0,0,5.3855-2.4557,7.5251,7.5251,0,0,0,1.2346-1.9267,7.6412,7.6412,0,0,0,.6583-3.106V28.3366a4.79,4.79,0,0,1,.7124-2.5241,4.68,4.68,0,0,1,.55-.7235,4.4049,4.4049,0,0,1,1.5278-1.0766c.04-.0166.0794-.0332.1195-.0482.0805-.0315.1623-.059.2448-.0853.0746-.0238.15-.0449.2262-.0639q.1321-.0345.2659-.0594c.0877-.0158.1758-.0308.2647-.0417a4.289,4.289,0,0,1,.4345-.0291c.0251-.0008.05-.0008.0758-.0008a4.3218,4.3218,0,0,1,3.124,1.3338,4.5622,4.5622,0,0,1,1.2111,2.321,4.6964,4.6964,0,0,1,.085.8934,4.6076,4.6076,0,0,1-1.15,3.0559,4.37,4.37,0,0,1-2.8195,1.4685c-.052.0057-.1068.01-.1647.0134h-.0076c-.0559.0032-.1147.0056-.1774.0072h-.15a1.3582,1.3582,0,0,0-.9762.417,1.4347,1.4347,0,0,0-.4052,1.0042v.0987A1.4029,1.4029,0,0,0,40.8,35.7179l.0211.0008c.0266.0016.0539.0008.0813,0,.0147-.0008.0294-.0008.0445-.0008h.0079l.0068,0A7.1408,7.1408,0,0,0,46.03,33.485" style="fill:#271952"/></svg></div>
+                                    <div class="number-text">
+                                        <div class="number">2.</div>
+                                        <div class="text">Select Payright as your preferred payment option</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="70px" height="70px" viewBox="0 0 70 70"><title>clipboard</title><path d="M55.4663,19.3472a10.15,10.15,0,0,0-.1313-1.4639,11.9219,11.9219,0,0,0-.5646-2.2221,9.8371,9.8371,0,0,0-.95-1.9449,8.3359,8.3359,0,0,0-1.15-1.4324,7.7622,7.7622,0,0,0-1.1606-.9492,7.9786,7.9786,0,0,0-2.2253-1.026,9.8066,9.8066,0,0,0-2.7307-.3665H23.4467a8.63,8.63,0,0,0-1.4344.1469,10.3037,10.3037,0,0,0-2.1447.6265,8.9732,8.9732,0,0,0-1.8624,1.0458,8.154,8.154,0,0,0-1.3465,1.2425,8.3128,8.3128,0,0,0-1.5494,2.7025,10.9487,10.9487,0,0,0-.5756,3.6408V50.872a9.6665,9.6665,0,0,0,.1328,1.4394,11.41,11.41,0,0,0,.57,2.1769,9.5171,9.5171,0,0,0,.9592,1.904A8.1851,8.1851,0,0,0,17.3533,57.79a7.7818,7.7818,0,0,0,2.5805,1.647,9.5848,9.5848,0,0,0,3.5129.62H46.5533l-.0671-.001c.0211.0007.0654.0017.1307.0017a9.5625,9.5625,0,0,0,1.7365-.175,9.8447,9.8447,0,0,0,2.1439-.661,8.4591,8.4591,0,0,0,1.782-1.06,7.8,7.8,0,0,0,1.2576-1.23,8.1611,8.1611,0,0,0,1.4138-2.61,10.947,10.947,0,0,0,.5156-3.4507V32.3643a2.1175,2.1175,0,0,0-4.235,0V50.872a7.211,7.211,0,0,1-.1972,1.761,4.5287,4.5287,0,0,1-.3989,1.0507,3.614,3.614,0,0,1-.4521.6578,3.7311,3.7311,0,0,1-.9731.7922,4.8139,4.8139,0,0,1-.8321.374,6.0139,6.0139,0,0,1-1.155.2692,4.91,4.91,0,0,1-.606.046h-.0128l.0163,0-.0163,0,.0163,0-.0671-.001H23.4467a5.7357,5.7357,0,0,1-1.64-.216,3.8029,3.8029,0,0,1-.9685-.4354,3.5014,3.5014,0,0,1-.6284-.5117,4.3719,4.3719,0,0,1-.7919-1.1521,6.1979,6.1979,0,0,1-.37-.9716,7.4909,7.4909,0,0,1-.2471-1.24c-.0174-.156-.0256-.2778-.0293-.3527-.0019-.0374-.0026-.063-.0029-.0753l0-.0082V19.3472a7.2073,7.2073,0,0,1,.2206-1.86A4.6015,4.6015,0,0,1,19.435,16.38a3.8314,3.8314,0,0,1,.5077-.6967,4.1472,4.1472,0,0,1,1.09-.8373,5.3728,5.3728,0,0,1,.9-.3822,6.2789,6.2789,0,0,1,1.1433-.2542c.1429-.0178.2536-.0261.32-.03.033-.0019.0548-.0026.064-.0028H46.5533a5.5094,5.5094,0,0,1,1.6227.22,3.7177,3.7177,0,0,1,.9609.4456,3.5454,3.5454,0,0,1,.6308.53,4.5871,4.5871,0,0,1,.8034,1.2058,6.612,6.612,0,0,1,.3761,1.0185,8.0632,8.0632,0,0,1,.251,1.2992c.0177.1637.0261.292.03.3715.002.04.0028.0673.0031.0811l0,.01v-.0118a2.1175,2.1175,0,0,0,4.235,0Z" style="fill:#ee2657"/><path d="M42.5827,26.4953H27.4174a2.1175,2.1175,0,0,1,0-4.235H42.5827a2.1175,2.1175,0,1,1,0,4.235Z" style="fill:#271952"/><path d="M42.5827,37.769H27.4174a2.1175,2.1175,0,0,1,0-4.235H42.5827a2.1175,2.1175,0,0,1,0,4.235Z" style="fill:#271952"/><path d="M33.4635,49.0427H27.4174a2.1175,2.1175,0,1,1,0-4.235h6.0461a2.1175,2.1175,0,0,1,0,4.235Z" style="fill:#271952"/></svg></div>
+                                    <div class="number-text">
+                                        <div class="number">3.</div>
+                                        <div class="text">Enter your contact details to sign up or sign in to your Payright account</div>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="70px" height="70px" viewBox="0 0 70 70"><title>truck</title><path d="M7.6389,49.187a2.2065,2.2065,0,0,1-2.2-2.2V15.4188a2.2065,2.2065,0,0,1,2.2-2.2H41.0221a2.2065,2.2065,0,0,1,2.2,2.2V46.987a2.2065,2.2065,0,0,1-2.2,2.2H30.303" style="fill:none;stroke:#ee2657;stroke-linecap:round;stroke-linejoin:round;stroke-width:4.4px"/><path d="M48.7218,22.9533h7.8093a4.1929,4.1929,0,0,1,3.3,2.2l4.73,8.3595V47.152" style="fill:none;stroke:#ee2657;stroke-linecap:round;stroke-linejoin:round;stroke-width:4.4px"/><line x1="13.3813" y1="27.6495" x2="18.2488" y2="32.517" style="fill:none;stroke:#271952;stroke-linecap:round;stroke-linejoin:round;stroke-width:4.4px"/><line x1="22.603" y1="36.2479" x2="35.528" y2="23.3229" style="fill:none;stroke:#271952;stroke-linecap:round;stroke-linejoin:round;stroke-width:4.4px"/><circle cx="18.863" cy="50.8412" r="5.94" style="fill:none;stroke:#271952;stroke-linecap:round;stroke-linejoin:round;stroke-width:4.4px"/><circle cx="53.843" cy="50.8412" r="5.94" style="fill:none;stroke:#271952;stroke-linecap:round;stroke-linejoin:round;stroke-width:4.4px"/></svg></div>
+                                    <div class="number-text">
+                                        <div class="number">4.</div>
+                                        <div class="text">Once approved your purchase will be dispatched</div>
+                                    </div>
+                                </li>
+                            </ul>
+
+                            <div class="text-big">
+                                <p>Right when you need it</p>
+                                <p>Payright lets you make payments with more choice and control.<br> Just Payright it, to make purchases more affordable,<br> so you can get what you want, right now and enjoy zero interest.</p>
+                            </div>
+
+                            <div class="important-info">
+                                <h2>Important Information:</h2>
+                                <p>We want to ensure you have a positive payment experience and have made the checkout process simple. We take responsible lending seriously so credit is only extended to approved customers. Please ensure you read the <a href="#" target="_blank">terms and conditions</a> for further information and note that PayRight is not available on all purchases.</p>
+                            </div>
+
+                            <a href="https://www.payright.com.au/" class="tellmemore">Tell me more</a>
+                        </article>
+                    </div>
+                    <!-- ***** END MODAL ***** -->
+
+              
 <!--end of modal -->
 
 
