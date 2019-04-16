@@ -73,7 +73,7 @@ class PayRightConfig
             //If Config.ini is valid and all values are set properly.
             if ($validateConfigResponse) {
                 /// setting the enviroment
-                $this->setEnvironment('dev');
+                $this->setEnvironment('sandbox');
                 $this->setConfigParams($payrightMode);
             } else {
                 echo "Please check if config.ini exists and all values are set properly.
