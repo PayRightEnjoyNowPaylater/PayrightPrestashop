@@ -472,8 +472,10 @@ class Payright extends PaymentModule
     {
         $this->getSessionValue = $this->getSessionValue();
 
-        if ($this->getSessionValue = "error") {
+        if ($this->getSessionValue == "error") {
             $this->context->cookie->error = $this->getSessionValue;
+        } else {
+             $this->context->cookie->error = '';
         }
 
         $this->context->smarty->assign("payright_base_url", Context::getContext()->shop->getBaseURL(true));
@@ -485,7 +487,11 @@ class Payright extends PaymentModule
      */
     public function hookDisplayNavFullWidth()
     {
-          return $this->context->smarty->fetch("module:payright/views/templates/front/error.tpl");
+          
+          if ($this->getSessionValue == "error") {
+            return $this->context->smarty->fetch("module:payright/views/templates/front/error.tpl");
+          }
+          
     }
 
     public function hookDisplayShoppingCartFooter($params)
@@ -562,6 +568,7 @@ class Payright extends PaymentModule
         /**
          * If values have been submitted in the form, process.
          */
+        
         if (((bool)Tools::isSubmit('submitPayrightModule')) == true) {
             $this->postProcess();
         }
