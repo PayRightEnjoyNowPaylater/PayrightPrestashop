@@ -60,11 +60,13 @@ class Payright extends PaymentModule
         $this->registerHook('backOfficeHeader');
         $this->registerHook('header');
         $this->registerHook('displayShoppingCartFooter');
+        $this->registerHook('displayNavFullWidth');
 
         if (!parent::install() || !$this->registerHook('paymentOptions') || !$this->registerHook('paymentReturn')
             || !$this->registerHook('displayProductPriceBlock')
             || !$this->registerHook('displayHeader')
             || !$this->registerHook('displayShoppingCartFooter')
+            || !$this->registerHook('displayNavFullWidth')
             || !Configuration::updateValue('PAYRIGHT_LIVE_MODE', '')
             || !Configuration::updateValue('PAYRIGHT_ACCOUNT_EMAIL', '')
             || !Configuration::updateValue('PAYRIGHT_ACCOUNT_PASSWORD', '')
@@ -469,7 +471,21 @@ class Payright extends PaymentModule
     public function hookDisplayHeader()
     {
         $this->getSessionValue = $this->getSessionValue();
+
+        if ($this->getSessionValue = "error") {
+            $this->context->cookie->error = $this->getSessionValue;
+        }
+
         $this->context->smarty->assign("payright_base_url", Context::getContext()->shop->getBaseURL(true));
+    }
+
+    /**
+     * [hookDisplayNavFullWidth description]
+     * @return error template
+     */
+    public function hookDisplayNavFullWidth()
+    {
+          return $this->context->smarty->fetch("module:payright/views/templates/front/error.tpl");
     }
 
     public function hookDisplayShoppingCartFooter($params)
@@ -576,10 +592,9 @@ class Payright extends PaymentModule
 
         $templateValue = $ConfigValues['INFOMODAL_TEMPLATE'];
 
-
-
         if ($current_controller == 'category'  && $params["type"] == 'unit_price') {
             $payRightInstallmentBreakDown =  $this->getCurrentInstalmentsDisplay($params["product"]["price_amount"]);
+
             if ($payRightInstallmentBreakDown != 'exceed_amount') {
                 $this->context->smarty->assign("payright_instalment_breakdown", $payRightInstallmentBreakDown);
             }
@@ -587,6 +602,7 @@ class Payright extends PaymentModule
         }
         if ($current_controller == "product" && $params["type"] == "after_price") {
             $payRightInstallmentBreakDown =  $this->getCurrentInstalmentsDisplay($params["product"]["price_amount"]);
+
             if ($payRightInstallmentBreakDown != 'exceed_amount') {
                 $this->context->smarty->assign("payright_instalment_breakdown", $payRightInstallmentBreakDown);
             }
@@ -621,6 +637,8 @@ class Payright extends PaymentModule
 
         $PayRightConfig = new Payright\api\PayRightConfig($ConfigValues, null);
         $PayRightApiCall = new Payright\api\Call($PayRightConfig);
+
+       
      
         $payRightAuth =  $PayRightApiCall->payRightAuth($PayRightConfig);
 
@@ -635,6 +653,8 @@ class Payright extends PaymentModule
                 $payRightAuthObj->access_token
             );
             return $configVal;
+        } else {
+            return $payRightAuth;
         }
     }
 }

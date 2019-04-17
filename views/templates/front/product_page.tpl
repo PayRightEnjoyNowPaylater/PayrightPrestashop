@@ -22,8 +22,6 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 *}
-
-
 {block name=head}
    <link href="/modules/payright/views/css/sample.css" rel="stylesheet" type="text/css"/>
    <link href="/modules/payright/views/css/main1.css" rel="stylesheet" type="text/css"/>
@@ -33,6 +31,7 @@
 {/block}
 
 <p>
+  {if $payright_instalment_breakdown != 0}
 <small>or {$payright_instalment_breakdown['noofrepayments']|escape:'htmlall':'UTF-8'} {$payright_instalment_breakdown['repaymentfrequency']|escape:'htmlall':'UTF-8'} Instalments of ${$payright_instalment_breakdown['LoanAmountPerPayment']|escape:'htmlall':'UTF-8'} </small>
 
 
@@ -41,6 +40,8 @@
 <a style='color:#275f95' id="opener"  class="payright-modal-popup-trigger2" > Info</a> </p>
 {else}
 <a style='color:#275f95' id="opener"  class="payright-modal-popup-trigger" > Info</a> </p>
+{/if}
+
 {/if}
 <!-- The Modal -->
 <div id='myModal' class='payrightmodal'>
