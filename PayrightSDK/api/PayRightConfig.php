@@ -180,14 +180,14 @@ class PayRightConfig
             $this->setConfigUrl('https://betaonlineapi.payright.com.au/api/v1/configuration');
             $this->setIntialiseTransactionUrl('https://betaonlineapi.payright.com.au/api/v1/intialiseTransaction');
             $this->setEcomTokenDataUrl('https://betaonlineapi.payright.com.au/api/v1/getEcomTokenData');
-            $this->setEcomUrl('https://betaonlineapi.payright.com.au/loan/new/');
+            $this->setEcomUrl('https://betaonline.payright.com.au/loan/new/');
             $this->setPlanStatusChangeUrl('https://betaonlineapi.payright.com.au/api/v1/changePlanStatus');
         } elseif ($mode == 'beta') {
             $this->setAuthUrl('https://betaonlineapi.payright.com.au/oauth/token');
             $this->setConfigUrl('https://betaonlineapi.payright.com.au/api/v1/configuration');
             $this->setIntialiseTransactionUrl('https://betaonlineapi.payright.com.au/api/v1/intialiseTransaction');
             $this->setEcomTokenDataUrl('https://betaonlineapi.payright.com.au/api/v1/getEcomTokenData');
-            $this->setEcomUrl('https://betaonlineapi.payright.com.au/loan/new/');
+            $this->setEcomUrl('https://betaonline.payright.com.au/loan/new/');
             $this->setPlanStatusChangeUrl('https://betaonlineapi.payright.com.au/api/v1/changePlanStatus');
         }
 
