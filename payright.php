@@ -530,6 +530,7 @@ class Payright extends PaymentModule
             $ecommToken = $intializeTransactionData->ecommToken;
 
             $moduleShow = true;
+            print $allowPlan."---";
             if ($allowPlan != 'exceed_amount') {
                 $this->context->smarty->assign('repayment', $allowPlan['noofrepayments']);
                 $this->context->smarty->assign('installment', $allowPlan['LoanAmountPerPayment']);
