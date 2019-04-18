@@ -23,49 +23,51 @@
 *  International Registered Trademark & Property of PrestaShop SA
 *}
 
+
+
 <div id="grid">
 
-<div id="btn2"><a href="{$redirectUrl|escape:'htmlall':'UTF-8'}"><img src="{$payright_base_url|escape:'htmlall':'UTF-8'}modules/payright/views/img/payrightlogo_rgb.png" />Buy Now Pay Later</a></div>
-<!-- <div id="btn2"><a href="https://www.payright.com.au/"><img src="http://betacustomerportal.payright.com.au/img/Payright_LOGO_RGB.png"/>Interest Free Payments</a></div> -->
+<div id="btn5">{$repayment} Fornightly instalments of ${$installment} with<a href="{$redirectUrl|escape:'htmlall':'UTF-8'}"><img src="{$payright_base_url|escape:'htmlall':'UTF-8'}modules/payright/views/img/payrightlogo_rgb.png" /></a></div>
 
 </div>
 
+
+
 <style type="text/css">
 
-
-/*#btn{
-border:0px solid white;
+#btn5{
     margin: 10px 40px 0 0;
     float: right;
-    cursor: pointer;
-} */
-#btn2{
-    border: 1px solid white;
-    margin: 10px 40px 0 0;
-    float: right;
-    background-color: white;
     border-radius: 5px;
-    font-size: 12px;
-    font-family: 'Quicksand', sans-serif;
-    border-right-width: 10px;
     cursor: pointer;
-
 }
 
-img{
-border:1px solid white;
+
+#btn5 > a > img {
+
+border-radius: 5px;
+    max-height: 50px;
+ }
+
+
+img
+{
+/*border:1px solid white;*/
 border-radius: 5px;
 max-height:50px;
-background-color:white;
+/*background-color:white;*/
+
 }
+
+
 
 #grid{
 display: grid;
-float: right;
+float: left;
 
 }
 a{
-	color: #5431FF;
+    color: #5431FF;
 }
 
 
