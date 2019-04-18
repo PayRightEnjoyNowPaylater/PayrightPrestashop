@@ -61,7 +61,7 @@ class Payright extends PaymentModule
         $this->registerHook('header');
         $this->registerHook('displayShoppingCartFooter');
         $this->registerHook('displayNavFullWidth');
-
+      
         if (!parent::install() || !$this->registerHook('paymentOptions') || !$this->registerHook('paymentReturn')
             || !$this->registerHook('displayProductPriceBlock')
             || !$this->registerHook('displayHeader')
@@ -475,7 +475,7 @@ class Payright extends PaymentModule
         if ($this->getSessionValue == "error") {
             $this->context->cookie->error = $this->getSessionValue;
         } else {
-             $this->context->cookie->error = '';
+            $this->context->cookie->error = '';
         }
 
         $this->context->smarty->assign("payright_base_url", Context::getContext()->shop->getBaseURL(true));
@@ -487,11 +487,9 @@ class Payright extends PaymentModule
      */
     public function hookDisplayNavFullWidth()
     {
-          
-          if ($this->getSessionValue == "error") {
+        if ($this->context->cookie->error == "error") {
             return $this->context->smarty->fetch("module:payright/views/templates/front/error.tpl");
-          }
-          
+        }
     }
 
     public function hookDisplayShoppingCartFooter($params)
@@ -508,8 +506,6 @@ class Payright extends PaymentModule
             $cart = $this->context->cart;
 
             $allowPlan = $this->getCurrentInstalmentsDisplay($cart->getOrderTotal());
-
-
 
             $PayRightApiCall = new Payright\api\Call();
 
@@ -568,15 +564,13 @@ class Payright extends PaymentModule
         /**
          * If values have been submitted in the form, process.
          */
-        
+    
         if (((bool)Tools::isSubmit('submitPayrightModule')) == true) {
             $this->postProcess();
         }
 
         $this->context->smarty->assign('module_dir', $this->_path);
-
         $output = $this->context->smarty->fetch($this->local_path.'views/templates/admin/configure.tpl');
-
         return $output.$this->renderForm();
     }
 
@@ -597,6 +591,8 @@ class Payright extends PaymentModule
         $current_controller = Tools::getValue('controller');
         $ConfigValues = $this->getConfigFormValues();
 
+   
+
         $templateValue = $ConfigValues['INFOMODAL_TEMPLATE'];
 
         if ($current_controller == 'category'  && $params["type"] == 'unit_price') {
@@ -615,6 +611,16 @@ class Payright extends PaymentModule
             }
             $this->context->smarty->assign("templateValue", $templateValue);
             return $this->context->smarty->fetch("module:payright/views/templates/front/product_page.tpl");
+        }
+
+        if ($current_controller == "index" && $params["type"] == "unit_price") {
+            $payRightInstallmentBreakDown =  $this->getCurrentInstalmentsDisplay($params["product"]["price_amount"]);
+
+            if ($payRightInstallmentBreakDown != 'exceed_amount') {
+                $this->context->smarty->assign("payright_instalment_breakdown", $payRightInstallmentBreakDown);
+            }
+            $this->context->smarty->assign("templateValue", $templateValue);
+            return $this->context->smarty->fetch("module:payright/views/templates/front/product_thumbnail.tpl");
         }
     }
 
