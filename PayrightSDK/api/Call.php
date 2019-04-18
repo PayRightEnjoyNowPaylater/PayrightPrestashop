@@ -9,7 +9,9 @@
 
 namespace Payright\api;
 
-ini_set("display_errors", "1");
+ini_set("display_errors", "0");
+
+use Payright\api\customException;
 
 class Call
 {
@@ -51,8 +53,8 @@ class Call
             ## now set this object
             $this->setPayrightAuthObj($responseAuth);
             return $responseAuth;
-        } catch (PrestaShopDatabaseException $e) {
-            throw new PrestaShopDatabaseException("Invalid Response from Payright API");
+        } catch (customException $e) {
+            return $e->errorMessage();
         }
     }
 
@@ -85,8 +87,8 @@ class Call
             $returnArray['client_id'] = $configobj->getClientID();
             $this->setSessionValues($response, $cookieObj);
             return $returnArray;
-        } catch (PrestaShopDatabaseException $e) {
-            throw new PrestaShopDatabaseException("Invalid Response from Payright API");
+        } catch (customException $e) {
+            return $e->errorMessage();
         }
     }
 
@@ -128,8 +130,8 @@ class Call
                 $accessToken
             );
             return $response;
-        } catch (PrestaShopDatabaseException $e) {
-            throw new PrestaShopDatabaseException("Invalid Response from Payright API");
+        } catch (customException $e) {
+            return $e->errorMessage();
         }
     }
 
@@ -148,7 +150,7 @@ class Call
     {
         //Check if CURL module exists.
         if (!function_exists("curl_init")) {
-            throw new PrestaShopDatabaseException("Curl module is not available on this system");
+            return "error";
         }
 
         //url-ify the data for the POST
@@ -199,12 +201,12 @@ class Call
             curl_close($ch);
 
             if ($err) {
-                throw new PrestaShopDatabaseException("Invalid Response from Payright API".$err);
+                return "error";
             } else {
                 return $response;
             }
-        } catch (PrestaShopDatabaseException $e) {
-            throw new PrestaShopDatabaseException("Something went wrong in Payright API Connection");
+        } catch (customException $e) {
+            return $e->errorMessage();
         }
     }
 
@@ -226,8 +228,8 @@ class Call
                 $payRightAuthObj->access_token
             );
             return $response;
-        } catch (PrestaShopDatabaseException $e) {
-            throw new PrestaShopDatabaseException("Invalid Response from Payright API");
+        } catch (customException $e) {
+            return $e->errorMessage();
         }
     }
 
@@ -262,14 +264,14 @@ class Call
        
         try {
             $updatePlanStatus =  $this->execute(
-                'http://ecommerceapi.payright.local/api/v1/changePlanStatus',
+                $configObj->setPlanStatusChangeUrl(),
                 $paramsPayright,
                 "Bearer",
                 $payRightAuthObj->access_token
             );
             return $updatePlanStatus;
-        } catch (PrestaShopDatabaseException $e) {
-            throw new PrestaShopDatabaseException("Invalid Response from Payright API");
+        } catch (customException $e) {
+            return $e->errorMessage();
         }
     }
 

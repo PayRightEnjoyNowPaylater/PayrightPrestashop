@@ -151,6 +151,11 @@ body {
     margin-bottom: 4rem; }
     #PayrightHowitWorksmodalPopup a.tellmemore:hover {
       text-decoration: none; }
+    .error {
+      color: #FF0000;
+      text-align: center;
+      padding: 1rem 7rem;
+    }
 
 @media only screen and (max-width: 767px) {
   .modal-popup.modal-slide {
