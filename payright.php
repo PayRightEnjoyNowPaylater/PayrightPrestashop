@@ -164,7 +164,7 @@ class Payright extends PaymentModule
         $this->context->smarty->assign($PayrightCalculations);
         $externalOption = new PaymentOption();
 
-        $externalOption->setCallToActionText($this->l('Payright - Interest Free Payment Plan'))
+        $externalOption->setCallToActionText($this->l('Payright - Interest Free Payments'))
                        ->setAction($this->context->link->getModuleLink(
                            $this->name,
                            'validation',

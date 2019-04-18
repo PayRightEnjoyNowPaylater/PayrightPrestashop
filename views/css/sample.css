@@ -28,6 +28,7 @@ img.payRightimg{
   height: auto;
   width: 20%;
   display: -webkit-inline-box;
+  margin-left: 0px;
 }
 
 #shopinstallment{
@@ -664,9 +665,11 @@ text-decoration-line: underline;
    
 }
 
-.payright-logo
+span#payright-logo > img
 {
   height:30px;
+  margin-left: -4px;
 }
+
 
 

@@ -24,7 +24,7 @@
 *}
 
 <section>
-  <h2>{$noofrepayments|escape:'htmlall':'UTF-8'} {$repaymentfrequency} Installments of ${$LoanAmountPerPayment}</h2>
+  <h2>{$noofrepayments|escape:'htmlall':'UTF-8'} {$repaymentfrequency} installments of ${$LoanAmountPerPayment}</h2>
   <p>{l s='Excluding deposit'  mod='payright'}
   	<br>
   	{l s='You will be directed to the PayRight website to complete the application process'  mod='payright'}
@@ -40,4 +40,9 @@ label{
 text-align: left;
 
 }
+span{
+	vertical-align: inherit;
+}
+
+
 </style>

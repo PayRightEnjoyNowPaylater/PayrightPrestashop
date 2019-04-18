@@ -434,10 +434,17 @@ color: #ffffff;
 }
 
 
-#prlogo2
+/*#prlogo2
 {
   height:40px;
   margin-left: -10px;
+
+}*/
+span.payright-logo-product > img{
+
+  height:40px;
+  margin-left: -10px;
+
 }
 
 
