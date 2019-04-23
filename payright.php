@@ -306,6 +306,39 @@ class Payright extends PaymentModule
         ),
         );
 
+        $relatedProductsOptions = array(
+        array(
+            'id_option' => 1,       // The value of the 'value' attribute of the <option> tag.
+            'name' => 'Yes'    // The value of the text content of the  <option> tag.
+        ),
+        array(
+            'id_option' => 2,
+            'name' => 'No'
+        ),
+        );
+
+        $frontPageOptions = array(
+        array(
+            'id_option' => 1,       // The value of the 'value' attribute of the <option> tag.
+            'name' => 'Yes'    // The value of the text content of the  <option> tag.
+        ),
+        array(
+            'id_option' => 2,
+            'name' => 'No'
+        ),
+        );
+
+        $cartPageOptions = array(
+        array(
+            'id_option' => 1,       // The value of the 'value' attribute of the <option> tag.
+            'name' => 'Yes'    // The value of the text content of the  <option> tag.
+        ),
+        array(
+            'id_option' => 2,
+            'name' => 'No'
+        ),
+        );
+
 
         $modalOptions = array(
         array(
@@ -413,6 +446,45 @@ class Payright extends PaymentModule
                               'name' => 'name'
                             )
                     ),
+                    array(
+                        'type' => 'select',
+                        'label' => $this->l('Cart Page'),
+                        'desc' => $this->l('Show Payright Installments information on cart page'),
+                        'name' => 'CARTPAGE_PAYRIGHTINSTALLMENTS',
+                        'required' => true,
+                        'options' => array(
+                            'query' => $cartPageOptions,
+                              'id' => 'id_option',
+                              'name' => 'name'
+                            )
+                    ),
+
+                    array(
+                        'type' => 'select',
+                        'label' => $this->l('Front Page'),
+                        'desc' => $this->l('Show Payright Installments information on front page'),
+                        'name' => 'FRONTPAGE_PAYRIGHTINSTALLMENTS',
+                        'required' => true,
+                        'options' => array(
+                            'query' => $frontPageOptions,
+                              'id' => 'id_option',
+                              'name' => 'name'
+                            )
+                    ),
+
+                    array(
+                        'type' => 'select',
+                        'label' => $this->l('Related Products'),
+                        'desc' => $this->l('Show Payright Installments information on related products'),
+                        'name' => 'RELATEDPRODUCTS_PAYRIGHTINSTALLMENTS',
+                        'required' => true,
+                        'options' => array(
+                            'query' => $relatedProductsOptions,
+                              'id' => 'id_option',
+                              'name' => 'name'
+                            )
+                    ),
+
                       array(
                         'type' => 'select',
                         'label' => $this->l('Payright Modal Option'),
@@ -446,9 +518,12 @@ class Payright extends PaymentModule
             'PS_PAYRIGHT_APIKEY' => Configuration::get('PS_PAYRIGHT_APIKEY', null),
             'PS_PAYRIGHT_USERNAME'=> Configuration::get('PS_PAYRIGHT_USERNAME', null),
             'PS_PAYRIGHT_CLIENTID'=> Configuration::get('PS_PAYRIGHT_CLIENTID', null),
-            'PRODUCTPAGE_PAYRIGHTINSTALLMENTS' => Configuration::get('PS_PAYRIGHT_CLIENTID', null),
+            'PRODUCTPAGE_PAYRIGHTINSTALLMENTS' => Configuration::get('PRODUCTPAGE_PAYRIGHTINSTALLMENTS', null),
             'CATEGORYPAGE_PAYRIGHTINSTALLMENTS' => Configuration::get('CATEGORYPAGE_PAYRIGHTINSTALLMENTS', null),
-            'INFOMODAL_TEMPLATE' => Configuration::get('INFOMODAL_TEMPLATE', null) ,
+            'CARTPAGE_PAYRIGHTINSTALLMENTS' => Configuration::get('CARTPAGE_PAYRIGHTINSTALLMENTS', null),
+            'FRONTPAGE_PAYRIGHTINSTALLMENTS' => Configuration::get('FRONTPAGE_PAYRIGHTINSTALLMENTS', null),
+            'RELATEDPRODUCTS_PAYRIGHTINSTALLMENTS' => Configuration::get('RELATEDPRODUCTS_PAYRIGHTINSTALLMENTS', null),
+            'INFOMODAL_TEMPLATE' => Configuration::get('INFOMODAL_TEMPLATE', null),
             'PAYRIGHT_MERCHANTUSERNAME' => Configuration::get('PAYRIGHT_MERCHANTUSERNAME', null),
             'PAYRIGHT_MERCHANTPASSWORD' => Configuration::get('PAYRIGHT_MERCHANTPASSWORD', null)
 
@@ -495,6 +570,8 @@ class Payright extends PaymentModule
     public function hookDisplayShoppingCartFooter($params)
     {
         $getSessionValue = $this->getSessionValue();
+        $ConfigValues = $this->getConfigFormValues();
+        $cartInstalments = $ConfigValues['CARTPAGE_PAYRIGHTINSTALLMENTS'];
 
         if (isset($this->context->cookie->access_token)) {
             $sugarAuthToken= $getSessionValue['auth']->{'auth-token'};
@@ -541,7 +618,7 @@ class Payright extends PaymentModule
         }
 
  
-        if ($moduleShow == 1 && $allowPlan != 'exceed_amount') {
+        if ($moduleShow == 1 && $allowPlan != 'exceed_amount' && $cartInstalments == 1 ) {
             return  $this->context->smarty->fetch("module:payright/views/templates/hook/cart_payright.tpl");
         }
     }
@@ -595,11 +672,15 @@ class Payright extends PaymentModule
         $current_controller = Tools::getValue('controller');
         $ConfigValues = $this->getConfigFormValues();
 
-   
-
         $templateValue = $ConfigValues['INFOMODAL_TEMPLATE'];
+        $productInstallments = $ConfigValues['PRODUCTPAGE_PAYRIGHTINSTALLMENTS'];
+        $categoryInstalments = $ConfigValues['CATEGORYPAGE_PAYRIGHTINSTALLMENTS'];
+        $frontpageInstalments = $ConfigValues['FRONTPAGE_PAYRIGHTINSTALLMENTS']; 
+        $relatedProductsInstalments = $ConfigValues['RELATEDPRODUCTS_PAYRIGHTINSTALLMENTS']; 
 
-        if ($current_controller == 'category'  && $params["type"] == 'unit_price') {
+
+
+        if ($current_controller == 'category'  && $params["type"] == 'unit_price' && $categoryInstalments == 1) {
             $payRightInstallmentBreakDown =  $this->getCurrentInstalmentsDisplay($params["product"]["price_amount"]);
 
             if ($payRightInstallmentBreakDown != 'exceed_amount') {
@@ -607,7 +688,8 @@ class Payright extends PaymentModule
             }
             return $this->context->smarty->fetch("module:payright/views/templates/front/product_thumbnail.tpl");
         }
-        if ($current_controller == "product" && $params["type"] == "after_price") {
+        if ($current_controller == "product" && $params["type"] == "after_price" && $productInstallments == 1) {
+
             $payRightInstallmentBreakDown =  $this->getCurrentInstalmentsDisplay($params["product"]["price_amount"]);
 
             if ($payRightInstallmentBreakDown != 'exceed_amount') {
@@ -617,7 +699,17 @@ class Payright extends PaymentModule
             return $this->context->smarty->fetch("module:payright/views/templates/front/product_page.tpl");
         }
 
-        if ($current_controller == "index" && $params["type"] == "unit_price") {
+        if ($current_controller == 'product'  && $params["type"] == 'unit_price' && $relatedProductsInstalments == 1) {
+            // for related products
+                $payRightInstallmentBreakDown =  $this->getCurrentInstalmentsDisplay($params["product"]["price_amount"]);
+              if ($payRightInstallmentBreakDown != 'exceed_amount') {
+                $this->context->smarty->assign("payright_instalment_breakdown", $payRightInstallmentBreakDown);
+            }
+            return $this->context->smarty->fetch("module:payright/views/templates/front/product_thumbnail.tpl");
+
+        }
+
+        if ($current_controller == "index" && $params["type"] == "unit_price" && $frontpageInstalments == 1) {
             $payRightInstallmentBreakDown =  $this->getCurrentInstalmentsDisplay($params["product"]["price_amount"]);
 
             if ($payRightInstallmentBreakDown != 'exceed_amount') {
