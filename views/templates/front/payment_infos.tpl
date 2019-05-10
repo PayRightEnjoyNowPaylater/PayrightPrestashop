@@ -24,7 +24,7 @@
 *}
 
 <section>
-  <h2>{$noofrepayments|escape:'htmlall':'UTF-8'} {$repaymentfrequency} installments of ${$LoanAmountPerPayment}</h2>
+  <h2>{$noofrepayments|escape:'htmlall':'UTF-8'} {$repaymentfrequency|escape:'htmlall':'UTF-8'} installments of ${$LoanAmountPerPayment|escape:'htmlall':'UTF-8'}</h2>
   <p>{l s='Excluding deposit'  mod='payright'}
   	<br>
   	{l s='You will be directed to the PayRight website to complete the application process'  mod='payright'}

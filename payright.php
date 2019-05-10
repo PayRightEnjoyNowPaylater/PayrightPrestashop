@@ -61,12 +61,15 @@ class Payright extends PaymentModule
         $this->registerHook('header');
         $this->registerHook('displayShoppingCartFooter');
         $this->registerHook('displayNavFullWidth');
+        $this->registerHook('actionCartSave');
+        
       
         if (!parent::install() || !$this->registerHook('paymentOptions') || !$this->registerHook('paymentReturn')
             || !$this->registerHook('displayProductPriceBlock')
             || !$this->registerHook('displayHeader')
             || !$this->registerHook('displayShoppingCartFooter')
             || !$this->registerHook('displayNavFullWidth')
+            || !$this->registerHook('actionCartSave')
             || !Configuration::updateValue('PAYRIGHT_LIVE_MODE', '')
             || !Configuration::updateValue('PAYRIGHT_ACCOUNT_EMAIL', '')
             || !Configuration::updateValue('PAYRIGHT_ACCOUNT_PASSWORD', '')
@@ -465,36 +468,9 @@ class Payright extends PaymentModule
         }
     }
 
-    /**
-     * Add the CSS & JavaScript files you want to be added on the FO.
-     */
-    public function hookDisplayHeader()
+    public function hookActionCartSave() 
     {
-        $this->getSessionValue = $this->getSessionValue();
-
-        if ($this->getSessionValue == "error") {
-            $this->context->cookie->error = $this->getSessionValue;
-        } else {
-            $this->context->cookie->error = '';
-        }
-
-        $this->context->smarty->assign("payright_base_url", Context::getContext()->shop->getBaseURL(true));
-    }
-
-    /**
-     * [hookDisplayNavFullWidth description]
-     * @return error template
-     */
-    public function hookDisplayNavFullWidth()
-    {
-        if ($this->context->cookie->error == "error") {
-            return $this->context->smarty->fetch("module:payright/views/templates/front/error.tpl");
-        }
-    }
-
-    public function hookDisplayShoppingCartFooter($params)
-    {
-        $getSessionValue = $this->getSessionValue();
+         $getSessionValue = $this->getSessionValue();
 
         if (isset($this->context->cookie->access_token)) {
             $sugarAuthToken= $getSessionValue['auth']->{'auth-token'};
@@ -530,18 +506,51 @@ class Payright extends PaymentModule
             $ecommToken = $intializeTransactionData->ecommToken;
 
             $moduleShow = true;
-           
-            if ($allowPlan != 'exceed_amount') {
-                $this->context->smarty->assign('repayment', $allowPlan['noofrepayments']);
-                $this->context->smarty->assign('installment', $allowPlan['LoanAmountPerPayment']);
-                $this->context->smarty->assign('redirectUrl', $PayRightConfig->ecomUrl.$ecommToken);
-            } else {
-                $moduleShow = false;
-            }
+            $this->context->smarty->assign('repayment', $allowPlan['noofrepayments']);
+            $this->context->smarty->assign('installment', $allowPlan['LoanAmountPerPayment']);
+            $this->context->smarty->assign('redirectUrl', $PayRightConfig->ecomUrl.$ecommToken);
+        } else {
+            $moduleShow = false;
         }
 
  
         if ($moduleShow == 1 && $allowPlan != 'exceed_amount') {
+            return  $this->context->smarty->fetch("module:payright/views/templates/hook/cart_payright.tpl");
+        }
+    }
+
+    /**
+     * Add the CSS & JavaScript files you want to be added on the FO.
+     */
+    public function hookDisplayHeader()
+    {
+        
+        $this->getSessionValue = $this->getSessionValue();
+
+        if ($this->getSessionValue == "error") {
+            $this->context->cookie->error = $this->getSessionValue;
+        } else {
+            $this->context->cookie->error = '';
+        }
+
+        $this->context->smarty->assign("payright_base_url", Context::getContext()->shop->getBaseURL(true));
+    }
+
+    /**
+     * [hookDisplayNavFullWidth description]
+     * @return error template
+     */
+    public function hookDisplayNavFullWidth()
+    {
+        if ($this->context->cookie->error == "error") {
+            return $this->context->smarty->fetch("module:payright/views/templates/front/error.tpl");
+        }
+    }
+
+    public function hookDisplayShoppingCartFooter($params)
+    {
+        $installmentResult = $this->getPayrightInstallments();
+        if ($installmentResult['moduleShow'] == 1 && $installmentResult['allowPlan'] != 'exceed_amount') {
             return  $this->context->smarty->fetch("module:payright/views/templates/hook/cart_payright.tpl");
         }
     }
@@ -673,5 +682,60 @@ class Payright extends PaymentModule
         } else {
             return $payRightAuth;
         }
+    }
+
+    public function getPayrightInstallments()
+    {
+        $getSessionValue = $this->getSessionValue();
+
+        if (isset($this->context->cookie->access_token)) {
+            $sugarAuthToken= $getSessionValue['auth']->{'auth-token'};
+            $configToken = $getSessionValue['configToken'];
+            $payrightAccessToken = $this->context->cookie->access_token;
+   
+            $clientId = $getSessionValue['client_id'];
+
+            $cart = $this->context->cart;
+
+            $allowPlan = $this->getCurrentInstalmentsDisplay($cart->getOrderTotal());
+
+            $PayRightApiCall = new Payright\api\Call();
+
+
+            $ConfigValues = $this->getConfigFormValues();
+            $PayRightConfig = new Payright\api\PayRightConfig($ConfigValues, null);
+
+            $transactionData = array();
+            $transactionData['transactionRef'] = $cart->id."_".$clientId.rand();
+            $transactionData['clientId'] = $clientId;
+            $transactionData['sugarAuthToken'] = $sugarAuthToken;
+            $transactionData['configToken'] = $configToken;
+
+            $intializeTransaction = $PayRightApiCall->intializeTransaction(
+                $cart->getOrderTotal(),
+                $payrightAccessToken,
+                $transactionData,
+                $PayRightConfig
+            );
+            $intializeTransactionData = json_decode($intializeTransaction);
+
+            $ecommToken = $intializeTransactionData->ecommToken;
+
+            $moduleShow = true;
+            $result = array('moduleShow' => $moduleShow, 'allowPlan' => $allowPlan);
+            $this->context->smarty->assign('repayment', $allowPlan['noofrepayments']);
+            $this->context->smarty->assign('installment', $allowPlan['LoanAmountPerPayment']);
+            $this->context->smarty->assign('redirectUrl', $PayRightConfig->ecomUrl.$ecommToken);
+        } else {
+            $result = array('moduleShow' => false);
+        }
+
+        return $result;
+    }
+
+    public function checkPath()
+    {
+        return $this->_path;
+
     }
 }

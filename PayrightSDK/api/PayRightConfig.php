@@ -64,19 +64,27 @@ class PayRightConfig
 
 
 
-    public function __construct($payrightMode, $input = null)
+    public function __construct($payrightMode)
     {
         
-        
-        if (empty($input)) {
+        $this->setConfigParams($payrightMode);
+        $this->setEnvironment('dev');
+
+       /* if (empty($input)) {
             $filename = _PS_MODULE_DIR_.'payright/PayrightSDK/config/config.ini';
+
+            print $filename;
+
+
             //Check if all parameters are set properly in config.ini
             $validateConfigResponse = $this->validateConfigFile($filename);
+
+           // print_r($payrightMode);
 
             //If Config.ini is valid and all values are set properly.
             if ($validateConfigResponse) {
                 /// setting the enviroment
-                $this->setEnvironment('sandbox');
+                $this->setEnvironment('dev');
                 $this->setConfigParams($payrightMode);
             } else {
                 echo "Please check if config.ini exists and all values are set properly.
@@ -103,7 +111,7 @@ class PayRightConfig
             // if( !empty($input['sdkVersion']) ) {
             //     $this->setSDKVersion($input['sdkVersion']);
             // }
-        }
+        }*/
     }
     /*
     * Validate config.ini array and values
@@ -149,6 +157,8 @@ class PayRightConfig
     protected function setConfigParams($mode)
     {
         $allConfig = $mode;
+
+        //print_r($allConfig);
 
         $this->setUsername($allConfig['PS_PAYRIGHT_USERNAME']);
         $this->setMode($allConfig['PAYRIGHT_LIVE_MODE']);
