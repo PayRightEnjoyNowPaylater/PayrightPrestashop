@@ -68,7 +68,7 @@ class PayRightConfig
     {
         
         $this->setConfigParams($payrightMode);
-        $this->setEnvironment('dev');
+        $this->setEnvironment('sandbox');
 
        /* if (empty($input)) {
             $filename = _PS_MODULE_DIR_.'payright/PayrightSDK/config/config.ini';
