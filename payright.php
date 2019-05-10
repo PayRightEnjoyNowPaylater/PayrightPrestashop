@@ -751,7 +751,7 @@ class Payright extends PaymentModule
         $ConfigValues = $this->getConfigFormValues();
 
         print_r($ConfigValues);
-        die;
+        //die;
 
 
         $PayRightConfig = new Payright\api\PayRightConfig($ConfigValues, null);
