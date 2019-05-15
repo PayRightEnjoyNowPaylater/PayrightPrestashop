@@ -68,7 +68,7 @@ class PayRightConfig
     {
         
         $this->setConfigParams($payrightMode);
-        $this->setEnvironment('sandbox');
+        $this->setEnvironment('live');
 
        /* if (empty($input)) {
             $filename = _PS_MODULE_DIR_.'payright/PayrightSDK/config/config.ini';
@@ -192,13 +192,13 @@ class PayRightConfig
             $this->setEcomTokenDataUrl('https://betaonlineapi.payright.com.au/api/v1/getEcomTokenData');
             $this->setEcomUrl('https://betaonline.payright.com.au/loan/new/');
             $this->setPlanStatusChangeUrl('https://betaonlineapi.payright.com.au/api/v1/changePlanStatus');
-        } elseif ($mode == 'beta') {
-            $this->setAuthUrl('https://betaonlineapi.payright.com.au/oauth/token');
-            $this->setConfigUrl('https://betaonlineapi.payright.com.au/api/v1/configuration');
-            $this->setIntialiseTransactionUrl('https://betaonlineapi.payright.com.au/api/v1/intialiseTransaction');
-            $this->setEcomTokenDataUrl('https://betaonlineapi.payright.com.au/api/v1/getEcomTokenData');
-            $this->setEcomUrl('https://betaonline.payright.com.au/loan/new/');
-            $this->setPlanStatusChangeUrl('https://betaonlineapi.payright.com.au/api/v1/changePlanStatus');
+        } elseif ($mode == 'live') {
+            $this->setAuthUrl('http://api.payright.com.au/oauth/token');
+            $this->setConfigUrl('http://api.payright.com.au/api/v1/configuration');
+            $this->setIntialiseTransactionUrl('http://api.payright.com.au/api/v1/intialiseTransaction');
+            $this->setEcomTokenDataUrl('http://api.payright.com.au/api/v1/getEcomTokenData');
+            $this->setEcomUrl('http://online.payright.com.au/loan/new/');
+            $this->setPlanStatusChangeUrl('http://api.payright.com.au/api/v1/changePlanStatus');
         }
 
         return $this;
