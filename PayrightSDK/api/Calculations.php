@@ -127,8 +127,10 @@ class Calculations
                 $generateLoanTerm[] = $ratesArray[$key]['Term'];
             }
         }
-
-        return min($generateLoanTerm);
+        if (isset($generateLoanTerm)) {
+            return min($generateLoanTerm);
+        }
+        
     }
 
 
