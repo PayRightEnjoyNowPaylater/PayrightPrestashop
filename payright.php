@@ -555,14 +555,11 @@ class Payright extends PaymentModule
             $configToken = $getSessionValue['configToken'];
             $payrightAccessToken = $this->context->cookie->access_token;
 
-            print $payrightAccessToken."--";
-   
+
             $clientId = $getSessionValue['client_id'];
 
             $cart = $this->context->cart;
 
-            print_r($cart);
-            die;
 
             $allowPlan = $this->getCurrentInstalmentsDisplay($cart->getOrderTotal());
 
