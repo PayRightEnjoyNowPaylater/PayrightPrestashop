@@ -609,13 +609,18 @@ class Payright extends PaymentModule
     {
         $this->getSessionValue = $this->getSessionValue();
 
+       
+
         if ($this->getSessionValue == "error") {
             $this->context->cookie->error = $this->getSessionValue;
         } else {
             $this->context->cookie->error = '';
         }
 
+      
         $this->context->smarty->assign("payright_base_url", Context::getContext()->shop->getBaseURL(true));
+
+       
     }
 
     /**
@@ -693,6 +698,11 @@ class Payright extends PaymentModule
         $relatedProductsInstalments = $ConfigValues['RELATEDPRODUCTS_PAYRIGHTINSTALLMENTS'];
 
 
+         if ($this->context->cookie->error == "error") {
+            return $this->context->smarty->fetch("module:payright/views/templates/front/error.tpl");
+        }
+
+
 
         if ($current_controller == 'category'  && $params["type"] == 'unit_price' && $categoryInstalments == 1) {
             $payRightInstallmentBreakDown =  $this->getCurrentInstalmentsDisplay($params["product"]["price_amount"]);
@@ -755,26 +765,31 @@ class Payright extends PaymentModule
     {
         $ConfigValues = $this->getConfigFormValues();
 
+
+
         $PayRightConfig = new Payright\api\PayRightConfig($ConfigValues, null);
         $PayRightApiCall = new Payright\api\Call($PayRightConfig);
 
        
      
         $payRightAuth =  $PayRightApiCall->payRightAuth($PayRightConfig);
-
         $payRightAuthObj = json_decode($payRightAuth);
 
-        $this->context->cookie->access_token = $payRightAuthObj->access_token;
+        if (isset($payRightAuthObj->error)) {
+            return "error";
+        } else {
 
-        if (isset($payRightAuthObj->access_token)) {
-            $configVal = $PayRightApiCall->payRightConfigurationTokenMethod(
+            $this->context->cookie->access_token = $payRightAuthObj->access_token;
+            if (isset($payRightAuthObj->access_token)) {
+                $configVal = $PayRightApiCall->payRightConfigurationTokenMethod(
                 $this->context->cookie,
                 $PayRightConfig,
                 $payRightAuthObj->access_token
             );
-            return $configVal;
-        } else {
-            return $payRightAuth;
+                return $configVal;
+            } else {
+                return $payRightAuth;
+            }
         }
     }
 
