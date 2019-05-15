@@ -554,6 +554,8 @@ class Payright extends PaymentModule
             $sugarAuthToken= $getSessionValue['auth']->{'auth-token'};
             $configToken = $getSessionValue['configToken'];
             $payrightAccessToken = $this->context->cookie->access_token;
+
+            print $payrightAccessToken."--";
    
             $clientId = $getSessionValue['client_id'];
 
