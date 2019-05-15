@@ -68,7 +68,7 @@ class PayRightConfig
     {
         
         $this->setConfigParams($payrightMode);
-        $this->setEnvironment('live');
+        $this->setEnvironment('dev');
 
        /* if (empty($input)) {
             $filename = _PS_MODULE_DIR_.'payright/PayrightSDK/config/config.ini';
@@ -178,7 +178,7 @@ class PayRightConfig
     {
         //Set Merchant Id, Secret Key and Callback Url
         
-        if ($mode == 'dev') {
+        if ($mode == 'dev1') {
             $this->setAuthUrl('http://ecommerceapi.payright.local/oauth/token');
             $this->setConfigUrl('http://ecommerceapi.payright.local/api/v1/configuration');
             $this->setIntialiseTransactionUrl('http://ecommerceapi.payright.local/api/v1/intialiseTransaction');
@@ -192,7 +192,7 @@ class PayRightConfig
             $this->setEcomTokenDataUrl('https://betaonlineapi.payright.com.au/api/v1/getEcomTokenData');
             $this->setEcomUrl('https://betaonline.payright.com.au/loan/new/');
             $this->setPlanStatusChangeUrl('https://betaonlineapi.payright.com.au/api/v1/changePlanStatus');
-        } elseif ($mode == 'live') {
+        } elseif ($mode == 'dev') {
             $this->setAuthUrl('http://api.payright.com.au/oauth/token');
             $this->setConfigUrl('http://api.payright.com.au/api/v1/configuration');
             $this->setIntialiseTransactionUrl('http://api.payright.com.au/api/v1/intialiseTransaction');
