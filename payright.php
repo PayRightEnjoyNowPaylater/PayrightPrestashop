@@ -20,6 +20,8 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
+ini_set('display_errors', 1);
+
 class Payright extends PaymentModule
 {
     protected $html = '';
