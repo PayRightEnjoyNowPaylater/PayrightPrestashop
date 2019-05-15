@@ -47,6 +47,9 @@ class Call
         //'client_secret' => uBtLxIXPUMs4a0l0ViqxP1QVBGr62FG8YIGi5iMl
         );
 
+        print $configObj->getAuthUrl();
+        die;
+
         try {
             $responseAuth =  $this->execute($configObj->getAuthUrl(), $AuthFields, false, null);
            
