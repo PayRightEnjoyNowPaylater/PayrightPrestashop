@@ -30,7 +30,7 @@
 	<p>
 {if $payright_instalment_breakdown != 0}
 <small>or {$payright_instalment_breakdown['noofrepayments']|escape:'htmlall':'UTF-8'} {$payright_instalment_breakdown['repaymentfrequency']|escape:'htmlall':'UTF-8'} instalments</br> of ${$payright_instalment_breakdown['LoanAmountPerPayment']|escape:'htmlall':'UTF-8'} with</small>
-<span id="payright-logo" ><img  src="{$urls.base_url|escape:'htmlall':'UTF-8'}modules/payright/views/img/payrightlogo_rgb.png"></span>
+<span id="payright-logo" ></span>
 
 
 {/if}
