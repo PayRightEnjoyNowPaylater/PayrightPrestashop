@@ -699,7 +699,7 @@ class Payright extends PaymentModule
 
 
          if ($this->context->cookie->error == "error") {
-            return $this->context->smarty->fetch("module:payright/views/templates/front/error.tpl");
+            return ;
         }
 
 
