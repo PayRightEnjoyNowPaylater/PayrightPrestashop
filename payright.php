@@ -795,7 +795,7 @@ class Payright extends PaymentModule
 
        
 
-            print_r($payRightAuthObj);
+            print_r($payRightAuth);
             die;
             $this->context->cookie->access_token = $payRightAuthObj->access_token;
             if (isset($payRightAuthObj->access_token)) {
