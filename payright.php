@@ -761,8 +761,12 @@ class Payright extends PaymentModule
                 $productTotal,
                 $this->context->cookie
             );
+            print $PayrightCalculations;
+            die;
             return $PayrightCalculations;
         } else {
+            print "dcd";
+            die;
             return 0;
         }
     }
