@@ -753,6 +753,9 @@ class Payright extends PaymentModule
     public function getCurrentInstalmentsDisplay($productTotal)
     {
         $rateCard = $this->context->cookie->PayrightRates;
+
+        print_r($rateCard);
+        die;
         $rateUnserialized = unserialize($rateCard);
         if (!empty($rateUnserialized)) {
             $PayRightCalculations = new Payright\api\Calculations();
@@ -765,8 +768,6 @@ class Payright extends PaymentModule
             die;
             return $PayrightCalculations;
         } else {
-            print "dcd";
-            die;
             return 0;
         }
     }
