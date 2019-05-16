@@ -793,6 +793,9 @@ class Payright extends PaymentModule
         $payRightAuth =  $PayRightApiCall->payRightAuth($PayRightConfig);
         $payRightAuthObj = json_decode($payRightAuth, true);
 
+        print_r( $payRightAuthObj);
+        die;
+
             $this->context->cookie->access_token = $payRightAuthObj->access_token;
             if (isset($payRightAuthObj->access_token)) {
                 $configVal = $PayRightApiCall->payRightConfigurationTokenMethod(
