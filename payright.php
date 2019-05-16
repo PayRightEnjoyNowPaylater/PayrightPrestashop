@@ -765,7 +765,7 @@ class Payright extends PaymentModule
         } else {
             return 0;
         }
-    }
+    }*/
 
     public function getSessionValue()
     {
@@ -799,7 +799,7 @@ class Payright extends PaymentModule
         }
     }
 
-    public function getPayrightInstallments()
+    /*public function getPayrightInstallments()
     {
         $getSessionValue = $this->getSessionValue();
 
