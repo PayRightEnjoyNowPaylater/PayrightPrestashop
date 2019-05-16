@@ -781,6 +781,9 @@ class Payright extends PaymentModule
         $payRightAuth =  $PayRightApiCall->payRightAuth($PayRightConfig);
         $payRightAuthObj = json_decode($payRightAuth);
 
+        print_r($payRightAuthObj);
+        
+
         if (isset($payRightAuthObj->error)) {
             return "error";
         } else {
