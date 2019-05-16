@@ -573,7 +573,9 @@ class Payright extends PaymentModule
 
             $allowPlan = $this->getCurrentInstalmentsDisplay($cart->getOrderTotal());
 
-            $PayRightApiCall = new Payright\api\Call();
+            print_r($allowPlan);
+
+            /*$PayRightApiCall = new Payright\api\Call();
 
 
             $ConfigValues = $this->getConfigFormValues();
@@ -603,7 +605,7 @@ class Payright extends PaymentModule
             }
 
             
-            $this->context->smarty->assign('redirectUrl', $PayRightConfig->ecomUrl.$ecommToken);
+            $this->context->smarty->assign('redirectUrl', $PayRightConfig->ecomUrl.$ecommToken);*/
         } else {
             $moduleShow = false;
         }
