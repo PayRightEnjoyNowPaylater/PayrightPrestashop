@@ -68,10 +68,7 @@ class Call
         'merchantpassword' => $configobj->getMerchantpassword()
         );
 
-        print_r($ConfigFields);
-
-        die;
-
+      
        
         try {
             $response =  json_decode(
