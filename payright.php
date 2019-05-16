@@ -130,7 +130,7 @@ class Payright extends PaymentModule
         return $offlineOption;
     }
 
-   public function getExternalPaymentOption()
+    public function getExternalPaymentOption()
     {
         $ConfigValues = $this->getConfigFormValues();
         $PayRightConfig = new Payright\api\PayRightConfig($ConfigValues, null);
@@ -553,70 +553,71 @@ class Payright extends PaymentModule
 
         $cart = $this->context->cart;
 
-        if(isset($cart)) {
+        $moduleShow = false;
+
+        if (isset($cart)) {
+            if (isset($this->context->cookie->access_token)) {
+                $sugarAuthToken= $getSessionValue['auth']->{'auth-token'};
+                $configToken = $getSessionValue['configToken'];
+                $payrightAccessToken = $this->context->cookie->access_token;
 
 
-
-
-        if (isset($this->context->cookie->access_token)) {
-            $sugarAuthToken= $getSessionValue['auth']->{'auth-token'};
-            $configToken = $getSessionValue['configToken'];
-            $payrightAccessToken = $this->context->cookie->access_token;
-
-
-            $clientId = $getSessionValue['client_id'];
+                $clientId = $getSessionValue['client_id'];
 
             
 
+                if ($cart->getOrderTotal() != 0) {
+                    $allowPlan = $this->getCurrentInstalmentsDisplay($cart->getOrderTotal());
+
+                    print $cart->getOrderTotal()."--";
+
+                    print_r($allowPlan);
+           
+       
+
+            
+
+                    $PayRightApiCall = new Payright\api\Call();
 
 
+                    $ConfigValues = $this->getConfigFormValues();
+                    $PayRightConfig = new Payright\api\PayRightConfig($ConfigValues, null);
 
-            $allowPlan = $this->getCurrentInstalmentsDisplay($cart->getOrderTotal());
+                    $transactionData = array();
+                    $transactionData['transactionRef'] = $cart->id."_".$clientId.rand();
+                    $transactionData['clientId'] = $clientId;
+                    $transactionData['sugarAuthToken'] = $sugarAuthToken;
+                    $transactionData['configToken'] = $configToken;
 
-            print $cart->getOrderTotal()."--";
-
-            print_r($allowPlan);
-
-            /*$PayRightApiCall = new Payright\api\Call();
-
-
-            $ConfigValues = $this->getConfigFormValues();
-            $PayRightConfig = new Payright\api\PayRightConfig($ConfigValues, null);
-
-            $transactionData = array();
-            $transactionData['transactionRef'] = $cart->id."_".$clientId.rand();
-            $transactionData['clientId'] = $clientId;
-            $transactionData['sugarAuthToken'] = $sugarAuthToken;
-            $transactionData['configToken'] = $configToken;
-
-            $intializeTransaction = $PayRightApiCall->intializeTransaction(
+                    $intializeTransaction = $PayRightApiCall->intializeTransaction(
                 $cart->getOrderTotal(),
                 $payrightAccessToken,
                 $transactionData,
                 $PayRightConfig
             );
-            $intializeTransactionData = json_decode($intializeTransaction);
+                    $intializeTransactionData = json_decode($intializeTransaction);
 
-            $ecommToken = $intializeTransactionData->ecommToken;
+                    $ecommToken = $intializeTransactionData->ecommToken;
 
-            $moduleShow = true;
+                    $moduleShow = true;
 
-            if (isset($allowPlan['noofrepayments'])) {
-                $this->context->smarty->assign('repayment', $allowPlan['noofrepayments']);
-                $this->context->smarty->assign('installment', $allowPlan['LoanAmountPerPayment']);
-            }
+                    if (isset($allowPlan['noofrepayments'])) {
+                        $this->context->smarty->assign('repayment', $allowPlan['noofrepayments']);
+                        $this->context->smarty->assign('installment', $allowPlan['LoanAmountPerPayment']);
+                    }
 
             
-            $this->context->smarty->assign('redirectUrl', $PayRightConfig->ecomUrl.$ecommToken);*/
-        } else {
-            $moduleShow = false;
-        }
+                    $this->context->smarty->assign('redirectUrl', $PayRightConfig->ecomUrl.$ecommToken);
+
+                    if ($moduleShow == 1 && $allowPlan != 'exceed_amount' && $cartInstalments == 1) {
+                return  $this->context->smarty->fetch("module:payright/views/templates/hook/cart_payright.tpl");
+                }
+            }
 
  
-        if ($moduleShow == 1 && $allowPlan != 'exceed_amount' && $cartInstalments == 1) {
-            return  $this->context->smarty->fetch("module:payright/views/templates/hook/cart_payright.tpl");
+            
+            }
         }
-    }
     }
 
     /**
@@ -636,8 +637,6 @@ class Payright extends PaymentModule
 
       
         $this->context->smarty->assign("payright_base_url", Context::getContext()->shop->getBaseURL(true));
-
-       
     }
 
     /**
@@ -795,7 +794,6 @@ class Payright extends PaymentModule
         if (isset($payRightAuthObj->error)) {
             return "error";
         } else {
-
             $this->context->cookie->access_token = $payRightAuthObj->access_token;
             if (isset($payRightAuthObj->access_token)) {
                 $configVal = $PayRightApiCall->payRightConfigurationTokenMethod(
@@ -818,7 +816,7 @@ class Payright extends PaymentModule
             $sugarAuthToken= $getSessionValue['auth']->{'auth-token'};
             $configToken = $getSessionValue['configToken'];
             $payrightAccessToken = $this->context->cookie->access_token;
-   
+
             $clientId = $getSessionValue['client_id'];
 
             $cart = $this->context->cart;
