@@ -68,7 +68,7 @@ class Call
         'merchantpassword' => $configobj->getMerchantpassword()
         );
 
-      
+
        
         try {
             $response =  json_decode(
@@ -89,8 +89,7 @@ class Call
             $returnArray['establishment_fee'] = $response->data->establishment_fee;
             $returnArray['client_id'] = $configobj->getClientID();
 
-            print_r($response);
-            die;
+           
             $this->setSessionValues($response, $cookieObj);
             return $returnArray;
         } catch (customException $e) {
