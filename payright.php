@@ -549,8 +549,8 @@ class Payright extends PaymentModule
     {
         $getSessionValue = $this->getSessionValue();
 
-        print_r($getSessionValue);
-        die;
+        //print_r($getSessionValue);
+        //die;
         //$ConfigValues = $this->getConfigFormValues();
         //$cartInstalments = $ConfigValues['CARTPAGE_PAYRIGHTINSTALLMENTS'];
 
