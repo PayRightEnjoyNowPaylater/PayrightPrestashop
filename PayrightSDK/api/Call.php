@@ -70,6 +70,8 @@ class Call
 
         print_r($ConfigFields);
 
+        die;
+
        
         try {
             $response =  json_decode(
