@@ -545,7 +545,7 @@ class Payright extends PaymentModule
         }
     }
 
-    /*public function hookActionCartSave()
+    public function hookActionCartSave()
     {
         $getSessionValue = $this->getSessionValue();
         $ConfigValues = $this->getConfigFormValues();
@@ -554,7 +554,7 @@ class Payright extends PaymentModule
         $cart = $this->context->cart;
 
 
-        if ( isset($this->context->cookie->access_token) && $cart->getOrderTotal() > 0) { 
+       /* if ( isset($this->context->cookie->access_token) && $cart->getOrderTotal() > 0) { 
             $sugarAuthToken= $getSessionValue['auth']->{'auth-token'};
             $configToken = $getSessionValue['configToken'];
             $payrightAccessToken = $this->context->cookie->access_token;
@@ -605,10 +605,10 @@ class Payright extends PaymentModule
         if ($moduleShow == 1 && $allowPlan != 'exceed_amount' && $cartInstalments == 1) {
             print "m here";
             return  $this->context->smarty->fetch("module:payright/views/templates/hook/cart_payright.tpl");
-        }
+        }*/
 
 
-    }*/
+    }
 
     /**
      * Add the CSS & JavaScript files you want to be added on the FO.
