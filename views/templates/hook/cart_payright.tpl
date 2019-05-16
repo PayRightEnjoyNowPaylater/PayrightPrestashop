@@ -27,7 +27,7 @@
 
 <div id="grid">
 
-<div id="btn5"><small>{$repayment|escape:'htmlall':'UTF-8'} Fornightly instalments of ${$installment|escape:'htmlall':'UTF-8'} with</small><a href="{$redirectUrl|escape:'htmlall':'UTF-8'}"></a></div>
+<div id="btn5"><small>{$repayment|escape:'htmlall':'UTF-8'} Fornightly instalments of ${$installment|escape:'htmlall':'UTF-8'} with</small><a href="{$redirectUrl|escape:'htmlall':'UTF-8'}"><img src="{$urls.base_url|escape:'htmlall':'UTF-8'}modules/payright/views/img/payrightlogo_rgb.png" /></a>---</div>
 
 </div>
 
