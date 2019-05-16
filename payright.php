@@ -554,7 +554,7 @@ class Payright extends PaymentModule
   
 
 
-        if ( isset($this->context->cookie->access_token) && isset($this->context->cart) ) { print "why"; die;
+        if ( isset($this->context->cookie->access_token) && isset($this->context->cart) ) { print "why"; print_r($this->context->cart);die;
             $sugarAuthToken= $getSessionValue['auth']->{'auth-token'};
             $configToken = $getSessionValue['configToken'];
             $payrightAccessToken = $this->context->cookie->access_token;
