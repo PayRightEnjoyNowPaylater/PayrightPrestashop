@@ -545,7 +545,7 @@ class Payright extends PaymentModule
         }
     }
 
-    /*public function hookActionCartSave()
+    public function hookActionCartSave()
     {
         $getSessionValue = $this->getSessionValue();
         $ConfigValues = $this->getConfigFormValues();
@@ -606,12 +606,12 @@ class Payright extends PaymentModule
         if ($moduleShow == 1 && $allowPlan != 'exceed_amount' && $cartInstalments == 1) {
             return  $this->context->smarty->fetch("module:payright/views/templates/hook/cart_payright.tpl");
         }
-    }*/
+    }
 
     /**
      * Add the CSS & JavaScript files you want to be added on the FO.
      */
-    /*public function hookDisplayHeader()
+    public function hookDisplayHeader()
     {
         $this->getSessionValue = $this->getSessionValue();
 
@@ -627,39 +627,39 @@ class Payright extends PaymentModule
         $this->context->smarty->assign("payright_base_url", Context::getContext()->shop->getBaseURL(true));
 
        
-    }*/
+    }
 
     /**
      * [hookDisplayNavFullWidth description]
      * @return error template
      */
-    /*public function hookDisplayNavFullWidth()
+    public function hookDisplayNavFullWidth()
     {
         if ($this->context->cookie->error == "error") {
             return $this->context->smarty->fetch("module:payright/views/templates/front/error.tpl");
         }
-    }*/
+    }
 
-    /*public function hookDisplayShoppingCartFooter($params)
+    public function hookDisplayShoppingCartFooter($params)
     {
         $installmentResult = $this->getPayrightInstallments();
         if ($installmentResult['moduleShow'] == 1 && $installmentResult['allowPlan'] != 'exceed_amount') {
             return  $this->context->smarty->fetch("module:payright/views/templates/hook/cart_payright.tpl");
         }
-    }*/
+    }
 
 
     /**
      * Save form data.
      */
-    /*protected function postProcess()
+    protected function postProcess()
     {
         $form_values = $this->getConfigFormValues();
 
         foreach (array_keys($form_values) as $key) {
             Configuration::updateValue($key, Tools::getValue($key));
         }
-    }*/
+    }
 
 
     /**
@@ -746,7 +746,7 @@ class Payright extends PaymentModule
             $this->context->smarty->assign("templateValue", $templateValue);
             return $this->context->smarty->fetch("module:payright/views/templates/front/product_thumbnail.tpl");
         }
-    }
+    }*/
 
     
 
@@ -846,7 +846,7 @@ class Payright extends PaymentModule
         }
 
         return $result;
-    }*/
+    }
 
     public function checkPath()
     {
