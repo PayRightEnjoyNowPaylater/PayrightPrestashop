@@ -551,7 +551,7 @@ class Payright extends PaymentModule
         $ConfigValues = $this->getConfigFormValues();
         $cartInstalments = $ConfigValues['CARTPAGE_PAYRIGHTINSTALLMENTS'];
 
-        $cart = $this->context->cart;
+        //$cart = $this->context->cart;
 
 
        /* if ( isset($this->context->cookie->access_token) && $cart->getOrderTotal() > 0) { 
