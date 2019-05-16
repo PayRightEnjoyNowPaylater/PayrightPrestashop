@@ -753,7 +753,7 @@ class Payright extends PaymentModule
             $this->context->smarty->assign("templateValue", $templateValue);
             return $this->context->smarty->fetch("module:payright/views/templates/front/product_thumbnail.tpl");
         }
-    }
+    }*/
 
     
 
@@ -772,7 +772,7 @@ class Payright extends PaymentModule
         } else {
             return 0;
         }
-    }*/
+    }
 
     public function getSessionValue()
     {
