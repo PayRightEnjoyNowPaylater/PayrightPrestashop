@@ -789,6 +789,7 @@ class Payright extends PaymentModule
             return "error";
         } else {
 
+            $this->context->cookie->error = "";
             $this->context->cookie->access_token = $payRightAuthObj->access_token;
             if (isset($payRightAuthObj->access_token)) {
                 $configVal = $PayRightApiCall->payRightConfigurationTokenMethod(
