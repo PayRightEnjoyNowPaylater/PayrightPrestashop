@@ -545,7 +545,7 @@ class Payright extends PaymentModule
         }
     }
 
-    public function hookActionCartSave()
+    /*public function hookActionCartSave()
     {
         $getSessionValue = $this->getSessionValue();
         $ConfigValues = $this->getConfigFormValues();
@@ -606,7 +606,7 @@ class Payright extends PaymentModule
         if ($moduleShow == 1 && $allowPlan != 'exceed_amount' && $cartInstalments == 1) {
             return  $this->context->smarty->fetch("module:payright/views/templates/hook/cart_payright.tpl");
         }
-    }
+    }*/
 
     /**
      * Add the CSS & JavaScript files you want to be added on the FO.
@@ -746,7 +746,7 @@ class Payright extends PaymentModule
             $this->context->smarty->assign("templateValue", $templateValue);
             return $this->context->smarty->fetch("module:payright/views/templates/front/product_thumbnail.tpl");
         }
-    }*/
+    }
 
     
 
@@ -846,7 +846,7 @@ class Payright extends PaymentModule
         }
 
         return $result;
-    }
+    }*/
 
     public function checkPath()
     {
