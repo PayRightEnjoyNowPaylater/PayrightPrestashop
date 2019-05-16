@@ -68,6 +68,8 @@ class Call
         'merchantpassword' => $configobj->getMerchantpassword()
         );
 
+        print_r($ConfigFields);
+
        
         try {
             $response =  json_decode(
@@ -87,6 +89,9 @@ class Call
             $returnArray['conf'] = $response->data->conf;
             $returnArray['establishment_fee'] = $response->data->establishment_fee;
             $returnArray['client_id'] = $configobj->getClientID();
+
+            print_r($response);
+            die;
             $this->setSessionValues($response, $cookieObj);
             return $returnArray;
         } catch (customException $e) {
@@ -342,6 +347,8 @@ class Call
     public function setSessionValues($configValues, $cookieObj)
     {
         $cookieObj->AccountKeepingfees = $configValues->data->conf->{'Monthly Account Keeping Fee'};
+
+        print_r($configValues->data);
         $cookieObj->PayrightRates = serialize($configValues->data->rates);
         $cookieObj->establishmentFeeArray = serialize($configValues->data->establishment_fee);
         $cookieObj->PaymentProcessingFee = $configValues->data->conf->{'Payment Processing Fee'};
