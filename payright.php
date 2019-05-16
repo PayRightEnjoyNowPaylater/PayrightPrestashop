@@ -547,17 +547,19 @@ class Payright extends PaymentModule
 
     public function hookActionCartSave()
     {
-        $getSessionValue = $this->getSessionValue();
+       
 
         //print_r($getSessionValue);
         //die;
-        //$ConfigValues = $this->getConfigFormValues();
-        //$cartInstalments = $ConfigValues['CARTPAGE_PAYRIGHTINSTALLMENTS'];
+        $ConfigValues = $this->getConfigFormValues();
+        $cartInstalments = $ConfigValues['CARTPAGE_PAYRIGHTINSTALLMENTS'];
 
         //$cart = $this->context->cart;
 
 
-       /* if ( isset($this->context->cookie->access_token) && $cart->getOrderTotal() > 0) { 
+       /* if ( isset($this->context->cookie->access_token) && $cart->getOrderTotal() > 0) {
+
+            $getSessionValue = $this->getSessionValue(); 
             $sugarAuthToken= $getSessionValue['auth']->{'auth-token'};
             $configToken = $getSessionValue['configToken'];
             $payrightAccessToken = $this->context->cookie->access_token;
