@@ -838,8 +838,12 @@ class Payright extends PaymentModule
 
             $moduleShow = true;
             $result = array('moduleShow' => $moduleShow, 'allowPlan' => $allowPlan);
-            $this->context->smarty->assign('repayment', $allowPlan['noofrepayments']);
-            $this->context->smarty->assign('installment', $allowPlan['LoanAmountPerPayment']);
+
+            if (isset($allowPlan['noofrepayments'])) {
+                $this->context->smarty->assign('repayment', $allowPlan['noofrepayments']);
+                $this->context->smarty->assign('installment', $allowPlan['LoanAmountPerPayment']);
+            }
+
             $this->context->smarty->assign('redirectUrl', $PayRightConfig->ecomUrl.$ecommToken);
         } else {
             $result = array('moduleShow' => false);
