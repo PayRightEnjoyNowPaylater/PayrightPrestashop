@@ -346,7 +346,7 @@ class Call
     {
         $cookieObj->AccountKeepingfees = $configValues->data->conf->{'Monthly Account Keeping Fee'};
 
-        print_r($configValues->data);
+      
         $cookieObj->PayrightRates = serialize($configValues->data->rates);
         $cookieObj->establishmentFeeArray = serialize($configValues->data->establishment_fee);
         $cookieObj->PaymentProcessingFee = $configValues->data->conf->{'Payment Processing Fee'};
