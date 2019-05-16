@@ -547,9 +547,9 @@ class Payright extends PaymentModule
 
     public function hookActionCartSave()
     {
-        $getSessionValue = $this->getSessionValue();
-        $ConfigValues = $this->getConfigFormValues();
-        $cartInstalments = $ConfigValues['CARTPAGE_PAYRIGHTINSTALLMENTS'];
+        //$getSessionValue = $this->getSessionValue();
+        //$ConfigValues = $this->getConfigFormValues();
+        //$cartInstalments = $ConfigValues['CARTPAGE_PAYRIGHTINSTALLMENTS'];
 
         //$cart = $this->context->cart;
 
