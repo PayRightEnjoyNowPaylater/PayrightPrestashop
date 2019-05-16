@@ -710,7 +710,7 @@ class Payright extends PaymentModule
 
 
 
-       /*if ($current_controller == 'category'  && $params["type"] == 'unit_price' && $categoryInstalments == 1) {
+       if ($current_controller == 'category'  && $params["type"] == 'unit_price' && $categoryInstalments == 1) {
             $payRightInstallmentBreakDown =  $this->getCurrentInstalmentsDisplay($params["product"]["price_amount"]);
 
             if ($payRightInstallmentBreakDown != 'exceed_amount') {
@@ -745,7 +745,7 @@ class Payright extends PaymentModule
             }
             $this->context->smarty->assign("templateValue", $templateValue);
             return $this->context->smarty->fetch("module:payright/views/templates/front/product_thumbnail.tpl");
-        }*/
+        }
     }
 
     
