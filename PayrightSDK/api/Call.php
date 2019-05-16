@@ -47,6 +47,8 @@ class Call
         //'client_secret' => uBtLxIXPUMs4a0l0ViqxP1QVBGr62FG8YIGi5iMl
         );
 
+      
+
         try {
             $responseAuth =  $this->execute($configObj->getAuthUrl(), $AuthFields, false, null);
            
@@ -65,6 +67,7 @@ class Call
         'merchantusername' => $configobj->getMerchantusername(),
         'merchantpassword' => $configobj->getMerchantpassword()
         );
+
 
        
         try {
@@ -85,6 +88,8 @@ class Call
             $returnArray['conf'] = $response->data->conf;
             $returnArray['establishment_fee'] = $response->data->establishment_fee;
             $returnArray['client_id'] = $configobj->getClientID();
+
+           
             $this->setSessionValues($response, $cookieObj);
             return $returnArray;
         } catch (customException $e) {
@@ -340,6 +345,8 @@ class Call
     public function setSessionValues($configValues, $cookieObj)
     {
         $cookieObj->AccountKeepingfees = $configValues->data->conf->{'Monthly Account Keeping Fee'};
+
+      
         $cookieObj->PayrightRates = serialize($configValues->data->rates);
         $cookieObj->establishmentFeeArray = serialize($configValues->data->establishment_fee);
         $cookieObj->PaymentProcessingFee = $configValues->data->conf->{'Payment Processing Fee'};

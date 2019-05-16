@@ -30,7 +30,7 @@ class Calculations
         //     print_r($payrightInstallmentApproval);
         // echo "</pre>";
         
-        if ($payrightInstallmentApproval == 0) {
+        if ($payrightInstallmentApproval == 0 && $saleAmount > 0) {
             $accountKeepingFees = $cookieObj->AccountKeepingfees;
             $paymentProcessingFee = $cookieObj->PaymentProcessingFee;
      
@@ -127,8 +127,10 @@ class Calculations
                 $generateLoanTerm[] = $ratesArray[$key]['Term'];
             }
         }
-
-        return min($generateLoanTerm);
+        if (count($generateLoanTerm) > 0) {
+            return min($generateLoanTerm);
+        }
+        
     }
 
 
@@ -150,10 +152,13 @@ class Calculations
                 }
             }
         }
-
-        $percentage = min($per);
-        $value = $percentage/100*$saleAmount;
-        return money_format('%.2n', $value);
+        
+        if (count($per) > 0 ) {
+            $percentage = min($per);
+            $value = $percentage/100*$saleAmount;
+            return money_format('%.2n', $value);
+        }
+        
     }
 
 

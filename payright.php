@@ -20,6 +20,8 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
+ini_set('display_errors', 0);
+
 class Payright extends PaymentModule
 {
     protected $html = '';
@@ -61,12 +63,15 @@ class Payright extends PaymentModule
         $this->registerHook('header');
         $this->registerHook('displayShoppingCartFooter');
         $this->registerHook('displayNavFullWidth');
+        $this->registerHook('actionCartSave');
+        
       
         if (!parent::install() || !$this->registerHook('paymentOptions') || !$this->registerHook('paymentReturn')
             || !$this->registerHook('displayProductPriceBlock')
             || !$this->registerHook('displayHeader')
             || !$this->registerHook('displayShoppingCartFooter')
             || !$this->registerHook('displayNavFullWidth')
+            || !$this->registerHook('actionCartSave')
             || !Configuration::updateValue('PAYRIGHT_LIVE_MODE', '')
             || !Configuration::updateValue('PAYRIGHT_ACCOUNT_EMAIL', '')
             || !Configuration::updateValue('PAYRIGHT_ACCOUNT_PASSWORD', '')
@@ -125,7 +130,7 @@ class Payright extends PaymentModule
         return $offlineOption;
     }
 
-    public function getExternalPaymentOption()
+   public function getExternalPaymentOption()
     {
         $ConfigValues = $this->getConfigFormValues();
         $PayRightConfig = new Payright\api\PayRightConfig($ConfigValues, null);
@@ -540,44 +545,19 @@ class Payright extends PaymentModule
         }
     }
 
-    /**
-     * Add the CSS & JavaScript files you want to be added on the FO.
-     */
-    public function hookDisplayHeader()
-    {
-        $this->getSessionValue = $this->getSessionValue();
-
-        if ($this->getSessionValue == "error") {
-            $this->context->cookie->error = $this->getSessionValue;
-        } else {
-            $this->context->cookie->error = '';
-        }
-
-        $this->context->smarty->assign("payright_base_url", Context::getContext()->shop->getBaseURL(true));
-    }
-
-    /**
-     * [hookDisplayNavFullWidth description]
-     * @return error template
-     */
-    public function hookDisplayNavFullWidth()
-    {
-        if ($this->context->cookie->error == "error") {
-            return $this->context->smarty->fetch("module:payright/views/templates/front/error.tpl");
-        }
-    }
-
-    public function hookDisplayShoppingCartFooter($params)
+    public function hookActionCartSave()
     {
         $getSessionValue = $this->getSessionValue();
         $ConfigValues = $this->getConfigFormValues();
         $cartInstalments = $ConfigValues['CARTPAGE_PAYRIGHTINSTALLMENTS'];
 
-        if (isset($this->context->cookie->access_token)) {
+
+        if ( isset($this->context->cookie->access_token) && isset($this->context->cart) ) {
             $sugarAuthToken= $getSessionValue['auth']->{'auth-token'};
             $configToken = $getSessionValue['configToken'];
             $payrightAccessToken = $this->context->cookie->access_token;
-   
+
+
             $clientId = $getSessionValue['client_id'];
 
             $cart = $this->context->cart;
@@ -607,18 +587,62 @@ class Payright extends PaymentModule
             $ecommToken = $intializeTransactionData->ecommToken;
 
             $moduleShow = true;
-           
-            if ($allowPlan != 'exceed_amount') {
+
+            if (isset($allowPlan['noofrepayments'])) {
                 $this->context->smarty->assign('repayment', $allowPlan['noofrepayments']);
                 $this->context->smarty->assign('installment', $allowPlan['LoanAmountPerPayment']);
-                $this->context->smarty->assign('redirectUrl', $PayRightConfig->ecomUrl.$ecommToken);
-            } else {
-                $moduleShow = false;
             }
+
+            
+            $this->context->smarty->assign('redirectUrl', $PayRightConfig->ecomUrl.$ecommToken);
+        } else {
+            $moduleShow = false;
         }
 
  
-        if ($moduleShow == 1 && $allowPlan != 'exceed_amount' && $cartInstalments == 1 ) {
+        if ($moduleShow == 1 && $allowPlan != 'exceed_amount' && $cartInstalments == 1) {
+            return  $this->context->smarty->fetch("module:payright/views/templates/hook/cart_payright.tpl");
+        }
+
+
+    }
+
+    /**
+     * Add the CSS & JavaScript files you want to be added on the FO.
+     */
+    public function hookDisplayHeader()
+    {
+        $this->getSessionValue = $this->getSessionValue();
+
+       
+
+        if ($this->getSessionValue == "error") {
+            $this->context->cookie->error = $this->getSessionValue;
+        } else {
+            $this->context->cookie->error = '';
+        }
+
+      
+        $this->context->smarty->assign("payright_base_url", Context::getContext()->shop->getBaseURL(true));
+
+       
+    }
+
+    /**
+     * [hookDisplayNavFullWidth description]
+     * @return error template
+     */
+    public function hookDisplayNavFullWidth()
+    {
+        if ($this->context->cookie->error == "error") {
+            return $this->context->smarty->fetch("module:payright/views/templates/front/error.tpl");
+        }
+    }
+
+    public function hookDisplayShoppingCartFooter($params)
+    {
+        $installmentResult = $this->getPayrightInstallments();
+        if ($installmentResult['moduleShow'] == 1 && $installmentResult['allowPlan'] != 'exceed_amount') {
             return  $this->context->smarty->fetch("module:payright/views/templates/hook/cart_payright.tpl");
         }
     }
@@ -675,12 +699,17 @@ class Payright extends PaymentModule
         $templateValue = $ConfigValues['INFOMODAL_TEMPLATE'];
         $productInstallments = $ConfigValues['PRODUCTPAGE_PAYRIGHTINSTALLMENTS'];
         $categoryInstalments = $ConfigValues['CATEGORYPAGE_PAYRIGHTINSTALLMENTS'];
-        $frontpageInstalments = $ConfigValues['FRONTPAGE_PAYRIGHTINSTALLMENTS']; 
-        $relatedProductsInstalments = $ConfigValues['RELATEDPRODUCTS_PAYRIGHTINSTALLMENTS']; 
+        $frontpageInstalments = $ConfigValues['FRONTPAGE_PAYRIGHTINSTALLMENTS'];
+        $relatedProductsInstalments = $ConfigValues['RELATEDPRODUCTS_PAYRIGHTINSTALLMENTS'];
+
+
+         if ($this->context->cookie->error == "error") {
+            return ;
+        }
 
 
 
-        if ($current_controller == 'category'  && $params["type"] == 'unit_price' && $categoryInstalments == 1) {
+       if ($current_controller == 'category'  && $params["type"] == 'unit_price' && $categoryInstalments == 1) {
             $payRightInstallmentBreakDown =  $this->getCurrentInstalmentsDisplay($params["product"]["price_amount"]);
 
             if ($payRightInstallmentBreakDown != 'exceed_amount') {
@@ -689,7 +718,6 @@ class Payright extends PaymentModule
             return $this->context->smarty->fetch("module:payright/views/templates/front/product_thumbnail.tpl");
         }
         if ($current_controller == "product" && $params["type"] == "after_price" && $productInstallments == 1) {
-
             $payRightInstallmentBreakDown =  $this->getCurrentInstalmentsDisplay($params["product"]["price_amount"]);
 
             if ($payRightInstallmentBreakDown != 'exceed_amount') {
@@ -701,12 +729,11 @@ class Payright extends PaymentModule
 
         if ($current_controller == 'product'  && $params["type"] == 'unit_price' && $relatedProductsInstalments == 1) {
             // for related products
-                $payRightInstallmentBreakDown =  $this->getCurrentInstalmentsDisplay($params["product"]["price_amount"]);
-              if ($payRightInstallmentBreakDown != 'exceed_amount') {
+            $payRightInstallmentBreakDown =  $this->getCurrentInstalmentsDisplay($params["product"]["price_amount"]);
+            if ($payRightInstallmentBreakDown != 'exceed_amount') {
                 $this->context->smarty->assign("payright_instalment_breakdown", $payRightInstallmentBreakDown);
             }
             return $this->context->smarty->fetch("module:payright/views/templates/front/product_thumbnail.tpl");
-
         }
 
         if ($current_controller == "index" && $params["type"] == "unit_price" && $frontpageInstalments == 1) {
@@ -725,6 +752,8 @@ class Payright extends PaymentModule
     public function getCurrentInstalmentsDisplay($productTotal)
     {
         $rateCard = $this->context->cookie->PayrightRates;
+
+       
         $rateUnserialized = unserialize($rateCard);
         if (!empty($rateUnserialized)) {
             $PayRightCalculations = new Payright\api\Calculations();
@@ -733,6 +762,7 @@ class Payright extends PaymentModule
                 $productTotal,
                 $this->context->cookie
             );
+       
             return $PayrightCalculations;
         } else {
             return 0;
@@ -744,26 +774,89 @@ class Payright extends PaymentModule
         $ConfigValues = $this->getConfigFormValues();
 
 
+
         $PayRightConfig = new Payright\api\PayRightConfig($ConfigValues, null);
         $PayRightApiCall = new Payright\api\Call($PayRightConfig);
 
        
      
         $payRightAuth =  $PayRightApiCall->payRightAuth($PayRightConfig);
+        $payRightAuthObj = json_decode($payRightAuth, true);
 
-        $payRightAuthObj = json_decode($payRightAuth);
+        if (isset($payRightAuthObj['error'])) {
+            return "error";
+        } else {
 
-        $this->context->cookie->access_token = $payRightAuthObj->access_token;
-
-        if (isset($payRightAuthObj->access_token)) {
-            $configVal = $PayRightApiCall->payRightConfigurationTokenMethod(
+            $this->context->cookie->access_token = $payRightAuthObj['access_token'];
+            if (isset($payRightAuthObj['access_token'])) {
+                $configVal = $PayRightApiCall->payRightConfigurationTokenMethod(
                 $this->context->cookie,
                 $PayRightConfig,
-                $payRightAuthObj->access_token
+                $payRightAuthObj['access_token']
             );
+                
             return $configVal;
-        } else {
-            return $payRightAuth;
+            } else {
+                return $payRightAuth;
+            }
         }
+    }
+
+    public function getPayrightInstallments()
+    {
+        $getSessionValue = $this->getSessionValue();
+
+        if (isset($this->context->cookie->access_token)) {
+            $sugarAuthToken= $getSessionValue['auth']->{'auth-token'};
+            $configToken = $getSessionValue['configToken'];
+            $payrightAccessToken = $this->context->cookie->access_token;
+   
+            $clientId = $getSessionValue['client_id'];
+
+            $cart = $this->context->cart;
+
+            $allowPlan = $this->getCurrentInstalmentsDisplay($cart->getOrderTotal());
+
+            $PayRightApiCall = new Payright\api\Call();
+
+
+            $ConfigValues = $this->getConfigFormValues();
+            $PayRightConfig = new Payright\api\PayRightConfig($ConfigValues, null);
+
+            $transactionData = array();
+            $transactionData['transactionRef'] = $cart->id."_".$clientId.rand();
+            $transactionData['clientId'] = $clientId;
+            $transactionData['sugarAuthToken'] = $sugarAuthToken;
+            $transactionData['configToken'] = $configToken;
+
+            $intializeTransaction = $PayRightApiCall->intializeTransaction(
+                $cart->getOrderTotal(),
+                $payrightAccessToken,
+                $transactionData,
+                $PayRightConfig
+            );
+            $intializeTransactionData = json_decode($intializeTransaction);
+
+            $ecommToken = $intializeTransactionData->ecommToken;
+
+            $moduleShow = true;
+            $result = array('moduleShow' => $moduleShow, 'allowPlan' => $allowPlan);
+
+            if (isset($allowPlan['noofrepayments'])) {
+                $this->context->smarty->assign('repayment', $allowPlan['noofrepayments']);
+                $this->context->smarty->assign('installment', $allowPlan['LoanAmountPerPayment']);
+            }
+
+            $this->context->smarty->assign('redirectUrl', $PayRightConfig->ecomUrl.$ecommToken);
+        } else {
+            $result = array('moduleShow' => false);
+        }
+
+        return $result;
+    }
+
+    public function checkPath()
+    {
+        return $this->_path;
     }
 }
