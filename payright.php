@@ -545,7 +545,7 @@ class Payright extends PaymentModule
         }
     }
 
-    public function hookActionCartSave()
+    /*public function hookActionCartSave()
     {
         $getSessionValue = $this->getSessionValue();
         $ConfigValues = $this->getConfigFormValues();
@@ -608,7 +608,7 @@ class Payright extends PaymentModule
         }
 
 
-    }
+    }*/
 
     /**
      * Add the CSS & JavaScript files you want to be added on the FO.
