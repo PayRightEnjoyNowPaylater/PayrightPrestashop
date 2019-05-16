@@ -563,6 +563,8 @@ class Payright extends PaymentModule
             $cart = $this->context->cart;
 
 
+
+
             $allowPlan = $this->getCurrentInstalmentsDisplay($cart->getOrderTotal());
 
             $PayRightApiCall = new Payright\api\Call();
@@ -641,9 +643,9 @@ class Payright extends PaymentModule
     public function hookDisplayShoppingCartFooter($params)
     {
         $installmentResult = $this->getPayrightInstallments();
-        if ($installmentResult['moduleShow'] == 1 && $installmentResult['allowPlan'] != 'exceed_amount') {
+        /*if ($installmentResult['moduleShow'] == 1 && $installmentResult['allowPlan'] != 'exceed_amount') {
             return  $this->context->smarty->fetch("module:payright/views/templates/hook/cart_payright.tpl");
-        }
+        }*/
     }
 
 
@@ -708,7 +710,7 @@ class Payright extends PaymentModule
 
 
 
-        if ($current_controller == 'category'  && $params["type"] == 'unit_price' && $categoryInstalments == 1) {
+       /*if ($current_controller == 'category'  && $params["type"] == 'unit_price' && $categoryInstalments == 1) {
             $payRightInstallmentBreakDown =  $this->getCurrentInstalmentsDisplay($params["product"]["price_amount"]);
 
             if ($payRightInstallmentBreakDown != 'exceed_amount') {
@@ -743,7 +745,7 @@ class Payright extends PaymentModule
             }
             $this->context->smarty->assign("templateValue", $templateValue);
             return $this->context->smarty->fetch("module:payright/views/templates/front/product_thumbnail.tpl");
-        }
+        }*/
     }
 
     
