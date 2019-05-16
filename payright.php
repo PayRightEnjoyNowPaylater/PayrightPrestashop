@@ -551,11 +551,10 @@ class Payright extends PaymentModule
         $ConfigValues = $this->getConfigFormValues();
         $cartInstalments = $ConfigValues['CARTPAGE_PAYRIGHTINSTALLMENTS'];
 
-        print_r($this->context->cart);
-        die;
+  
 
 
-        if ( isset($this->context->cookie->access_token) && isset($this->context->cart) ) {
+        if ( isset($this->context->cookie->access_token) && isset($this->context->cart) ) { print "why"; die;
             $sugarAuthToken= $getSessionValue['auth']->{'auth-token'};
             $configToken = $getSessionValue['configToken'];
             $payrightAccessToken = $this->context->cookie->access_token;
@@ -604,6 +603,7 @@ class Payright extends PaymentModule
 
  
         if ($moduleShow == 1 && $allowPlan != 'exceed_amount' && $cartInstalments == 1) {
+            print "m here";
             return  $this->context->smarty->fetch("module:payright/views/templates/hook/cart_payright.tpl");
         }
 
