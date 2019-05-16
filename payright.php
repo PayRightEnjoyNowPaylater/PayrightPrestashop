@@ -130,7 +130,7 @@ class Payright extends PaymentModule
         return $offlineOption;
     }
 
-    /*public function getExternalPaymentOption()
+   public function getExternalPaymentOption()
     {
         $ConfigValues = $this->getConfigFormValues();
         $PayRightConfig = new Payright\api\PayRightConfig($ConfigValues, null);
@@ -208,7 +208,7 @@ class Payright extends PaymentModule
         return $externalOption;
     }
 
-    public function getEmbeddedPaymentOption()
+   /* public function getEmbeddedPaymentOption()
     {
         $embeddedOption = new PaymentOption();
         $embeddedOption->setCallToActionText($this->l('Pay embedded'))
