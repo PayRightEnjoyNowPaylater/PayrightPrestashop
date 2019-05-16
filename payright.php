@@ -754,8 +754,7 @@ class Payright extends PaymentModule
     {
         $rateCard = $this->context->cookie->PayrightRates;
 
-        print_r($rateCard);
-        die;
+       
         $rateUnserialized = unserialize($rateCard);
         if (!empty($rateUnserialized)) {
             $PayRightCalculations = new Payright\api\Calculations();
@@ -764,8 +763,7 @@ class Payright extends PaymentModule
                 $productTotal,
                 $this->context->cookie
             );
-            print $PayrightCalculations;
-            die;
+       
             return $PayrightCalculations;
         } else {
             return 0;
@@ -798,9 +796,7 @@ class Payright extends PaymentModule
                 $payRightAuthObj['access_token']
             );
                 
-                 print "test";
-                 print_r($configVal);
-                return $configVal;
+            return $configVal;
             } else {
                 return $payRightAuth;
             }
