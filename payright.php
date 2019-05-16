@@ -20,7 +20,7 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-ini_set('display_errors', 1);
+ini_set('display_errors', 0);
 
 class Payright extends PaymentModule
 {
@@ -562,9 +562,6 @@ class Payright extends PaymentModule
 
             $cart = $this->context->cart;
 
-
-
-
             $allowPlan = $this->getCurrentInstalmentsDisplay($cart->getOrderTotal());
 
             $PayRightApiCall = new Payright\api\Call();
@@ -606,6 +603,8 @@ class Payright extends PaymentModule
         if ($moduleShow == 1 && $allowPlan != 'exceed_amount' && $cartInstalments == 1) {
             return  $this->context->smarty->fetch("module:payright/views/templates/hook/cart_payright.tpl");
         }
+
+
     }
 
     /**
