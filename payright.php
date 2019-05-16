@@ -208,7 +208,7 @@ class Payright extends PaymentModule
         return $externalOption;
     }
 
-   /* public function getEmbeddedPaymentOption()
+    public function getEmbeddedPaymentOption()
     {
         $embeddedOption = new PaymentOption();
         $embeddedOption->setCallToActionText($this->l('Pay embedded'))
@@ -253,7 +253,7 @@ class Payright extends PaymentModule
         ));
 
         return $this->context->smarty->fetch('module:payright/views/templates/front/payment_form.tpl');
-    }*/
+    }
 
     /**
      * Create the form that will be displayed in the configuration of your module.
