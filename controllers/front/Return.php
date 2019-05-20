@@ -81,6 +81,7 @@ class PayrightReturnModuleFrontController extends ModuleFrontController
         $transactionObj = json_decode($TokenObject->transactionResult);
 
         $transactionStatus = Tools::strtoupper($transactionObj->prtransactionStatus);
+        $planId = $transactionObj->planId;
 
         switch ($transactionStatus) {
             case Payright\api\Response::RESPONSE_STATUS_SUCCESS:

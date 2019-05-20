@@ -16,7 +16,7 @@ class PayrightCapture
 
     public function createCapturePayment($planName, $planId)
     {
-        $this->createOrder($planName);
+        $this->createOrder($planName, $planId);
 
         $return          = array();
         $return['error'] = false;

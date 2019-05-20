@@ -325,9 +325,10 @@ class Call
                 "Bearer",
                 $payRightAuthObj->access_token
             );
-            // print_r($updatePlanStatus);
-            // die();
-            return $updatePlanStatus;
+        
+            $result = json_decode($updatePlanStatus, true);
+          
+            return $result;
         } catch (customException $e) {
             return $e->errorMessage();
         }

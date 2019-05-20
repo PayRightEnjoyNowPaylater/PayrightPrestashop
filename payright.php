@@ -897,19 +897,13 @@ class Payright extends PaymentModule
      */
     public function hookActionOrderStatusUpdate($params)
     {
-        // var_dump( Configuration::get('PS_OS_SHIPPING'));
-        // die();
+        
         if ($params['newOrderStatus']->id == Configuration::get('PS_OS_SHIPPING')) {
             $getSessionValue = $this->getSessionValue();
 
             $ConfigValues = $this->getConfigFormValues();
 
             if (isset($this->context->cookie->access_token)) {
-                $sugarAuthToken      = $getSessionValue['auth']->{'auth-token'};
-                $configToken         = $getSessionValue['configToken'];
-                $payrightAccessToken = $this->context->cookie->access_token;
-
-                $clientId = $getSessionValue['client_id'];
 
                 $PayRightApiCall = new Payright\api\Call();
 
@@ -925,22 +919,9 @@ class Payright extends PaymentModule
 
                 $status = $PayRightApiCall->planStatusActivate($PayRightConfig, $planid);
 
-                $success = $status->data->status;
-                PayrightOrder::updatePaymentStatus($status, $planid);
-                // if (array_key_exists('error', $status)) {
-                //     //do something
-                //     // $msg = "error " ;
-                //     // $this->adminDisplayWarning($msg);
-                //     // return $this->adminDisplayWarning('Your message2');
-                //     // $this->errors[] = Tools::displayError('Oh dear');
-                //     $success = $status->data->status;
-                //     PayrightOrder::updatePaymentStatus($status, $planid);
-
-                // } else {
-                //     $success = $status->data->status;
-                //     PayrightOrder::updatePaymentStatus($status, $planid);
-
-                // }
+                $success = $status['data']['status'];
+               
+                PayrightOrder::updatePaymentStatus($success, $planid);
 
             }
 
@@ -950,12 +931,12 @@ class Payright extends PaymentModule
 
     public function hookDisplayBackOfficeOrderActions($params)
     {
-       
+
         if (isset($params['id_order'])) {
-            $id = $params['id_order'];
-            PayrightOrder::getPlanStatusByOrderId($id);
-        } 
-        if ($id == 'Active') {
+            $id     = $params['id_order'];
+            $result = PayrightOrder::getPlanStatusByOrderId($id);
+        }
+        if ($result == 'Active') {
             echo "<br><br><div class='alert alert-success'>Your Plan has been activated Successfully</div>";
         } else {
             echo "<br><br><div class='alert alert-warning'>Your Plan has <strong>Not</strong> been activated.Please contact support@payright.com.au</div>";
