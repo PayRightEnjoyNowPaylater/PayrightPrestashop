@@ -511,20 +511,20 @@ class Payright extends PaymentModule
     protected function getConfigFormValues()
     {
         return array(
-            'PAYRIGHT_LIVE_MODE'                   => Configuration::get('PAYRIGHT_LIVE_MODE', true),
-            'PAYRIGHT_ACCOUNT_EMAIL'               => Configuration::get('PAYRIGHT_ACCOUNT_EMAIL', 'contact@prestashop.com'),
-            'PAYRIGHT_ACCOUNT_PASSWORD'            => Configuration::get('PAYRIGHT_ACCOUNT_PASSWORD', null),
-            'PS_PAYRIGHT_APIKEY'                   => Configuration::get('PS_PAYRIGHT_APIKEY', null),
-            'PS_PAYRIGHT_USERNAME'                 => Configuration::get('PS_PAYRIGHT_USERNAME', null),
-            'PS_PAYRIGHT_CLIENTID'                 => Configuration::get('PS_PAYRIGHT_CLIENTID', null),
-            'PRODUCTPAGE_PAYRIGHTINSTALLMENTS'     => Configuration::get('PRODUCTPAGE_PAYRIGHTINSTALLMENTS', null),
-            'CATEGORYPAGE_PAYRIGHTINSTALLMENTS'    => Configuration::get('CATEGORYPAGE_PAYRIGHTINSTALLMENTS', null),
-            'CARTPAGE_PAYRIGHTINSTALLMENTS'        => Configuration::get('CARTPAGE_PAYRIGHTINSTALLMENTS', null),
-            'FRONTPAGE_PAYRIGHTINSTALLMENTS'       => Configuration::get('FRONTPAGE_PAYRIGHTINSTALLMENTS', null),
+            'PAYRIGHT_LIVE_MODE'              => Configuration::get('PAYRIGHT_LIVE_MODE', true),
+            'PAYRIGHT_ACCOUNT_EMAIL'          => Configuration::get('PAYRIGHT_ACCOUNT_EMAIL', 'contact@prestashop.com'),
+            'PAYRIGHT_ACCOUNT_PASSWORD'       => Configuration::get('PAYRIGHT_ACCOUNT_PASSWORD', null),
+            'PS_PAYRIGHT_APIKEY'              => Configuration::get('PS_PAYRIGHT_APIKEY', null),
+            'PS_PAYRIGHT_USERNAME'            => Configuration::get('PS_PAYRIGHT_USERNAME', null),
+            'PS_PAYRIGHT_CLIENTID'            => Configuration::get('PS_PAYRIGHT_CLIENTID', null),
+            'PRODUCTPAGE_PAYRIGHTINSTALLMENTS' => Configuration::get('PRODUCTPAGE_PAYRIGHTINSTALLMENTS', null),
+            'CATEGORYPAGE_PAYRIGHTINSTALLMENTS' => Configuration::get('CATEGORYPAGE_PAYRIGHTINSTALLMENTS', null),
+            'CARTPAGE_PAYRIGHTINSTALLMENTS'     => Configuration::get('CARTPAGE_PAYRIGHTINSTALLMENTS', null),
+            'FRONTPAGE_PAYRIGHTINSTALLMENTS'    => Configuration::get('FRONTPAGE_PAYRIGHTINSTALLMENTS', null),
             'RELATEDPRODUCTS_PAYRIGHTINSTALLMENTS' => Configuration::get('RELATEDPRODUCTS_PAYRIGHTINSTALLMENTS', null),
-            'INFOMODAL_TEMPLATE'                   => Configuration::get('INFOMODAL_TEMPLATE', null),
-            'PAYRIGHT_MERCHANTUSERNAME'            => Configuration::get('PAYRIGHT_MERCHANTUSERNAME', null),
-            'PAYRIGHT_MERCHANTPASSWORD'            => Configuration::get('PAYRIGHT_MERCHANTPASSWORD', null),
+            'INFOMODAL_TEMPLATE'                => Configuration::get('INFOMODAL_TEMPLATE', null),
+            'PAYRIGHT_MERCHANTUSERNAME'         => Configuration::get('PAYRIGHT_MERCHANTUSERNAME', null),
+            'PAYRIGHT_MERCHANTPASSWORD'         => Configuration::get('PAYRIGHT_MERCHANTPASSWORD', null),
 
         );
     }
@@ -544,13 +544,14 @@ class Payright extends PaymentModule
 
         //print_r($getSessionValue);
         //die;
+        //
+        $sugarAuthToken = '';
+        
         $ConfigValues    = $this->getConfigFormValues();
         $cartInstalments = $ConfigValues['CARTPAGE_PAYRIGHTINSTALLMENTS'];
 
         $cart = $this->context->cart;
-
         if (isset($this->context->cookie->access_token) && $cart->getOrderTotal() > 0) {
-
             $getSessionValue     = $this->getSessionValue();
             $sugarAuthToken      = $getSessionValue['auth']->{'auth-token'};
             $configToken         = $getSessionValue['configToken'];
@@ -596,7 +597,6 @@ class Payright extends PaymentModule
         if ($moduleShow == 1 && $allowPlan != 'exceed_amount' && $cartInstalments == 1) {
             return $this->context->smarty->fetch("module:payright/views/templates/hook/cart_payright.tpl");
         }
-
     }
 
     /**
@@ -613,7 +613,6 @@ class Payright extends PaymentModule
         }
 
         $this->context->smarty->assign("payright_base_url", Context::getContext()->shop->getBaseURL(true));
-
     }
 
     /**
@@ -761,7 +760,6 @@ class Payright extends PaymentModule
         if (isset($payRightAuthObj['error'])) {
             return "error";
         } else {
-
             $this->context->cookie->access_token = $payRightAuthObj['access_token'];
             if (isset($payRightAuthObj['access_token'])) {
                 $configVal = $PayRightApiCall->payRightConfigurationTokenMethod(
@@ -873,7 +871,6 @@ class Payright extends PaymentModule
 
         if (!DB::getInstance()->execute($sql)) {
             return false;
-
         }
 
         return true;
@@ -900,68 +897,36 @@ class Payright extends PaymentModule
         // var_dump( Configuration::get('PS_OS_SHIPPING'));
         // die();
         if ($params['newOrderStatus']->id == Configuration::get('PS_OS_SHIPPING')) {
-            $getSessionValue = $this->getSessionValue();
-
             $ConfigValues = $this->getConfigFormValues();
 
             if (isset($this->context->cookie->access_token)) {
-                $sugarAuthToken      = $getSessionValue['auth']->{'auth-token'};
-                $configToken         = $getSessionValue['configToken'];
-                $payrightAccessToken = $this->context->cookie->access_token;
-
-                $clientId = $getSessionValue['client_id'];
-
                 $PayRightApiCall = new Payright\api\Call();
 
                 $ConfigValues   = $this->getConfigFormValues();
                 $PayRightConfig = new Payright\api\PayRightConfig($ConfigValues, null);
-
             }
 
             $orderId = $params['id_order']; // order ID
             $planid  = PayrightOrder::getPlanByOrderId($orderId);
 
             if (isset($planid)) {
-
                 $status = $PayRightApiCall->planStatusActivate($PayRightConfig, $planid);
-
-                $success = $status->data->status;
                 PayrightOrder::updatePaymentStatus($status, $planid);
-                // if (array_key_exists('error', $status)) {
-                //     //do something
-                //     // $msg = "error " ;
-                //     // $this->adminDisplayWarning($msg);
-                //     // return $this->adminDisplayWarning('Your message2');
-                //     // $this->errors[] = Tools::displayError('Oh dear');
-                //     $success = $status->data->status;
-                //     PayrightOrder::updatePaymentStatus($status, $planid);
-
-                // } else {
-                //     $success = $status->data->status;
-                //     PayrightOrder::updatePaymentStatus($status, $planid);
-
-                // }
-
             }
-
         }
-
     }
 
     public function hookDisplayBackOfficeOrderActions($params)
     {
-       
         if (isset($params['id_order'])) {
             $id = $params['id_order'];
             PayrightOrder::getPlanStatusByOrderId($id);
-        } 
+        }
         if ($id == 'Active') {
             echo "<br><br><div class='alert alert-success'>Your Plan has been activated Successfully</div>";
         } else {
-            echo "<br><br><div class='alert alert-warning'>Your Plan has <strong>Not</strong> been activated.Please contact support@payright.com.au</div>";
-
+            echo "<br><br><div class='alert alert-warning'>
+            Your Plan has <strong>Not</strong> been activated.Please contact support@payright.com.au</div>";
         }
-
     }
-
 }

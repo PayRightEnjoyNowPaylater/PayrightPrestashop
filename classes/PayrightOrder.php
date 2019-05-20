@@ -148,7 +148,6 @@ class PayrightOrder extends ObjectModel
     {
         if ($status == 'Active') {
             $status = 'Active';
-
         } else {
             $status = 'Not Activated';
         }
@@ -158,17 +157,4 @@ class PayrightOrder extends ObjectModel
             WHERE  `plan_id` = "' . $planid . '"';
         Db::getInstance()->execute($sql);
     }
-    // public static function getPayrightBtOrdersIds()
-    // {
-    //     $ids = array();
-    //     $sql = new DbQuery();
-    //     $sql->select('id_transaction');
-    //     $sql->from('payright_order');
-    //     $sql->where('method = "BT" AND payment_method = "sale" AND payment_tool = "payright_account" AND (payment_status = "settling" OR payment_status = "submitted_for_settlement")');
-    //     $results = Db::getInstance()->executeS($sql);
-    //     foreach ($results as $result) {
-    //         $ids[] = $result['id_transaction'];
-    //     }
-    //     return $ids;
-    // }
 }
