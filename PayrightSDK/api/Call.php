@@ -280,6 +280,59 @@ class Call
         }
     }
 
+     /**
+    activate plan
+     */
+
+    public function planStatusActivate($configObj, $planId)
+    {
+//           var_dump($configObj);
+        // die();
+        $payRightAuthToken = $this->payRightAuth($configObj);
+        $payRightAuthObj   = json_decode($payRightAuthToken);
+
+        $ConfigFields = array(
+            'merchantusername' => $configObj->getMerchantusername(),
+            'merchantpassword' => $configObj->getMerchantpassword(),
+        );
+
+        $response = json_decode($this->execute(
+            $configObj->getConfigUrl(),
+            $ConfigFields,
+            "Bearer",
+            $payRightAuthObj->access_token
+        ));
+        // var_dump($response->data->configToken);
+        // die();
+        $paramsPayright = array(
+            'Token'       => $response->data->auth->{'auth-token'},
+            'ConfigToken' => $response->data->configToken,
+            'id'          => $planId,
+            'status'      => 'Active',
+
+        );
+        //    $paramsPayright = [
+        //         'Token' => $sugarToken,
+        //         'ConfigToken' =>  $configToken,
+        //         'id' => $PayRightPlanId,
+        //         'status'=> 'Active'
+        //     ];
+
+        try {
+            $updatePlanStatus = $this->execute(
+                $configObj->getPlanStatusChangeUrl(),
+                $paramsPayright,
+                "Bearer",
+                $payRightAuthObj->access_token
+            );
+            // print_r($updatePlanStatus);
+            // die();
+            return $updatePlanStatus;
+        } catch (customException $e) {
+            return $e->errorMessage();
+        }
+    }
+
 
     /**
      * @return mixed

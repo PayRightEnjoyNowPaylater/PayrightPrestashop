@@ -9,120 +9,116 @@
 
 namespace Payright\api;
 
-use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
-
 class PayRightConfig
 {
     /**
-    * MODE
-    */
+     * MODE
+     */
     protected $mode;
 
     /**
-    * API ENDPOINT
-    */
+     * API ENDPOINT
+     */
     protected $apiEndPoint;
 
     /**
-    * API KEY
-    */
+     * API KEY
+     */
     protected $apiKey;
 
     /**
-    * CLIENT ID
-    */
+     * CLIENT ID
+     */
     protected $clientID;
 
     /**
-    * USERNAME
-    */
+     * USERNAME
+     */
     protected $username;
 
     /**
-    * password
-    */
+     * password
+     */
     protected $password;
 
     /**
-    * merchantusername
-    */
+     * merchantusername
+     */
     protected $merchantusername;
 
     /**
-    * merchantpassword
-    */
+     * merchantpassword
+     */
     protected $merchantpassword;
-
 
     protected $AuthUrl;
 
     protected $ConfigUrl;
 
     protected $intialiseTransactionUrl;
-    
-
-
-
+    /**
+     * Plan Status Change ENDPOINT
+     */
+    protected $planStatusChangeUrl;
 
     public function __construct($payrightMode)
     {
-        
+
         $this->setConfigParams($payrightMode);
-        $this->setEnvironment('production');
+        $this->setEnvironment('dev');
 
-       /* if (empty($input)) {
-            $filename = _PS_MODULE_DIR_.'payright/PayrightSDK/config/config.ini';
+        /* if (empty($input)) {
+    $filename = _PS_MODULE_DIR_.'payright/PayrightSDK/config/config.ini';
 
-            print $filename;
+    print $filename;
 
+    //Check if all parameters are set properly in config.ini
+    $validateConfigResponse = $this->validateConfigFile($filename);
 
-            //Check if all parameters are set properly in config.ini
-            $validateConfigResponse = $this->validateConfigFile($filename);
+    // print_r($payrightMode);
 
-           // print_r($payrightMode);
-
-            //If Config.ini is valid and all values are set properly.
-            if ($validateConfigResponse) {
-                /// setting the enviroment
-                $this->setEnvironment('dev');
-                $this->setConfigParams($payrightMode);
-            } else {
-                echo "Please check if config.ini exists and all values are set properly.
-                Please make sure mode should be either sandbox or production";
-                exit;
-            }
-            // $this->setEnvironment($ini_array['Service']['mode']);
-        } else {
-            // if( !empty($input['mode']) ) {
-            //     $this->setMode($input['mode']);
-            // }
-            // if( !empty($input['merchantId']) ) {
-            //     $this->setMerchantId($input['merchantId']);
-            // }
-            // if( !empty($input['merchantSecret']) ) {
-            //     $this->setMerchantSecret($input['merchantSecret']);
-            // }
-            // if( !empty($input['mode']) ) {
-            //     $this->setEnvironment($input['mode']);
-            // }
-            // if( !empty($input['sdkName']) ) {
-            //     $this->setSDKName($input['sdkName']);
-            // }
-            // if( !empty($input['sdkVersion']) ) {
-            //     $this->setSDKVersion($input['sdkVersion']);
-            // }
-        }*/
+    //If Config.ini is valid and all values are set properly.
+    if ($validateConfigResponse) {
+    /// setting the enviroment
+    $this->setEnvironment('dev');
+    $this->setConfigParams($payrightMode);
+    } else {
+    echo "Please check if config.ini exists and all values are set properly.
+    Please make sure mode should be either sandbox or production";
+    exit;
+    }
+    // $this->setEnvironment($ini_array['Service']['mode']);
+    } else {
+    // if( !empty($input['mode']) ) {
+    //     $this->setMode($input['mode']);
+    // }
+    // if( !empty($input['merchantId']) ) {
+    //     $this->setMerchantId($input['merchantId']);
+    // }
+    // if( !empty($input['merchantSecret']) ) {
+    //     $this->setMerchantSecret($input['merchantSecret']);
+    // }
+    // if( !empty($input['mode']) ) {
+    //     $this->setEnvironment($input['mode']);
+    // }
+    // if( !empty($input['sdkName']) ) {
+    //     $this->setSDKName($input['sdkName']);
+    // }
+    // if( !empty($input['sdkVersion']) ) {
+    //     $this->setSDKVersion($input['sdkVersion']);
+    // }
+    }*/
     }
     /*
-    * Validate config.ini array and values
-    * params config.ini file name $fileName
-    * Returns boolean
-    */
+     * Validate config.ini array and values
+     * params config.ini file name $fileName
+     * Returns boolean
+     */
     protected function validateConfigFile($fileName)
     {
         //Check if config.ini file exists in the root directory
         // echo $fileName;
-        
+
         if (!file_exists($fileName)) {
             return false;
         }
@@ -152,8 +148,8 @@ class PayRightConfig
         return true;
     }
     /**
-    * Set Payright URL's based on the selected mode (sandbox or production)
-    */
+     * Set Payright URL's based on the selected mode (sandbox or production)
+     */
     protected function setConfigParams($mode)
     {
         $allConfig = $mode;
@@ -170,14 +166,13 @@ class PayRightConfig
         return true;
     }
 
-
     /**
-    *
-    */
+     *
+     */
     protected function setEnvironment($mode)
     {
         //Set Merchant Id, Secret Key and Callback Url
-        
+
         if ($mode == 'dev') {
             $this->setAuthUrl('http://ecommerceapi.payright.local/oauth/token');
             $this->setConfigUrl('http://ecommerceapi.payright.local/api/v1/configuration');
@@ -203,9 +198,6 @@ class PayRightConfig
 
         return $this;
     }
-
-       
-   
 
     /**
      * @return mixed
@@ -366,10 +358,6 @@ class PayRightConfig
         return $this;
     }
 
-
-
-
-
     /**
      * @return mixed
      */
@@ -410,8 +398,6 @@ class PayRightConfig
         return $this;
     }
 
-
-
     /**
      * @return mixed
      */
@@ -432,8 +418,7 @@ class PayRightConfig
         return $this;
     }
 
-
-     /**
+    /**
      * @return mixed
      */
     public function getEcomTokenDataUrl()
@@ -453,7 +438,7 @@ class PayRightConfig
         return $this;
     }
 
-     /**
+    /**
      * @return mixed
      */
     public function getEcomUrl()
@@ -473,7 +458,7 @@ class PayRightConfig
         return $this;
     }
 
-        /**
+    /**
      * @return mixed
      */
     public function getPlanStatusChangeUrl()

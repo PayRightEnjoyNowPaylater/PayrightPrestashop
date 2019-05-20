@@ -10,6 +10,7 @@
 require_once _PS_MODULE_DIR_ . 'payright/PayrightSDK/api/PayRightConfig.php';
 require_once _PS_MODULE_DIR_ . 'payright/PayrightSDK/api/Call.php';
 require_once _PS_MODULE_DIR_ . 'payright/PayrightSDK/api/Calculations.php';
+require_once _PS_MODULE_DIR_ . 'payright/classes/PayrightOrder.php';
 
 use Payright\api\Call;
 use Payright\api\PayRightConfig;
@@ -57,7 +58,7 @@ class Payright extends PaymentModule
 
     public function install()
     {
-         if (!$this->installSQL()) {
+        if (!$this->installSQL()) {
             return false;
         }
 
@@ -67,6 +68,7 @@ class Payright extends PaymentModule
         $this->registerHook('displayNavFullWidth');
         $this->registerHook('actionCartSave');
         $this->registerHook('displayBackOfficeOrderActions');
+        $this->registerHook('actionOrderStatusUpdate');
 
         if (!parent::install() || !$this->registerHook('paymentOptions') || !$this->registerHook('paymentReturn')
             || !$this->registerHook('displayProductPriceBlock')
@@ -75,6 +77,7 @@ class Payright extends PaymentModule
             || !$this->registerHook('displayNavFullWidth')
             || !$this->registerHook('actionCartSave')
             || !$this->registerHook('displayBackOfficeOrderActions')
+            || !$this->registerHook('actionOrderStatusUpdate')
             || !Configuration::updateValue('PAYRIGHT_LIVE_MODE', '')
             || !Configuration::updateValue('PAYRIGHT_ACCOUNT_EMAIL', '')
             || !Configuration::updateValue('PAYRIGHT_ACCOUNT_PASSWORD', '')
@@ -831,17 +834,10 @@ class Payright extends PaymentModule
         return $this->_path;
     }
 
-    public function hookDisplayBackOfficeOrderActions($params)
-    {
-       
-        echo "<br><br><div class='alert alert-success'><h3>Your Plan has been activated Successfully!!!</h3></div>";
-
-    }
-
     /**
- * Install DataBase table
- * @return boolean if install was successfull
- */
+     * Install DataBase table
+     * @return boolean if install was successfull
+     */
     public function installSQL()
     {
         // $sql = array();
@@ -854,9 +850,7 @@ class Payright extends PaymentModule
               `plan_name` VARCHAR(55),
               `order_reference` VARCHAR(255),
               `payment_method` VARCHAR(255),
-              `total_paid` FLOAT(11),
               `payment_status` VARCHAR(255),
-              `total_prestashop` FLOAT(11),
               `date_add` DATETIME,
               `date_upd` DATETIME
         ) ENGINE = " . _MYSQL_ENGINE_;
@@ -868,7 +862,7 @@ class Payright extends PaymentModule
         return true;
     }
 
-      /**
+    /**
      * Uninstall DataBase table
      * @return boolean if install was successfull
      */
@@ -884,7 +878,7 @@ class Payright extends PaymentModule
 
         return true;
     }
-       public function uninstall()
+    public function uninstall()
     {
         // Uninstall DataBase
         if (!$this->uninstallSQL()) {
@@ -898,5 +892,76 @@ class Payright extends PaymentModule
         return true;
     }
 
+    /**
+    for activating plans
+     */
+    public function hookActionOrderStatusUpdate($params)
+    {
+        // var_dump( Configuration::get('PS_OS_SHIPPING'));
+        // die();
+        if ($params['newOrderStatus']->id == Configuration::get('PS_OS_SHIPPING')) {
+            $getSessionValue = $this->getSessionValue();
+
+            $ConfigValues = $this->getConfigFormValues();
+
+            if (isset($this->context->cookie->access_token)) {
+                $sugarAuthToken      = $getSessionValue['auth']->{'auth-token'};
+                $configToken         = $getSessionValue['configToken'];
+                $payrightAccessToken = $this->context->cookie->access_token;
+
+                $clientId = $getSessionValue['client_id'];
+
+                $PayRightApiCall = new Payright\api\Call();
+
+                $ConfigValues   = $this->getConfigFormValues();
+                $PayRightConfig = new Payright\api\PayRightConfig($ConfigValues, null);
+
+            }
+
+            $orderId = $params['id_order']; // order ID
+            $planid  = PayrightOrder::getPlanByOrderId($orderId);
+
+            if (isset($planid)) {
+
+                $status = $PayRightApiCall->planStatusActivate($PayRightConfig, $planid);
+
+                $success = $status->data->status;
+                PayrightOrder::updatePaymentStatus($status, $planid);
+                // if (array_key_exists('error', $status)) {
+                //     //do something
+                //     // $msg = "error " ;
+                //     // $this->adminDisplayWarning($msg);
+                //     // return $this->adminDisplayWarning('Your message2');
+                //     // $this->errors[] = Tools::displayError('Oh dear');
+                //     $success = $status->data->status;
+                //     PayrightOrder::updatePaymentStatus($status, $planid);
+
+                // } else {
+                //     $success = $status->data->status;
+                //     PayrightOrder::updatePaymentStatus($status, $planid);
+
+                // }
+
+            }
+
+        }
+
+    }
+
+    public function hookDisplayBackOfficeOrderActions($params)
+    {
+       
+        if (isset($params['id_order'])) {
+            $id = $params['id_order'];
+            PayrightOrder::getPlanStatusByOrderId($id);
+        } 
+        if ($id == 'Active') {
+            echo "<br><br><div class='alert alert-success'>Your Plan has been activated Successfully</div>";
+        } else {
+            echo "<br><br><div class='alert alert-warning'>Your Plan has <strong>Not</strong> been activated.Please contact support@payright.com.au</div>";
+
+        }
+
+    }
 
 }
