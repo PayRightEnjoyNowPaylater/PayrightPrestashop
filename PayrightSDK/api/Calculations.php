@@ -57,8 +57,6 @@ class Calculations
                 $LoanAmount,
                 $paymentProcessingFee
             );
-
-            // var_dump($CalculateRepayments);
             $dataResponseArray = array();
             $dataResponseArray['LoanAmount'] = $LoanAmount;
             $dataResponseArray['EstablishmentFee'] = $resEstablishmentFees;
@@ -73,7 +71,6 @@ class Calculations
             $dataResponseArray['noofrepayments'] = $calculatedNoofRepayments;
             $dataResponseArray['repaymentfrequency'] = 'Fortnightly';
             $dataResponseArray['LoanAmountPerPayment'] =  $CalculateRepayments;
-
             return $dataResponseArray;
         
         // } else {
@@ -130,7 +127,6 @@ class Calculations
         if (count($generateLoanTerm) > 0) {
             return min($generateLoanTerm);
         }
-        
     }
 
 
@@ -153,12 +149,11 @@ class Calculations
             }
         }
         
-        if (count($per) > 0 ) {
+        if (count($per) > 0) {
             $percentage = min($per);
             $value = $percentage/100*$saleAmount;
             return money_format('%.2n', $value);
         }
-        
     }
 
 

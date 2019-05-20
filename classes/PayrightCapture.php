@@ -6,6 +6,7 @@
  * @copyright 2016-2019 https://www.payright.com.au
  * @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
+
 require_once _PS_MODULE_DIR_ . 'payright/classes/PayrightOrder.php';
 
 class PayrightCapture
@@ -59,11 +60,9 @@ class PayrightCapture
         if (Tools::version_compare(_PS_VERSION_, '1.7.1.0', '>')) {
             $order    = Order::getByCartId($cart->id);
             $id_order = $order->id;
-
         } else {
             $id_order = Order::getOrderByCartId($cart->id);
             $order    = new Order($id_order);
-
         }
 
         $sql = 'UPDATE `' . _DB_PREFIX_ . 'order_payment`

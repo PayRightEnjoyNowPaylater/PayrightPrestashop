@@ -77,17 +77,7 @@ class PayrightOrder extends ObjectModel
         ),
     );
 
-    public static function getIdOrderByTransactionId($id_transaction)
-    {
-        $sql = 'SELECT `id_order`
-            FROM `' . _DB_PREFIX_ . 'payright_order`
-            WHERE `id_transaction` = \'' . pSQL($id_transaction) . '\'';
-        $result = Db::getInstance()->getRow($sql);
-        if ($result != false) {
-            return (int) $result['id_order'];
-        }
-        return 0;
-    }
+
 
     public static function getPlanStatusByOrderId($id)
     {
@@ -102,18 +92,6 @@ class PayrightOrder extends ObjectModel
     }
 
 
-
-    // public static function getPlanStatusByOrderReference($id)
-    // {
-    //     $sql = 'SELECT `payment_status`
-    //         FROM `' . _DB_PREFIX_ . 'payright_order`
-    //         WHERE `order_reference` = \'' . pSQL($id) . '\'';
-    //     $result = Db::getInstance()->getRow($sql);
-    //     if ($result != false) {
-    //         return $result['payment_status'];
-    //     }
-    //     return 0;
-    // }
     public static function getPlanByOrderId($id)
     {
         $sql = 'SELECT `plan_id`
@@ -126,29 +104,10 @@ class PayrightOrder extends ObjectModel
         return 0;
     }
 
-    public static function getOrderById($id_order)
-    {
-        return Db::getInstance()->getRow(
-            'SELECT * FROM `' . _DB_PREFIX_ . 'payright_order`
-            WHERE `id_order` = ' . (int) $id_order
-        );
-    }
-
-    public static function loadByOrderId($id_order)
-    {
-        $sql = new DbQuery();
-        $sql->select('id_payright_order');
-        $sql->from('payright_order');
-        $sql->where('id_order = ' . (int) $id_order);
-        $id_payright_order = Db::getInstance()->getValue($sql);
-        return new self($id_payright_order);
-    }
-
     public static function updatePaymentStatus($status, $planid)
     {
         if ($status == 'Active') {
             $status = 'Active';
-
         } else {
             $status = 'Not Activated';
         }
@@ -158,17 +117,4 @@ class PayrightOrder extends ObjectModel
             WHERE  `plan_id` = "' . $planid . '"';
         Db::getInstance()->execute($sql);
     }
-    // public static function getPayrightBtOrdersIds()
-    // {
-    //     $ids = array();
-    //     $sql = new DbQuery();
-    //     $sql->select('id_transaction');
-    //     $sql->from('payright_order');
-    //     $sql->where('method = "BT" AND payment_method = "sale" AND payment_tool = "payright_account" AND (payment_status = "settling" OR payment_status = "submitted_for_settlement")');
-    //     $results = Db::getInstance()->executeS($sql);
-    //     foreach ($results as $result) {
-    //         $ids[] = $result['id_transaction'];
-    //     }
-    //     return $ids;
-    // }
 }

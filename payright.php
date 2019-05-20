@@ -544,13 +544,14 @@ class Payright extends PaymentModule
 
         //print_r($getSessionValue);
         //die;
+        //
+        $sugarAuthToken = '';
+
         $ConfigValues    = $this->getConfigFormValues();
         $cartInstalments = $ConfigValues['CARTPAGE_PAYRIGHTINSTALLMENTS'];
 
         $cart = $this->context->cart;
-
         if (isset($this->context->cookie->access_token) && $cart->getOrderTotal() > 0) {
-
             $getSessionValue     = $this->getSessionValue();
             $sugarAuthToken      = $getSessionValue['auth']->{'auth-token'};
             $configToken         = $getSessionValue['configToken'];
@@ -596,7 +597,6 @@ class Payright extends PaymentModule
         if ($moduleShow == 1 && $allowPlan != 'exceed_amount' && $cartInstalments == 1) {
             return $this->context->smarty->fetch("module:payright/views/templates/hook/cart_payright.tpl");
         }
-
     }
 
     /**
@@ -613,7 +613,6 @@ class Payright extends PaymentModule
         }
 
         $this->context->smarty->assign("payright_base_url", Context::getContext()->shop->getBaseURL(true));
-
     }
 
     /**
@@ -761,7 +760,6 @@ class Payright extends PaymentModule
         if (isset($payRightAuthObj['error'])) {
             return "error";
         } else {
-
             $this->context->cookie->access_token = $payRightAuthObj['access_token'];
             if (isset($payRightAuthObj['access_token'])) {
                 $configVal = $PayRightApiCall->payRightConfigurationTokenMethod(
@@ -873,7 +871,6 @@ class Payright extends PaymentModule
 
         if (!DB::getInstance()->execute($sql)) {
             return false;
-
         }
 
         return true;
@@ -897,10 +894,8 @@ class Payright extends PaymentModule
      */
     public function hookActionOrderStatusUpdate($params)
     {
-        
-        if ($params['newOrderStatus']->id == Configuration::get('PS_OS_SHIPPING')) {
-            $getSessionValue = $this->getSessionValue();
 
+        if ($params['newOrderStatus']->id == Configuration::get('PS_OS_SHIPPING')) {
             $ConfigValues = $this->getConfigFormValues();
 
             if (isset($this->context->cookie->access_token)) {
@@ -909,24 +904,22 @@ class Payright extends PaymentModule
 
                 $ConfigValues   = $this->getConfigFormValues();
                 $PayRightConfig = new Payright\api\PayRightConfig($ConfigValues, null);
-
             }
 
             $orderId = $params['id_order']; // order ID
             $planid  = PayrightOrder::getPlanByOrderId($orderId);
 
             if (isset($planid)) {
-
                 $status = $PayRightApiCall->planStatusActivate($PayRightConfig, $planid);
 
                 $success = $status['data']['status'];
-               
+
                 PayrightOrder::updatePaymentStatus($success, $planid);
 
+                PayrightOrder::updatePaymentStatus($status, $planid);
+
             }
-
         }
-
     }
 
     public function hookDisplayBackOfficeOrderActions($params)
@@ -939,10 +932,8 @@ class Payright extends PaymentModule
         if ($result == 'Active') {
             echo "<br><br><div class='alert alert-success'>Your Plan has been activated Successfully</div>";
         } else {
-            echo "<br><br><div class='alert alert-warning'>Your Plan has <strong>Not</strong> been activated.Please contact support@payright.com.au</div>";
-
+            echo "<br><br><div class='alert alert-warning'>
+            Your Plan has <strong>Not</strong> been activated.Please contact support@payright.com.au</div>";
         }
-
     }
-
 }
