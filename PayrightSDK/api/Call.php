@@ -318,6 +318,8 @@ class Call
         //         'status'=> 'Active'
         //     ];
 
+        print $configObj->getPlanStatusChangeUrl();
+        die;
         try {
             $updatePlanStatus = $this->execute(
                 $configObj->getPlanStatusChangeUrl(),
