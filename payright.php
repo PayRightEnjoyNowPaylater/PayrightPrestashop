@@ -511,20 +511,20 @@ class Payright extends PaymentModule
     protected function getConfigFormValues()
     {
         return array(
-            'PAYRIGHT_LIVE_MODE'              => Configuration::get('PAYRIGHT_LIVE_MODE', true),
-            'PAYRIGHT_ACCOUNT_EMAIL'          => Configuration::get('PAYRIGHT_ACCOUNT_EMAIL', 'contact@prestashop.com'),
-            'PAYRIGHT_ACCOUNT_PASSWORD'       => Configuration::get('PAYRIGHT_ACCOUNT_PASSWORD', null),
-            'PS_PAYRIGHT_APIKEY'              => Configuration::get('PS_PAYRIGHT_APIKEY', null),
-            'PS_PAYRIGHT_USERNAME'            => Configuration::get('PS_PAYRIGHT_USERNAME', null),
-            'PS_PAYRIGHT_CLIENTID'            => Configuration::get('PS_PAYRIGHT_CLIENTID', null),
-            'PRODUCTPAGE_PAYRIGHTINSTALLMENTS' => Configuration::get('PRODUCTPAGE_PAYRIGHTINSTALLMENTS', null),
-            'CATEGORYPAGE_PAYRIGHTINSTALLMENTS' => Configuration::get('CATEGORYPAGE_PAYRIGHTINSTALLMENTS', null),
-            'CARTPAGE_PAYRIGHTINSTALLMENTS'     => Configuration::get('CARTPAGE_PAYRIGHTINSTALLMENTS', null),
-            'FRONTPAGE_PAYRIGHTINSTALLMENTS'    => Configuration::get('FRONTPAGE_PAYRIGHTINSTALLMENTS', null),
+            'PAYRIGHT_LIVE_MODE'                   => Configuration::get('PAYRIGHT_LIVE_MODE', true),
+            'PAYRIGHT_ACCOUNT_EMAIL'               => Configuration::get('PAYRIGHT_ACCOUNT_EMAIL', 'contact@prestashop.com'),
+            'PAYRIGHT_ACCOUNT_PASSWORD'            => Configuration::get('PAYRIGHT_ACCOUNT_PASSWORD', null),
+            'PS_PAYRIGHT_APIKEY'                   => Configuration::get('PS_PAYRIGHT_APIKEY', null),
+            'PS_PAYRIGHT_USERNAME'                 => Configuration::get('PS_PAYRIGHT_USERNAME', null),
+            'PS_PAYRIGHT_CLIENTID'                 => Configuration::get('PS_PAYRIGHT_CLIENTID', null),
+            'PRODUCTPAGE_PAYRIGHTINSTALLMENTS'     => Configuration::get('PRODUCTPAGE_PAYRIGHTINSTALLMENTS', null),
+            'CATEGORYPAGE_PAYRIGHTINSTALLMENTS'    => Configuration::get('CATEGORYPAGE_PAYRIGHTINSTALLMENTS', null),
+            'CARTPAGE_PAYRIGHTINSTALLMENTS'        => Configuration::get('CARTPAGE_PAYRIGHTINSTALLMENTS', null),
+            'FRONTPAGE_PAYRIGHTINSTALLMENTS'       => Configuration::get('FRONTPAGE_PAYRIGHTINSTALLMENTS', null),
             'RELATEDPRODUCTS_PAYRIGHTINSTALLMENTS' => Configuration::get('RELATEDPRODUCTS_PAYRIGHTINSTALLMENTS', null),
-            'INFOMODAL_TEMPLATE'                => Configuration::get('INFOMODAL_TEMPLATE', null),
-            'PAYRIGHT_MERCHANTUSERNAME'         => Configuration::get('PAYRIGHT_MERCHANTUSERNAME', null),
-            'PAYRIGHT_MERCHANTPASSWORD'         => Configuration::get('PAYRIGHT_MERCHANTPASSWORD', null),
+            'INFOMODAL_TEMPLATE'                   => Configuration::get('INFOMODAL_TEMPLATE', null),
+            'PAYRIGHT_MERCHANTUSERNAME'            => Configuration::get('PAYRIGHT_MERCHANTUSERNAME', null),
+            'PAYRIGHT_MERCHANTPASSWORD'            => Configuration::get('PAYRIGHT_MERCHANTPASSWORD', null),
 
         );
     }
@@ -725,6 +725,20 @@ class Payright extends PaymentModule
             $this->context->smarty->assign("templateValue", $templateValue);
             return $this->context->smarty->fetch("module:payright/views/templates/front/product_thumbnail.tpl");
         }
+
+        if ($current_controller == "orderconfirmation" && $params["type"] == "unit_price" && $frontpageInstalments == 1) {
+
+            if (isset($params["product"]["price_amount"])) {
+                $payRightInstallmentBreakDown = $this->getCurrentInstalmentsDisplay($params["product"]["price_amount"]);
+
+                if ($payRightInstallmentBreakDown != 'exceed_amount') {
+                    $this->context->smarty->assign("payright_instalment_breakdown", $payRightInstallmentBreakDown);
+                }
+                $this->context->smarty->assign("templateValue", $templateValue);
+                return $this->context->smarty->fetch("module:payright/views/templates/front/product_thumbnail.tpl");
+            }
+        }
+
     }
 
     public function getCurrentInstalmentsDisplay($productTotal)
@@ -900,13 +914,11 @@ class Payright extends PaymentModule
             $ConfigValues   = $this->getConfigFormValues();
             $PayRightConfig = new Payright\api\PayRightConfig($ConfigValues, null);
 
-
             $orderId = $params['id_order']; // order ID
             $planid  = PayrightOrder::getPlanByOrderId($orderId);
 
             if (isset($planid)) {
                 $status = $PayRightApiCall->planStatusActivate($PayRightConfig, $planid);
-
 
                 if (array_key_exists('error', $status['data'])) {
                     $planResult = $status['data']['error_message'];
@@ -925,7 +937,7 @@ class Payright extends PaymentModule
             $id     = $params['id_order'];
             $result = PayrightOrder::getPlanStatusByOrderId($id);
         }
-      
+
         if ($result === 'Active') {
             echo "<br><br><div class='alert alert-success'>Your Plan has been activated Successfully</div>";
         } elseif ($result != 'Active' && $result != 0) {
