@@ -277,7 +277,7 @@
                         We want to ensure you have a positive payment experience and have made the checkout process simple. We take responsible lending seriously so credit is only extended to approved customers. Please ensure you read the <a href="#" target="_blank">terms and conditions</a>for further information and note that PayRight is not available on all purchases.
                     </p>
                 </div>
-                <a class="tellmemore" href="https://www.payright.com.au/">Tell me more</a>
+                <a class="tellmemore" href="https://www.payright.com.au/" target=" ">Tell me more</a>
             </article>
         </div>
         <!-- ***** END MODAL ***** -->
