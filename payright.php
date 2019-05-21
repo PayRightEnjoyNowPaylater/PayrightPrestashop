@@ -909,14 +909,17 @@ class Payright extends PaymentModule
 
                 $status = $PayRightApiCall->planStatusActivate($PayRightConfig, $planid);
 
-                print_r($status);
-                die;
+                if ($status['data']['error'] != '') {
+                    $planResult = $status['data']['error_message'];
+                } else {
+                    $planResult = $status['data']['status'];
+                }
 
-                $success = $status['data']['status'];
+               
 
-                PayrightOrder::updatePaymentStatus($success, $planid);
+                PayrightOrder::updatePaymentStatus($planResult, $planid);
 
-                PayrightOrder::updatePaymentStatus($status, $planid);
+               // PayrightOrder::updatePaymentStatus($status, $planid);
             }
         }
     }
