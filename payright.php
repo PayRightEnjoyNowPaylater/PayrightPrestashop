@@ -895,45 +895,26 @@ class Payright extends PaymentModule
     public function hookActionOrderStatusUpdate($params)
     {
         if ($params['newOrderStatus']->id == Configuration::get('PS_OS_SHIPPING')) {
-<<<<<<< HEAD
-
-=======
-                     
->>>>>>> b0e194f5a8c3cde1ef7fadc83efb13c3e4d48c2a
             $PayRightApiCall = new Payright\api\Call();
 
             $ConfigValues   = $this->getConfigFormValues();
             $PayRightConfig = new Payright\api\PayRightConfig($ConfigValues, null);
-<<<<<<< HEAD
-=======
-           
->>>>>>> b0e194f5a8c3cde1ef7fadc83efb13c3e4d48c2a
+
 
             $orderId = $params['id_order']; // order ID
             $planid  = PayrightOrder::getPlanByOrderId($orderId);
 
             if (isset($planid)) {
-
                 $status = $PayRightApiCall->planStatusActivate($PayRightConfig, $planid);
 
-<<<<<<< HEAD
+
                 if (array_key_exists('error', $status['data'])) {
-=======
-                if ($status['data']['error'] != '') {
->>>>>>> b0e194f5a8c3cde1ef7fadc83efb13c3e4d48c2a
                     $planResult = $status['data']['error_message'];
                 } else {
                     $planResult = $status['data']['status'];
                 }
-<<<<<<< HEAD
-=======
-
-               
->>>>>>> b0e194f5a8c3cde1ef7fadc83efb13c3e4d48c2a
 
                 PayrightOrder::updatePaymentStatus($planResult, $planid);
-
-               // PayrightOrder::updatePaymentStatus($status, $planid);
             }
         }
     }
@@ -946,8 +927,9 @@ class Payright extends PaymentModule
         }
         if ($result == 'Active') {
             echo "<br><br><div class='alert alert-success'>Your Plan has been activated Successfully</div>";
-        }elseif ($result == null) {
-            echo "<br><br><div class='alert alert-warning'>The Plan will not activate until the product is shipped</div>";
+        } elseif ($result == null) {
+            echo "<br><br><div class='alert alert-warning'>The Plan will not activate until the product
+            is shipped</div>";
         } else {
             echo "<br><br><div class='alert alert-warning'>
             " . $result . " Please contact support@payright.com.au</div>";
