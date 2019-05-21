@@ -89,7 +89,8 @@ class PayrightOrder extends ObjectModel
         if ($result['payment_status'] != " ") {
            return $result['payment_status'];
         } else {
-           return 0;
+           $result = 0;
+           return $result;
         }
     }
 

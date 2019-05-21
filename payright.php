@@ -933,7 +933,7 @@ class Payright extends PaymentModule
             " . $result . " Please contact support@payright.com.au</div>";
         } else {
             echo "<br><br><div class='alert alert-warning'>The Plan will not activate until the product
-            is shipped</div>".$result;
+            is shipped</div>";
         }
     }
 }
