@@ -924,15 +924,14 @@ class Payright extends PaymentModule
         if (isset($params['id_order'])) {
             $id     = $params['id_order'];
             $result = PayrightOrder::getPlanStatusByOrderId($id);
-            print_r($result);
         }
 
 
         if ($result == 'Active') {
             echo "<br><br><div class='alert alert-success'>Your Plan has been activated Successfully</div>";
-        } elseif ($result != 'Active' && isset($result)) {
+        } elseif ($result != 'Active' && $result == null) {
             echo "<br><br><div class='alert alert-warning'>
-            " . $result . " --Please contact support@payright.com.au</div>";
+            " . $result . " Please contact support@payright.com.au</div>";
         } else {
             echo "<br><br><div class='alert alert-warning'>The Plan will not activate until the product
             is shipped</div>";
