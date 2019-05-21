@@ -269,7 +269,7 @@ class Call
        
         try {
             $updatePlanStatus =  $this->execute(
-                $configObj->setPlanStatusChangeUrl(),
+                $configObj->getPlanStatusChangeUrl(),
                 $paramsPayright,
                 "Bearer",
                 $payRightAuthObj->access_token
