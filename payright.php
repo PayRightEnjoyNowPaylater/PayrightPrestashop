@@ -924,10 +924,11 @@ class Payright extends PaymentModule
         if (isset($params['id_order'])) {
             $id     = $params['id_order'];
             $result = PayrightOrder::getPlanStatusByOrderId($id);
+               print_r($result);
+   
         }
 
-        print_r($result);
-        die;
+
         if ($result == 'Active') {
             echo "<br><br><div class='alert alert-success'>Your Plan has been activated Successfully</div>";
         } elseif (!isset($result)) {
