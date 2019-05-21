@@ -895,22 +895,18 @@ class Payright extends PaymentModule
     public function hookActionOrderStatusUpdate($params)
     {
         if ($params['newOrderStatus']->id == Configuration::get('PS_OS_SHIPPING')) {
-            $ConfigValues = $this->getConfigFormValues();
+                     
+            $PayRightApiCall = new Payright\api\Call();
 
-            if (isset($this->context->cookie->access_token)) {
-                $PayRightApiCall = new Payright\api\Call();
-
-                $ConfigValues   = $this->getConfigFormValues();
-                $PayRightConfig = new Payright\api\PayRightConfig($ConfigValues, null);
-            }
+            $ConfigValues   = $this->getConfigFormValues();
+            $PayRightConfig = new Payright\api\PayRightConfig($ConfigValues, null);
+           
 
             $orderId = $params['id_order']; // order ID
             $planid  = PayrightOrder::getPlanByOrderId($orderId);
 
             if (isset($planid)) {
 
-                print_r($PayRightConfig);
-                die;
                 $status = $PayRightApiCall->planStatusActivate($PayRightConfig, $planid);
 
                 $success = $status['data']['status'];
