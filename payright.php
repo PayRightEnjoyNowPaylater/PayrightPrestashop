@@ -929,7 +929,7 @@ class Payright extends PaymentModule
         print_r($result);
         if ($result == 'Active') {
             echo "<br><br><div class='alert alert-success'>Your Plan has been activated Successfully</div>";
-        } elseif ($result == '') {
+        } elseif (!isset($result)) {
             echo "<br><br><div class='alert alert-warning'>The Plan will not activate until the product
             is shipped</div>";
         } else {
