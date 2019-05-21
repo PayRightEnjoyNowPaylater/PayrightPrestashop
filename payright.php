@@ -511,20 +511,20 @@ class Payright extends PaymentModule
     protected function getConfigFormValues()
     {
         return array(
-            'PAYRIGHT_LIVE_MODE'                   => Configuration::get('PAYRIGHT_LIVE_MODE', true),
-            'PAYRIGHT_ACCOUNT_EMAIL'               => Configuration::get('PAYRIGHT_ACCOUNT_EMAIL', 'contact@prestashop.com'),
-            'PAYRIGHT_ACCOUNT_PASSWORD'            => Configuration::get('PAYRIGHT_ACCOUNT_PASSWORD', null),
-            'PS_PAYRIGHT_APIKEY'                   => Configuration::get('PS_PAYRIGHT_APIKEY', null),
-            'PS_PAYRIGHT_USERNAME'                 => Configuration::get('PS_PAYRIGHT_USERNAME', null),
-            'PS_PAYRIGHT_CLIENTID'                 => Configuration::get('PS_PAYRIGHT_CLIENTID', null),
-            'PRODUCTPAGE_PAYRIGHTINSTALLMENTS'     => Configuration::get('PRODUCTPAGE_PAYRIGHTINSTALLMENTS', null),
-            'CATEGORYPAGE_PAYRIGHTINSTALLMENTS'    => Configuration::get('CATEGORYPAGE_PAYRIGHTINSTALLMENTS', null),
-            'CARTPAGE_PAYRIGHTINSTALLMENTS'        => Configuration::get('CARTPAGE_PAYRIGHTINSTALLMENTS', null),
-            'FRONTPAGE_PAYRIGHTINSTALLMENTS'       => Configuration::get('FRONTPAGE_PAYRIGHTINSTALLMENTS', null),
+            'PAYRIGHT_LIVE_MODE'              => Configuration::get('PAYRIGHT_LIVE_MODE', true),
+            'PAYRIGHT_ACCOUNT_EMAIL'          => Configuration::get('PAYRIGHT_ACCOUNT_EMAIL', 'contact@prestashop.com'),
+            'PAYRIGHT_ACCOUNT_PASSWORD'       => Configuration::get('PAYRIGHT_ACCOUNT_PASSWORD', null),
+            'PS_PAYRIGHT_APIKEY'              => Configuration::get('PS_PAYRIGHT_APIKEY', null),
+            'PS_PAYRIGHT_USERNAME'            => Configuration::get('PS_PAYRIGHT_USERNAME', null),
+            'PS_PAYRIGHT_CLIENTID'            => Configuration::get('PS_PAYRIGHT_CLIENTID', null),
+            'PRODUCTPAGE_PAYRIGHTINSTALLMENTS' => Configuration::get('PRODUCTPAGE_PAYRIGHTINSTALLMENTS', null),
+            'CATEGORYPAGE_PAYRIGHTINSTALLMENTS' => Configuration::get('CATEGORYPAGE_PAYRIGHTINSTALLMENTS', null),
+            'CARTPAGE_PAYRIGHTINSTALLMENTS'     => Configuration::get('CARTPAGE_PAYRIGHTINSTALLMENTS', null),
+            'FRONTPAGE_PAYRIGHTINSTALLMENTS'    => Configuration::get('FRONTPAGE_PAYRIGHTINSTALLMENTS', null),
             'RELATEDPRODUCTS_PAYRIGHTINSTALLMENTS' => Configuration::get('RELATEDPRODUCTS_PAYRIGHTINSTALLMENTS', null),
-            'INFOMODAL_TEMPLATE'                   => Configuration::get('INFOMODAL_TEMPLATE', null),
-            'PAYRIGHT_MERCHANTUSERNAME'            => Configuration::get('PAYRIGHT_MERCHANTUSERNAME', null),
-            'PAYRIGHT_MERCHANTPASSWORD'            => Configuration::get('PAYRIGHT_MERCHANTPASSWORD', null),
+            'INFOMODAL_TEMPLATE'                => Configuration::get('INFOMODAL_TEMPLATE', null),
+            'PAYRIGHT_MERCHANTUSERNAME'         => Configuration::get('PAYRIGHT_MERCHANTUSERNAME', null),
+            'PAYRIGHT_MERCHANTPASSWORD'         => Configuration::get('PAYRIGHT_MERCHANTPASSWORD', null),
 
         );
     }
@@ -894,35 +894,52 @@ class Payright extends PaymentModule
      */
     public function hookActionOrderStatusUpdate($params)
     {
-
         if ($params['newOrderStatus']->id == Configuration::get('PS_OS_SHIPPING')) {
+<<<<<<< HEAD
 
+=======
+                     
+>>>>>>> b0e194f5a8c3cde1ef7fadc83efb13c3e4d48c2a
             $PayRightApiCall = new Payright\api\Call();
 
             $ConfigValues   = $this->getConfigFormValues();
             $PayRightConfig = new Payright\api\PayRightConfig($ConfigValues, null);
+<<<<<<< HEAD
+=======
+           
+>>>>>>> b0e194f5a8c3cde1ef7fadc83efb13c3e4d48c2a
 
             $orderId = $params['id_order']; // order ID
             $planid  = PayrightOrder::getPlanByOrderId($orderId);
 
             if (isset($planid)) {
+
                 $status = $PayRightApiCall->planStatusActivate($PayRightConfig, $planid);
 
+<<<<<<< HEAD
                 if (array_key_exists('error', $status['data'])) {
+=======
+                if ($status['data']['error'] != '') {
+>>>>>>> b0e194f5a8c3cde1ef7fadc83efb13c3e4d48c2a
                     $planResult = $status['data']['error_message'];
                 } else {
                     $planResult = $status['data']['status'];
                 }
+<<<<<<< HEAD
+=======
+
+               
+>>>>>>> b0e194f5a8c3cde1ef7fadc83efb13c3e4d48c2a
 
                 PayrightOrder::updatePaymentStatus($planResult, $planid);
 
+               // PayrightOrder::updatePaymentStatus($status, $planid);
             }
         }
     }
 
     public function hookDisplayBackOfficeOrderActions($params)
     {
-
         if (isset($params['id_order'])) {
             $id     = $params['id_order'];
             $result = PayrightOrder::getPlanStatusByOrderId($id);
