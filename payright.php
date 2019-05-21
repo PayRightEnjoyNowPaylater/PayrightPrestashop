@@ -512,7 +512,7 @@ class Payright extends PaymentModule
     {
         return array(
             'PAYRIGHT_LIVE_MODE'                   => Configuration::get('PAYRIGHT_LIVE_MODE', true),
-            'PAYRIGHT_ACCOUNT_EMAIL'               => Configuration::get('PAYRIGHT_ACCOUNT_EMAIL', 'contact@prestashop.com'),
+            'PAYRIGHT_ACCOUNT_EMAIL'   => Configuration::get('PAYRIGHT_ACCOUNT_EMAIL', 'contact@prestashop.com'),
             'PAYRIGHT_ACCOUNT_PASSWORD'            => Configuration::get('PAYRIGHT_ACCOUNT_PASSWORD', null),
             'PS_PAYRIGHT_APIKEY'                   => Configuration::get('PS_PAYRIGHT_APIKEY', null),
             'PS_PAYRIGHT_USERNAME'                 => Configuration::get('PS_PAYRIGHT_USERNAME', null),
@@ -726,8 +726,8 @@ class Payright extends PaymentModule
             return $this->context->smarty->fetch("module:payright/views/templates/front/product_thumbnail.tpl");
         }
 
-        if ($current_controller == "orderconfirmation" && $params["type"] == "unit_price" && $frontpageInstalments == 1) {
-
+        if ($current_controller == "orderconfirmation" &&
+            $params["type"] == "unit_price" && $frontpageInstalments == 1) {
             if (isset($params["product"]["price_amount"])) {
                 $payRightInstallmentBreakDown = $this->getCurrentInstalmentsDisplay($params["product"]["price_amount"]);
 
@@ -738,7 +738,6 @@ class Payright extends PaymentModule
                 return $this->context->smarty->fetch("module:payright/views/templates/front/product_thumbnail.tpl");
             }
         }
-
     }
 
     public function getCurrentInstalmentsDisplay($productTotal)
@@ -945,7 +944,7 @@ class Payright extends PaymentModule
             " . $result . " Please contact support@payright.com.au</div>";
         } else {
             echo "<br><br><div class='alert alert-warning'>The Plan will not activate until the product
-            is shipped</div>".$result;
+            is shipped</div>";
         }
     }
 }

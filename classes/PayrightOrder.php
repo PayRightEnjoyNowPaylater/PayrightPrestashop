@@ -87,9 +87,9 @@ class PayrightOrder extends ObjectModel
         $result = Db::getInstance()->getRow($sql);
 
         if ($result['payment_status'] != " ") {
-           return $result['payment_status'];
+            return $result['payment_status'];
         } else {
-           return 0;
+            return 0;
         }
     }
 
@@ -108,7 +108,6 @@ class PayrightOrder extends ObjectModel
 
     public static function updatePaymentStatus($status, $planid)
     {
-     
         $sql = 'UPDATE `' . _DB_PREFIX_ . 'payright_order`
             SET `payment_status` = "' . $status . '"
             WHERE  `plan_id` = "' . $planid . '"';
