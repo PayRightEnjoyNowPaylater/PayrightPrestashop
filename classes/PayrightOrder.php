@@ -106,12 +106,7 @@ class PayrightOrder extends ObjectModel
 
     public static function updatePaymentStatus($status, $planid)
     {
-        if ($status == 'Active') {
-            $status = 'Active';
-        } else {
-            $status = 'Not Activated';
-        }
-
+     
         $sql = 'UPDATE `' . _DB_PREFIX_ . 'payright_order`
             SET `payment_status` = "' . $status . '"
             WHERE  `plan_id` = "' . $planid . '"';

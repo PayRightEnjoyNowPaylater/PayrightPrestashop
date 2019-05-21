@@ -896,15 +896,11 @@ class Payright extends PaymentModule
     {
 
         if ($params['newOrderStatus']->id == Configuration::get('PS_OS_SHIPPING')) {
-            $ConfigValues = $this->getConfigFormValues();
 
-            if (isset($this->context->cookie->access_token)) {
+            $PayRightApiCall = new Payright\api\Call();
 
-                $PayRightApiCall = new Payright\api\Call();
-
-                $ConfigValues   = $this->getConfigFormValues();
-                $PayRightConfig = new Payright\api\PayRightConfig($ConfigValues, null);
-            }
+            $ConfigValues   = $this->getConfigFormValues();
+            $PayRightConfig = new Payright\api\PayRightConfig($ConfigValues, null);
 
             $orderId = $params['id_order']; // order ID
             $planid  = PayrightOrder::getPlanByOrderId($orderId);
@@ -912,11 +908,13 @@ class Payright extends PaymentModule
             if (isset($planid)) {
                 $status = $PayRightApiCall->planStatusActivate($PayRightConfig, $planid);
 
-                $success = $status['data']['status'];
+                if (array_key_exists('error', $status['data'])) {
+                    $planResult = $status['data']['error_message'];
+                } else {
+                    $planResult = $status['data']['status'];
+                }
 
-                PayrightOrder::updatePaymentStatus($success, $planid);
-
-                PayrightOrder::updatePaymentStatus($status, $planid);
+                PayrightOrder::updatePaymentStatus($planResult, $planid);
 
             }
         }
@@ -931,9 +929,11 @@ class Payright extends PaymentModule
         }
         if ($result == 'Active') {
             echo "<br><br><div class='alert alert-success'>Your Plan has been activated Successfully</div>";
+        }elseif ($result == null) {
+            echo "<br><br><div class='alert alert-warning'>The Plan will not activate until the product is shipped</div>";
         } else {
             echo "<br><br><div class='alert alert-warning'>
-            Your Plan has <strong>Not</strong> been activated.Please contact support@payright.com.au</div>";
+            " . $result . " Please contact support@payright.com.au</div>";
         }
     }
 }
