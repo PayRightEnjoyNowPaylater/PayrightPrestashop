@@ -318,9 +318,6 @@ class Call
         //         'status'=> 'Active'
         //     ];
 
-        print_r($paramsPayright);
-        print $configObj->getPlanStatusChangeUrl();
-        die;
         try {
             $updatePlanStatus = $this->execute(
                 $configObj->getPlanStatusChangeUrl(),
