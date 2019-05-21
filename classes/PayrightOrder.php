@@ -85,10 +85,12 @@ class PayrightOrder extends ObjectModel
             FROM `' . _DB_PREFIX_ . 'payright_order`
             WHERE `id_order` = \'' . pSQL($id) . '\'';
         $result = Db::getInstance()->getRow($sql);
-        if ($result != false) {
-            return $result['payment_status'];
+
+        if ($result['payment_status'] != " ") {
+           return $result['payment_status'];
+        } else {
+           return 0;
         }
-        return 'error';
     }
 
 

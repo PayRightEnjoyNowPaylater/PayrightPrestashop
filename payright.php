@@ -925,11 +925,10 @@ class Payright extends PaymentModule
             $id     = $params['id_order'];
             $result = PayrightOrder::getPlanStatusByOrderId($id);
         }
-
-
-        if ($result == 'Active') {
+      
+        if ($result === 'Active') {
             echo "<br><br><div class='alert alert-success'>Your Plan has been activated Successfully</div>";
-        } elseif ($result != 'Active' && $result == null) {
+        } elseif ($result != 'Active' && $result != 0) {
             echo "<br><br><div class='alert alert-warning'>
             " . $result . " Please contact support@payright.com.au</div>";
         } else {
