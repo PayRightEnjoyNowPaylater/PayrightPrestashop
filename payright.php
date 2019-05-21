@@ -928,12 +928,12 @@ class Payright extends PaymentModule
       
         if ($result === 'Active') {
             echo "<br><br><div class='alert alert-success'>Your Plan has been activated Successfully</div>";
-        } elseif ($result != 'Active' && $result != 0) {
+        } elseif ($result !== 'Active' && $result !== 0) {
             echo "<br><br><div class='alert alert-warning'>
             " . $result . " Please contact support@payright.com.au</div>";
         } else {
             echo "<br><br><div class='alert alert-warning'>The Plan will not activate until the product
-            is shipped</div>";
+            is shipped</div>".$result;
         }
     }
 }
