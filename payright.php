@@ -927,6 +927,7 @@ class Payright extends PaymentModule
         }
 
         print_r($result);
+        die;
         if ($result == 'Active') {
             echo "<br><br><div class='alert alert-success'>Your Plan has been activated Successfully</div>";
         } elseif (!isset($result)) {
@@ -934,7 +935,7 @@ class Payright extends PaymentModule
             is shipped</div>";
         } else {
             echo "<br><br><div class='alert alert-warning'>
-            " . $result . " Please contact support@payright.com.au</div>";
+            " . $result . " --Please contact support@payright.com.au</div>";
         }
     }
 }
