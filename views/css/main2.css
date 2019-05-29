@@ -1,0 +1,201 @@
+h1.payRightH1,h2.payRightH2,h3.payRightH3,h4.payRightH4,h5.payRightH5,h6.payRightH6,p.payRightp {
+	font-family: 'Roboto', sans-serif;
+	color: #275f95;
+}
+
+h1.payRightH1 {
+	font-size: 54px;
+	line-height: 60px;
+	text-transform: uppercase;
+	font-weight: 400;
+	color: #4e84b5;
+}
+h2.payRightH2 {
+	font-size: 40px;
+	margin: 25px 0 35px;
+	text-align: center;
+	font-weight: 500;
+}
+h4.payRightH4 {
+	font-size: 22px;
+	line-height: 22px;
+	text-align: center;
+	font-weight: 700;
+}
+h5.payRightH5 {
+	font-weight: 900;
+	font-size: 18px;
+}
+p.payRightp {
+	font-size: 18px;
+	text-align: center;
+	color: white;
+}
+a {
+	color: #275f95;
+}
+button {
+	background-color: #275f95;
+	color: #ffffff;
+	font-size: 28px;
+	width: 100%;
+	text-align: center;
+	padding: 10px; 
+}
+
+header {
+	padding: 40px 0;
+}
+
+.payRight_container {
+	width: auto;
+	margin: auto;
+}
+
+.payRight_blueStrip {
+	background-color: #275f95;
+	padding-bottom: 30px;
+}
+.payRight_blueStrip h2, .payRight_blueStrip p {
+	color: #ffffff;
+}
+.payRight_blueStrip p {
+	text-align: center !important;
+	font-weight: 300;
+	font-size: 22px;
+}
+.payRight_blueStrip .insideColumns {
+	text-align: center !important;
+	padding-bottom: 30px;
+}
+.payRight_blueStrip {
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+.payRight_blueStrip img {
+	text-align: center;
+	width: 50%;
+	margin-bottom: 14px;
+}
+
+.payRight_blueStrip .payRight_topleft {
+	border-right: 1px solid #fff;
+	border-bottom: 1px solid #fff;
+}
+.payRight_blueStrip .payRight_bottomright {
+	border-left: 1px solid #fff;
+	border-top: 1px solid #fff;
+	margin-top: -1px;
+}
+.payRight_blueStripBottom {
+	margin-bottom: 30px !important;
+	padding: 0 80px 30px 80px;
+}
+.payRight_blueStripTop {
+	padding: 30px 80px 0px 80px;
+}
+.numC {
+	font-size: 30px;
+	background-color: #ffffff;
+	color: #275f95;
+	border-radius: 50px;
+	float: left;
+	padding: 5px 18px;
+	margin-right: 10px;
+	font-weight: bold;
+}
+
+.payRight_points p {
+	font-weight: 900;
+	font-size: 22px;
+	line-height: 28px;
+}
+.payRight_points {
+	margin: 30px 0 30px 0 !important;
+}
+.pointsCenter {
+	border-left: 2px solid #b2b3b6;
+	border-right: 2px solid #b2b3b6;
+}
+
+.info {
+	background-color: #b2b3b6;
+	margin-bottom: 30px !important;
+}
+.info p {
+	color: #ffffff;
+	text-align: left;
+	font-size: 16px;
+}
+
+@media only screen and (max-width: 1088px) {
+	body {
+		padding: 0 40px 0 40px;
+	}
+}
+
+@media only screen and (max-width: 770px) {
+	h1 {
+		text-align: center;
+		font-size: 36px;
+		line-height: 44px;
+	}
+	h2 {
+		text-align: center;
+		font-size: 28px;
+		line-height: 36px;
+	}
+	h4 {
+		font-size: 18px;
+		line-height: 18px;
+	}
+	p.payRightp {
+		font-size: 16px !important;
+		line-height: 18px;
+	}
+	br {
+		display: inline !important;
+	}
+	button {
+		font-size: 22px;
+	}
+	.headerLast {
+		height: 0px;
+	}
+	.imgPayRight {
+		text-align: center;
+	}
+	.imgPayRight img {
+		width: 60%;
+	}
+	.payRight_blueStrip img {
+		width: 80%;
+	}
+	.payRight_blueStrip .payRight_topleft {
+		border-right: 0px solid #fff;
+		border-bottom: 0px solid #fff;
+	}
+	.payRight_blueStrip .payRight_bottomright {
+		border-left: 0px solid #fff;
+		border-top: 0px solid #fff;
+		margin-top: 0px;
+	}
+	.payRight_blueStripBottom {
+		margin-bottom: 30px !important;
+		padding: 0 30px 30px 30px;
+	}
+	.payRight_blueStripTop {
+		padding: 30px 30px 0px 30px;
+	}
+	.payRight_blueStrip .insideColumns {
+		border-bottom: 1px solid #ffffff;
+	}
+	.payRight_blueStrip .payRight_bottomright {
+		border-bottom: 0px solid #fff;
+	}
+	.info p {
+		font-size: 12px !important;
+		line-height: 14px;
+	}
+
+}
