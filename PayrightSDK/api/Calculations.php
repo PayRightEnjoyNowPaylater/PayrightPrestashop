@@ -21,7 +21,7 @@ class Calculations
      * @param int $saleAmount amount of purchased product
      * @return calculated installment of sale amount
      */
-    public function calculateSingleProductInstallment($rates, $saleAmount, $cookieObj)
+    public function calculateSingleProductInstallment($rates, $saleAmount)
     {
         $unserializeRatesArray = unserialize($rates);
         $payrightInstallmentApproval = $this->getMaximumSaleAmount($unserializeRatesArray, $saleAmount);
@@ -31,8 +31,8 @@ class Calculations
         // echo "</pre>";
         
         if ($payrightInstallmentApproval == 0 && $saleAmount > 0) {
-            $accountKeepingFees = $cookieObj->AccountKeepingfees;
-            $paymentProcessingFee = $cookieObj->PaymentProcessingFee;
+            $accountKeepingFees = $_SESSION['AccountKeepingfees'];
+            $paymentProcessingFee = $_SESSION['PaymentProcessingFee'];
      
             $LoanTerm = $this->fetchLoanTermForSale($unserializeRatesArray, $saleAmount);
 
@@ -48,7 +48,7 @@ class Calculations
 
             $formatedLoanAmount = number_format((float)$LoanAmount, 2, '.', '');
 
-            $resEstablishmentFees = $this->getEstablishmentFees($LoanTerm, $cookieObj->establishmentFeeArray);
+            $resEstablishmentFees = $this->getEstablishmentFees($LoanTerm, $_SESSION['establishmentFeeArray']);
 
             $CalculateRepayments  = $this->calculateRepayment(
                 $calculatedNoofRepayments,
@@ -65,8 +65,8 @@ class Calculations
                 $formatedLoanAmount,
                 $resEstablishmentFees
             );
-            $dataResponseArray['Accountkeepfees'] = $cookieObj->AccountKeepingfees;
-            $dataResponseArray['processingfees'] = $cookieObj->PaymentProcessingFee;
+            $dataResponseArray['Accountkeepfees'] = $accountKeepingFees;
+            $dataResponseArray['processingfees'] = $paymentProcessingFee;
             $dataResponseArray['saleAmount'] =  $saleAmount;
             $dataResponseArray['noofrepayments'] = $calculatedNoofRepayments;
             $dataResponseArray['repaymentfrequency'] = 'Fortnightly';

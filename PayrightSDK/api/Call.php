@@ -9,8 +9,6 @@
 
 namespace Payright\api;
 
-ini_set("display_errors", "0");
-
 use Payright\api\customException;
 
 class Call
@@ -89,8 +87,12 @@ class Call
             $returnArray['establishment_fee'] = $response->data->establishment_fee;
             $returnArray['client_id'] = $configobj->getClientID();
 
-           
-            $this->setSessionValues($response, $cookieObj);
+            $_SESSION['PayrightRates'] = serialize($response->data->rates);
+            $_SESSION['AccountKeepingfees'] = $response->data->conf->{'Monthly Account Keeping Fee'};
+            $_SESSION['establishmentFeeArray'] = serialize($response->data->establishment_fee);
+            $_SESSION['PaymentProcessingFee'] = $response->data->conf->{'Payment Processing Fee'};
+
+        
             return $returnArray;
         } catch (customException $e) {
             return $e->errorMessage();
@@ -280,9 +282,9 @@ class Call
         }
     }
 
-     /**
+    /**
     activate plan
-     */
+    */
 
     public function planStatusActivate($configObj, $planId)
     {
@@ -393,16 +395,5 @@ class Call
         $this->payrightConfigObj = $payrightConfigObj;
 
         return $this;
-    }
-
-
-    public function setSessionValues($configValues, $cookieObj)
-    {
-        $cookieObj->AccountKeepingfees = $configValues->data->conf->{'Monthly Account Keeping Fee'};
-
-      
-        $cookieObj->PayrightRates = serialize($configValues->data->rates);
-        $cookieObj->establishmentFeeArray = serialize($configValues->data->establishment_fee);
-        $cookieObj->PaymentProcessingFee = $configValues->data->conf->{'Payment Processing Fee'};
     }
 }

@@ -20,8 +20,6 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-ini_set('display_errors', 0);
-
 class Payright extends PaymentModule
 {
     protected $html       = '';
@@ -50,6 +48,7 @@ class Payright extends PaymentModule
 
         $this->displayName = $this->l('Payright');
         $this->description = $this->l('Enjoy Now. Pay Later');
+        $this->module_key = '677c9925714d3f3573cc177fb85d9882';
 
         if (!count(Currency::checkPaymentCurrencies($this->id))) {
             $this->warning = $this->l('No currency has been set for this module.');
@@ -162,9 +161,8 @@ class Payright extends PaymentModule
         $orderTotal = $this->context->cart->getOrderTotal();
 
         $PayrightCalculations = $PayRightCalculations->calculateSingleProductInstallment(
-            $this->context->cookie->PayrightRates,
-            $orderTotal,
-            $this->context->cookie
+            $_SESSION['PayrightRates'],
+            $orderTotal
         );
 
         $this->context->smarty->assign($PayrightCalculations);
@@ -539,7 +537,7 @@ class Payright extends PaymentModule
         }
     }
 
-    public function hookActionCartSave()
+   public function hookActionCartSave()
     {
 
         //print_r($getSessionValue);
@@ -560,6 +558,8 @@ class Payright extends PaymentModule
             $clientId = $getSessionValue['client_id'];
 
             $allowPlan = $this->getCurrentInstalmentsDisplay($cart->getOrderTotal());
+
+
 
             $PayRightApiCall = new Payright\api\Call();
 
@@ -589,7 +589,7 @@ class Payright extends PaymentModule
                 $this->context->smarty->assign('installment', $allowPlan['LoanAmountPerPayment']);
             }
 
-            $this->context->smarty->assign('redirectUrl', $PayRightConfig->ecomUrl . $ecommToken);
+           $this->context->smarty->assign('redirectUrl', $PayRightConfig->ecomUrl . $ecommToken);
         } else {
             $moduleShow = false;
         }
@@ -742,17 +742,16 @@ class Payright extends PaymentModule
 
     public function getCurrentInstalmentsDisplay($productTotal)
     {
-        $rateCard = $this->context->cookie->PayrightRates;
+        $rateCard = $_SESSION['PayrightRates'];
 
-        // print_r($rateCard);
+
         $rateUnserialized = unserialize($rateCard);
         if (!empty($rateUnserialized)) {
             $PayRightCalculations = new Payright\api\Calculations();
             $PayrightCalculations = $PayRightCalculations->calculateSingleProductInstallment(
-                $this->context->cookie->PayrightRates,
-                $productTotal,
-                $this->context->cookie
-            );
+                $_SESSION['PayrightRates'],
+                $productTotal
+              );
 
             return $PayrightCalculations;
         } else {
