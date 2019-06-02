@@ -744,7 +744,7 @@ class Payright extends PaymentModule
     {
         $rateCard = $_SESSION['PayrightRates'];
 
-       
+
         $rateUnserialized = unserialize($rateCard);
         if (!empty($rateUnserialized)) {
             $PayRightCalculations = new Payright\api\Calculations();
@@ -768,6 +768,7 @@ class Payright extends PaymentModule
 
         $payRightAuth    = $PayRightApiCall->payRightAuth($PayRightConfig);
         $payRightAuthObj = json_decode($payRightAuth, true);
+
 
         if (isset($payRightAuthObj['error'])) {
             return "error";
