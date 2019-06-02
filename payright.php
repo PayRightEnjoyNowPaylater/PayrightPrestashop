@@ -686,7 +686,6 @@ class Payright extends PaymentModule
         $relatedProductsInstalments = $ConfigValues['RELATEDPRODUCTS_PAYRIGHTINSTALLMENTS'];
 
         if ($this->context->cookie->error == "error") {
-            print "error";
             return;
         }
 
@@ -744,6 +743,9 @@ class Payright extends PaymentModule
     public function getCurrentInstalmentsDisplay($productTotal)
     {
         $rateCard = $_SESSION['PayrightRates'];
+
+        print_r($rateCard);
+        die;
 
 
         $rateUnserialized = unserialize($rateCard);
