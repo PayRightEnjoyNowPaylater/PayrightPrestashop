@@ -744,10 +744,7 @@ class Payright extends PaymentModule
     {
         $rateCard = $_SESSION['PayrightRates'];
 
-        print_r($rateCard);
-        die;
-
-
+       
         $rateUnserialized = unserialize($rateCard);
         if (!empty($rateUnserialized)) {
             $PayRightCalculations = new Payright\api\Calculations();

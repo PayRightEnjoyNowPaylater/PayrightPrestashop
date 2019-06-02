@@ -92,6 +92,8 @@ class Call
             $_SESSION['establishmentFeeArray'] = serialize($response->data->establishment_fee);
             $_SESSION['PaymentProcessingFee'] = $response->data->conf->{'Payment Processing Fee'};
 
+            print "vfvfv";
+            print_r($_SESSION);
             print_r($returnArray);
             die;
 
