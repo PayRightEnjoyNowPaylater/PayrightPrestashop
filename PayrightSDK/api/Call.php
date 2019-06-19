@@ -67,6 +67,8 @@ class Call
         );
 
 
+
+
        
         try {
             $response =  json_decode(
@@ -78,10 +80,48 @@ class Call
                 )
             );
 
+  
+
+            $returnArray = array();
+            $returnArray['configToken'] = $response->data->configToken;
+            $returnArray['rates'] = $response->data->rates;
+            $returnArray['conf'] = $response->data->conf;
+            $returnArray['establishment_fee'] = $response->data->establishment_fee;
+            $returnArray['client_id'] = $configobj->getClientID();
+
+
+            return $returnArray;
+        } catch (customException $e) {
+            return $e->errorMessage();
+        }
+    }
+
+
+    public function payRightTranscationConfigurationTokenMethod($cookieObj, $configobj, $paraAccessToken)
+    {
+        $ConfigFields = array(
+        'merchantusername' => $configobj->getMerchantusername(),
+        'merchantpassword' => $configobj->getMerchantpassword()
+        );
+
+
+       
+        try {
+            $response =  json_decode(
+                $this->execute(
+                    $configobj->getTransactionConfigUrl(),
+                    $ConfigFields,
+                    "Bearer",
+                    $paraAccessToken
+                )
+            );
+
             $returnArray = array();
             $returnArray['auth'] = $response->data->auth;
             $returnArray['configToken'] = $response->data->configToken;
-            $returnArray['store'] = $response->data->store;
+            $returnArray['store_default_term_c'] = $response->data->store_default_term_c;
+            $returnArray['store_id'] = $response->data->store_id;
+            $returnArray['application_completer_c'] = $response->data->application_completer_c;
             $returnArray['rates'] = $response->data->rates;
             $returnArray['conf'] = $response->data->conf;
             $returnArray['establishment_fee'] = $response->data->establishment_fee;
@@ -154,6 +194,8 @@ class Call
      */
     protected function execute($curlURL, $fields, $tokenAuth, $paraAccess_token = null)
     {
+        
+
         //Check if CURL module exists.
         if (!function_exists("curl_init")) {
             return "error";
@@ -172,7 +214,7 @@ class Call
 
             if ($tokenAuth == 'Bearer') {
                 //$authObj = json_decode($this->getPayrightAuthObj());
-                if ($paraAccess_token == null) {
+                if ($paraAccess_token == null) { 
                     $access_token = '';
                 } else {
                     $access_token = $paraAccess_token;
@@ -200,6 +242,8 @@ class Call
             ));
 
             $response = curl_exec($ch);
+
+
             $err = curl_error($ch);
 
 
@@ -208,7 +252,7 @@ class Call
 
             if ($err) {
                 return "error";
-            } else {
+            } else { 
                 return $response;
             }
         } catch (customException $e) {
@@ -257,7 +301,7 @@ class Call
          );
        
         $response =  json_decode($this->execute(
-            $configObj->getConfigUrl(),
+            $configObj->getTransactionConfigUrl(),
             $ConfigFields,
             "Bearer",
             $payRightAuthObj->access_token
@@ -298,7 +342,7 @@ class Call
         );
 
         $response = json_decode($this->execute(
-            $configObj->getConfigUrl(),
+            $configObj->getTransactionConfigUrl(),
             $ConfigFields,
             "Bearer",
             $payRightAuthObj->access_token

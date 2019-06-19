@@ -21,9 +21,11 @@ class Calculations
      * @param int $saleAmount amount of purchased product
      * @return calculated installment of sale amount
      */
-    public function calculateSingleProductInstallment($rates, $saleAmount)
+    public function calculateSingleProductInstallment($getPayrightConfigurationValue, $saleAmount)
     {
-        $unserializeRatesArray = unserialize($rates);
+ 
+        
+        $unserializeRatesArray = $getPayrightConfigurationValue['rates'];
         $payrightInstallmentApproval = $this->getMaximumSaleAmount($unserializeRatesArray, $saleAmount);
 
         // echo "<pre>";
@@ -31,8 +33,8 @@ class Calculations
         // echo "</pre>";
         
         if ($payrightInstallmentApproval == 0 && $saleAmount > 0) {
-            $accountKeepingFees = $_SESSION['AccountKeepingfees'];
-            $paymentProcessingFee = $_SESSION['PaymentProcessingFee'];
+            $accountKeepingFees = $getPayrightConfigurationValue['conf']->{'Monthly Account Keeping Fee'};
+            $paymentProcessingFee = $getPayrightConfigurationValue['conf']->{'Payment Processing Fee'};
      
             $LoanTerm = $this->fetchLoanTermForSale($unserializeRatesArray, $saleAmount);
 
@@ -48,7 +50,7 @@ class Calculations
 
             $formatedLoanAmount = number_format((float)$LoanAmount, 2, '.', '');
 
-            $resEstablishmentFees = $this->getEstablishmentFees($LoanTerm, $_SESSION['establishmentFeeArray']);
+            $resEstablishmentFees = $this->getEstablishmentFees($LoanTerm, $getPayrightConfigurationValue['establishment_fee']);
 
             $CalculateRepayments  = $this->calculateRepayment(
                 $calculatedNoofRepayments,
@@ -71,6 +73,8 @@ class Calculations
             $dataResponseArray['noofrepayments'] = $calculatedNoofRepayments;
             $dataResponseArray['repaymentfrequency'] = 'Fortnightly';
             $dataResponseArray['LoanAmountPerPayment'] =  $CalculateRepayments;
+
+  
             return $dataResponseArray;
         
         // } else {
@@ -199,14 +203,14 @@ class Calculations
      * @return  calculated establishment fees
      */
 
-    public function getEstablishmentFees($LoanTerm, $establishmentFeeArray)
+    public function getEstablishmentFees($LoanTerm, $establishmentFees)
     {
-        $establishmentFees = (array) unserialize($establishmentFeeArray);
+      
 
         $fee_bandArray = array();
         $feebandCalculator = 0;
        
-        foreach ($establishmentFees['records'] as $key => $row) {
+        foreach ($establishmentFees as $key => $row) {
             $fee_bandArray[$key]['term'] = $row->term;
             $fee_bandArray[$key]['initial_est_fee'] = $row->initial_est_fee;
             $fee_bandArray[$key]['repeat_est_fee'] = $row->repeat_est_fee;

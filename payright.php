@@ -20,6 +20,8 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
+ini_set("display_errors", "1");
+
 class Payright extends PaymentModule
 {
     protected $html       = '';
@@ -149,19 +151,21 @@ class Payright extends PaymentModule
         $payRightAuthObj = json_decode($payRightAuth);
 
         ### now do the config call.
-        $payRightConfig = $PayRightApiCall->payRightConfigurationTokenMethod(
-            $this->context->cookie,
-            $PayRightConfig,
-            $payRightAuthObj->access_token
-        );
+            $configTranscationVal = $PayRightApiCall->payRightTranscationConfigurationTokenMethod(
+                    $this->context->cookie,
+                    $PayRightConfig,
+                    $payRightAuthObj->access_token
+                );
 
-        $sugarAuthToken = $payRightConfig['auth']->{'auth-token'};
-        $configToken    = $payRightConfig['configToken'];
+        $sugarAuthToken = $configTranscationVal['auth']->{'auth-token'};
+        $configToken    = $configTranscationVal['configToken'];
 
         $orderTotal = $this->context->cart->getOrderTotal();
 
+        $getPayrightConfigurationValue = $this->getPayrightConfigurationValue();
+
         $PayrightCalculations = $PayRightCalculations->calculateSingleProductInstallment(
-            $_SESSION['PayrightRates'],
+            $getPayrightConfigurationValue,
             $orderTotal
         );
 
@@ -537,8 +541,9 @@ class Payright extends PaymentModule
         }
     }
 
-   public function hookActionCartSave()
+    public function hookActionCartSave()
     {
+ 
 
         //print_r($getSessionValue);
         //die;
@@ -548,23 +553,31 @@ class Payright extends PaymentModule
         $ConfigValues    = $this->getConfigFormValues();
         $cartInstalments = $ConfigValues['CARTPAGE_PAYRIGHTINSTALLMENTS'];
 
+        
+        
+
+
         $cart = $this->context->cart;
         if (isset($this->context->cookie->access_token) && $cart->getOrderTotal() > 0) {
-            $getSessionValue     = $this->getSessionValue();
-            $sugarAuthToken      = $getSessionValue['auth']->{'auth-token'};
-            $configToken         = $getSessionValue['configToken'];
+            $PayRightConfig  = new Payright\api\PayRightConfig($ConfigValues, null);
+            $PayRightApiCall = new Payright\api\Call($PayRightConfig);
+            $payRightAuth    = $PayRightApiCall->payRightAuth($PayRightConfig);
+            $payRightAuthObj = json_decode($payRightAuth, true);
+        
+
+            $configTranscationVal = $PayRightApiCall->payRightTranscationConfigurationTokenMethod(
+                    $this->context->cookie,
+                    $PayRightConfig,
+                    $payRightAuthObj['access_token']
+                );
+
+            $sugarAuthToken      = $configTranscationVal['auth']->{'auth-token'};
+            $configToken         = $configTranscationVal['configToken'];
             $payrightAccessToken = $this->context->cookie->access_token;
 
-            $clientId = $getSessionValue['client_id'];
+            $clientId = $configTranscationVal['client_id'];
 
             $allowPlan = $this->getCurrentInstalmentsDisplay($cart->getOrderTotal());
-
-
-
-            $PayRightApiCall = new Payright\api\Call();
-
-            $ConfigValues   = $this->getConfigFormValues();
-            $PayRightConfig = new Payright\api\PayRightConfig($ConfigValues, null);
 
             $transactionData                   = array();
             $transactionData['transactionRef'] = $cart->id . "_" . $clientId . rand();
@@ -589,7 +602,7 @@ class Payright extends PaymentModule
                 $this->context->smarty->assign('installment', $allowPlan['LoanAmountPerPayment']);
             }
 
-           $this->context->smarty->assign('redirectUrl', $PayRightConfig->ecomUrl . $ecommToken);
+            $this->context->smarty->assign('redirectUrl', $PayRightConfig->ecomUrl . $ecommToken);
         } else {
             $moduleShow = false;
         }
@@ -604,12 +617,12 @@ class Payright extends PaymentModule
      */
     public function hookDisplayHeader()
     {
-        $this->getSessionValue = $this->getSessionValue();
+        $getPayrightConfigurationValue = $this->getPayrightConfigurationValue();
 
-        if ($this->getSessionValue == "error") {
-            $this->context->cookie->error = $this->getSessionValue;
+        if ($getPayrightConfigurationValue == "error") {
+            $this->context->cookie->error = $getPayrightConfigurationValue;
         } else {
-            $this->context->cookie->error = '';
+            $this->context->cookie->error = 'test';
         }
 
         $this->context->smarty->assign("payright_base_url", Context::getContext()->shop->getBaseURL(true));
@@ -742,14 +755,16 @@ class Payright extends PaymentModule
 
     public function getCurrentInstalmentsDisplay($productTotal)
     {
-        $rateCard = $_SESSION['PayrightRates'];
+        $getPayrightConfigurationValue = $this->getPayrightConfigurationValue();
+
+        $rateUnserialized = $getPayrightConfigurationValue['rates'];
 
 
-        $rateUnserialized = unserialize($rateCard);
+        //  $rateUnserialized = ($rateCard);
         if (!empty($rateUnserialized)) {
             $PayRightCalculations = new Payright\api\Calculations();
             $PayrightCalculations = $PayRightCalculations->calculateSingleProductInstallment(
-                $_SESSION['PayrightRates'],
+                $getPayrightConfigurationValue,
                 $productTotal
               );
 
@@ -759,15 +774,20 @@ class Payright extends PaymentModule
         }
     }
 
-    public function getSessionValue()
+    public function getPayrightConfigurationValue()
     {
         $ConfigValues = $this->getConfigFormValues();
+
+
 
         $PayRightConfig  = new Payright\api\PayRightConfig($ConfigValues, null);
         $PayRightApiCall = new Payright\api\Call($PayRightConfig);
 
+
+      
         $payRightAuth    = $PayRightApiCall->payRightAuth($PayRightConfig);
         $payRightAuthObj = json_decode($payRightAuth, true);
+
 
 
         if (isset($payRightAuthObj['error'])) {
@@ -790,14 +810,28 @@ class Payright extends PaymentModule
 
     public function getPayrightInstallments()
     {
-        $getSessionValue = $this->getSessionValue();
+        $ConfigValues = $this->getConfigFormValues();
+        $PayRightConfig  = new Payright\api\PayRightConfig($ConfigValues, null);
+        $PayRightApiCall = new Payright\api\Call($PayRightConfig);
+        $payRightAuth    = $PayRightApiCall->payRightAuth($PayRightConfig);
+        $payRightAuthObj = json_decode($payRightAuth, true);
+
+
+
+  
 
         if (isset($this->context->cookie->access_token)) {
-            $sugarAuthToken      = $getSessionValue['auth']->{'auth-token'};
-            $configToken         = $getSessionValue['configToken'];
+            $configTranscationVal = $PayRightApiCall->payRightTranscationConfigurationTokenMethod(
+                    $this->context->cookie,
+                    $PayRightConfig,
+                    $payRightAuthObj['access_token']
+                );
+
+            $sugarAuthToken      = $configTranscationVal['auth']->{'auth-token'};
+            $configToken         = $configTranscationVal['configToken'];
             $payrightAccessToken = $this->context->cookie->access_token;
 
-            $clientId = $getSessionValue['client_id'];
+            $clientId = $configTranscationVal['client_id'];
 
             $cart = $this->context->cart;
 
