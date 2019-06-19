@@ -182,7 +182,7 @@ class PayRightConfig
             $this->setPlanStatusChangeUrl('http://ecommerceapi.payright.local/api/v1/changePlanStatus');
             $this->setTransactionConfigUrl('http://ecommerceapi.payright.local/api/v1/initialTransactionConfiguration');
         } elseif ($mode == 'sandbox') {
-            $$this->setAuthUrl('https://api.payright.com.au/oauth/token');
+            $this->setAuthUrl('https://api.payright.com.au/oauth/token');
             $this->setConfigUrl('https://api.payright.com.au/api/v1/configuration');
             $this->setIntialiseTransactionUrl('https://api.payright.com.au/api/v1/intialiseTransaction');
             $this->setEcomTokenDataUrl('https://api.payright.com.au/api/v1/getEcomTokenData');
