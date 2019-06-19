@@ -622,7 +622,7 @@ class Payright extends PaymentModule
         if ($getPayrightConfigurationValue == "error") {
             $this->context->cookie->error = $getPayrightConfigurationValue;
         } else {
-            $this->context->cookie->error = 'test';
+            $this->context->cookie->error = '';
         }
 
         $this->context->smarty->assign("payright_base_url", Context::getContext()->shop->getBaseURL(true));
