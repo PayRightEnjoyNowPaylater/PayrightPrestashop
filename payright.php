@@ -151,11 +151,10 @@ class Payright extends PaymentModule
         $payRightAuthObj = json_decode($payRightAuth);
 
         ### now do the config call.
-            $configTranscationVal = $PayRightApiCall->payRightTranscationConfigurationTokenMethod(
-                    $this->context->cookie,
-                    $PayRightConfig,
-                    $payRightAuthObj->access_token
-                );
+        $configTranscationVal = $PayRightApiCall->payRightTranscationConfigurationTokenMethod(
+            $PayRightConfig,
+            $payRightAuthObj->access_token
+        );
 
         $sugarAuthToken = $configTranscationVal['auth']->{'auth-token'};
         $configToken    = $configTranscationVal['configToken'];
@@ -566,10 +565,9 @@ class Payright extends PaymentModule
         
 
             $configTranscationVal = $PayRightApiCall->payRightTranscationConfigurationTokenMethod(
-                    $this->context->cookie,
-                    $PayRightConfig,
-                    $payRightAuthObj['access_token']
-                );
+                $PayRightConfig,
+                $payRightAuthObj['access_token']
+            );
 
             $sugarAuthToken      = $configTranscationVal['auth']->{'auth-token'};
             $configToken         = $configTranscationVal['configToken'];
@@ -766,7 +764,7 @@ class Payright extends PaymentModule
             $PayrightCalculations = $PayRightCalculations->calculateSingleProductInstallment(
                 $getPayrightConfigurationValue,
                 $productTotal
-              );
+            );
 
             return $PayrightCalculations;
         } else {
@@ -778,13 +776,9 @@ class Payright extends PaymentModule
     {
         $ConfigValues = $this->getConfigFormValues();
 
-
-
         $PayRightConfig  = new Payright\api\PayRightConfig($ConfigValues, null);
         $PayRightApiCall = new Payright\api\Call($PayRightConfig);
 
-
-      
         $payRightAuth    = $PayRightApiCall->payRightAuth($PayRightConfig);
         $payRightAuthObj = json_decode($payRightAuth, true);
 
@@ -796,7 +790,6 @@ class Payright extends PaymentModule
             $this->context->cookie->access_token = $payRightAuthObj['access_token'];
             if (isset($payRightAuthObj['access_token'])) {
                 $configVal = $PayRightApiCall->payRightConfigurationTokenMethod(
-                    $this->context->cookie,
                     $PayRightConfig,
                     $payRightAuthObj['access_token']
                 );
@@ -816,16 +809,11 @@ class Payright extends PaymentModule
         $payRightAuth    = $PayRightApiCall->payRightAuth($PayRightConfig);
         $payRightAuthObj = json_decode($payRightAuth, true);
 
-
-
-  
-
         if (isset($this->context->cookie->access_token)) {
             $configTranscationVal = $PayRightApiCall->payRightTranscationConfigurationTokenMethod(
-                    $this->context->cookie,
-                    $PayRightConfig,
-                    $payRightAuthObj['access_token']
-                );
+                $PayRightConfig,
+                $payRightAuthObj['access_token']
+            );
 
             $sugarAuthToken      = $configTranscationVal['auth']->{'auth-token'};
             $configToken         = $configTranscationVal['configToken'];

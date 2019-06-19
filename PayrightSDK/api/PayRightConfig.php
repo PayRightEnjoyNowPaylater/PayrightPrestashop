@@ -156,8 +156,6 @@ class PayRightConfig
     {
         $allConfig = $mode;
 
-        //print_r($allConfig);
-
         $this->setUsername($allConfig['PS_PAYRIGHT_USERNAME']);
         $this->setMode($allConfig['PAYRIGHT_LIVE_MODE']);
         $this->setApiKey($allConfig['PS_PAYRIGHT_APIKEY']);

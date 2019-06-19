@@ -23,8 +23,6 @@ class Calculations
      */
     public function calculateSingleProductInstallment($getPayrightConfigurationValue, $saleAmount)
     {
- 
-        
         $unserializeRatesArray = $getPayrightConfigurationValue['rates'];
         $payrightInstallmentApproval = $this->getMaximumSaleAmount($unserializeRatesArray, $saleAmount);
 
@@ -50,7 +48,10 @@ class Calculations
 
             $formatedLoanAmount = number_format((float)$LoanAmount, 2, '.', '');
 
-            $resEstablishmentFees = $this->getEstablishmentFees($LoanTerm, $getPayrightConfigurationValue['establishment_fee']);
+            $resEstablishmentFees = $this->getEstablishmentFees(
+                $LoanTerm,
+                $getPayrightConfigurationValue['establishment_fee']
+            );
 
             $CalculateRepayments  = $this->calculateRepayment(
                 $calculatedNoofRepayments,
@@ -205,8 +206,6 @@ class Calculations
 
     public function getEstablishmentFees($LoanTerm, $establishmentFees)
     {
-      
-
         $fee_bandArray = array();
         $feebandCalculator = 0;
        

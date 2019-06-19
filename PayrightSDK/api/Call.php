@@ -59,17 +59,14 @@ class Call
     }
 
 
-    public function payRightConfigurationTokenMethod($cookieObj, $configobj, $paraAccessToken)
+    public function payRightConfigurationTokenMethod($configobj, $paraAccessToken)
     {
         $ConfigFields = array(
         'merchantusername' => $configobj->getMerchantusername(),
         'merchantpassword' => $configobj->getMerchantpassword()
         );
 
-
-
-
-       
+      
         try {
             $response =  json_decode(
                 $this->execute(
@@ -97,7 +94,7 @@ class Call
     }
 
 
-    public function payRightTranscationConfigurationTokenMethod($cookieObj, $configobj, $paraAccessToken)
+    public function payRightTranscationConfigurationTokenMethod($configobj, $paraAccessToken)
     {
         $ConfigFields = array(
         'merchantusername' => $configobj->getMerchantusername(),
@@ -126,11 +123,6 @@ class Call
             $returnArray['conf'] = $response->data->conf;
             $returnArray['establishment_fee'] = $response->data->establishment_fee;
             $returnArray['client_id'] = $configobj->getClientID();
-
-            $_SESSION['PayrightRates'] = serialize($response->data->rates);
-            $_SESSION['AccountKeepingfees'] = $response->data->conf->{'Monthly Account Keeping Fee'};
-            $_SESSION['establishmentFeeArray'] = serialize($response->data->establishment_fee);
-            $_SESSION['PaymentProcessingFee'] = $response->data->conf->{'Payment Processing Fee'};
 
             return $returnArray;
         } catch (customException $e) {
@@ -214,7 +206,7 @@ class Call
 
             if ($tokenAuth == 'Bearer') {
                 //$authObj = json_decode($this->getPayrightAuthObj());
-                if ($paraAccess_token == null) { 
+                if ($paraAccess_token == null) {
                     $access_token = '';
                 } else {
                     $access_token = $paraAccess_token;
@@ -252,7 +244,7 @@ class Call
 
             if ($err) {
                 return "error";
-            } else { 
+            } else {
                 return $response;
             }
         } catch (customException $e) {
@@ -294,6 +286,7 @@ class Call
     {
         $payRightAuthToken = $this->payRightAuth($configObj);
         $payRightAuthObj = json_decode($payRightAuthToken);
+
 
         $ConfigFields = array(
         'merchantusername' => $configObj->getMerchantusername(),
