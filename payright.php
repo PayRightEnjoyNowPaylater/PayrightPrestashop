@@ -542,28 +542,28 @@ class Payright extends PaymentModule
 
     public function hookActionCartSave()
     {
- 
+        $cartTotal = 0;
 
-        //print_r($getSessionValue);
-        //die;
-        //
         $sugarAuthToken = '';
 
         $ConfigValues    = $this->getConfigFormValues();
         $cartInstalments = $ConfigValues['CARTPAGE_PAYRIGHTINSTALLMENTS'];
 
-        
-        
-
-
         $cart = $this->context->cart;
-        if (isset($this->context->cookie->access_token) && $cart->getOrderTotal() > 0) {
+
+        if (isset($cart)) {
+            if ($cart->getOrderTotal() != null) {
+                $cartTotal = $cart->getOrderTotal();
+            }
+        }
+
+        if (isset($this->context->cookie->access_token) && $cartTotal > 0) {
             $PayRightConfig  = new Payright\api\PayRightConfig($ConfigValues, null);
             $PayRightApiCall = new Payright\api\Call($PayRightConfig);
             $payRightAuth    = $PayRightApiCall->payRightAuth($PayRightConfig);
             $payRightAuthObj = json_decode($payRightAuth, true);
-        
 
+           
             $configTranscationVal = $PayRightApiCall->payRightTranscationConfigurationTokenMethod(
                 $PayRightConfig,
                 $payRightAuthObj['access_token']
@@ -575,7 +575,7 @@ class Payright extends PaymentModule
 
             $clientId = $configTranscationVal['client_id'];
 
-            $allowPlan = $this->getCurrentInstalmentsDisplay($cart->getOrderTotal());
+            $allowPlan = $this->getCurrentInstalmentsDisplay($cartTotal);
 
             $transactionData                   = array();
             $transactionData['transactionRef'] = $cart->id . "_" . $clientId . rand();
@@ -584,7 +584,7 @@ class Payright extends PaymentModule
             $transactionData['configToken']    = $configToken;
 
             $intializeTransaction = $PayRightApiCall->intializeTransaction(
-                $cart->getOrderTotal(),
+                $cartTotal,
                 $payrightAccessToken,
                 $transactionData,
                 $PayRightConfig
