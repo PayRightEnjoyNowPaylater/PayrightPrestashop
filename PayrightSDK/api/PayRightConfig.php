@@ -67,7 +67,7 @@ class PayRightConfig
     {
 
         $this->setConfigParams($payrightMode);
-        $this->setEnvironment('sandbox');
+        //$this->setEnvironment('dev');
 
         /* if (empty($input)) {
     $filename = _PS_MODULE_DIR_.'payright/PayrightSDK/config/config.ini';
@@ -169,19 +169,22 @@ class PayRightConfig
     /**
      *
      */
-    protected function setEnvironment($mode)
+    protected function setEnvironment()
     {
         //Set Merchant Id, Secret Key and Callback Url
+        //
+       
 
-        if ($mode == 'dev') {
-            $this->setAuthUrl('http://ecommerceapi.payright.local/oauth/token');
+        if ($this->getMode() == 1) {
+           
+            /*$this->setAuthUrl('http://ecommerceapi.payright.local/oauth/token');
             $this->setConfigUrl('http://ecommerceapi.payright.local/api/v1/configuration');
             $this->setIntialiseTransactionUrl('http://ecommerceapi.payright.local/api/v1/intialiseTransaction');
             $this->setEcomTokenDataUrl('http://ecommerceapi.payright.local/api/v1/getEcomTokenData');
             $this->setEcomUrl('http://customerpayrightportal.local/loan/new/');
             $this->setPlanStatusChangeUrl('http://ecommerceapi.payright.local/api/v1/changePlanStatus');
-            $this->setTransactionConfigUrl('http://ecommerceapi.payright.local/api/v1/initialTransactionConfiguration');
-        } elseif ($mode == 'sandbox') {
+            $this->setTransactionConfigUrl('http://ecommerceapi.payright.local/api/v1/initialTransactionConfiguration');*/
+
             $this->setAuthUrl('https://api.payright.com.au/oauth/token');
             $this->setConfigUrl('https://api.payright.com.au/api/v1/configuration');
             $this->setIntialiseTransactionUrl('https://api.payright.com.au/api/v1/intialiseTransaction');
@@ -189,7 +192,8 @@ class PayRightConfig
             $this->setEcomUrl('https://betaonline.payright.com.au/loan/new/');
             $this->setPlanStatusChangeUrl('https://api.payright.com.au/api/v1/changePlanStatus');
             $this->setTransactionConfigUrl('https://api.payright.com.au/api/v1/initialTransactionConfiguration');
-        } elseif ($mode == 'production') {
+        } else {
+            
             $this->setAuthUrl('https://liveapi.payright.com.au/oauth/token');
             $this->setConfigUrl('https://liveapi.payright.com.au/api/v1/configuration');
             $this->setIntialiseTransactionUrl('https://liveapi.payright.com.au/api/v1/intialiseTransaction');
