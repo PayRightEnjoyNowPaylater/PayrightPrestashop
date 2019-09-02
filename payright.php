@@ -50,7 +50,7 @@ class Payright extends PaymentModule
 
         $this->displayName = $this->l('Payright');
         $this->description = $this->l('Enjoy Now. Pay Later');
-        $this->module_key = '677c9925714d3f3573cc177fb85d9882';
+        $this->module_key  = '677c9925714d3f3573cc177fb85d9882';
 
         if (!count(Currency::checkPaymentCurrencies($this->id))) {
             $this->warning = $this->l('No currency has been set for this module.');
@@ -513,7 +513,7 @@ class Payright extends PaymentModule
     {
         return array(
             'PAYRIGHT_LIVE_MODE'                   => Configuration::get('PAYRIGHT_LIVE_MODE', true),
-            'PAYRIGHT_ACCOUNT_EMAIL'   => Configuration::get('PAYRIGHT_ACCOUNT_EMAIL', 'contact@prestashop.com'),
+            'PAYRIGHT_ACCOUNT_EMAIL'               => Configuration::get('PAYRIGHT_ACCOUNT_EMAIL', 'contact@prestashop.com'),
             'PAYRIGHT_ACCOUNT_PASSWORD'            => Configuration::get('PAYRIGHT_ACCOUNT_PASSWORD', null),
             'PS_PAYRIGHT_APIKEY'                   => Configuration::get('PS_PAYRIGHT_APIKEY', null),
             'PS_PAYRIGHT_USERNAME'                 => Configuration::get('PS_PAYRIGHT_USERNAME', null),
@@ -563,7 +563,6 @@ class Payright extends PaymentModule
             $payRightAuth    = $PayRightApiCall->payRightAuth($PayRightConfig);
             $payRightAuthObj = json_decode($payRightAuth, true);
 
-           
             $configTranscationVal = $PayRightApiCall->payRightTranscationConfigurationTokenMethod(
                 $PayRightConfig,
                 $payRightAuthObj['access_token']
@@ -640,7 +639,10 @@ class Payright extends PaymentModule
     public function hookDisplayShoppingCartFooter($params)
     {
         $installmentResult = $this->getPayrightInstallments();
-        if ($installmentResult['moduleShow'] == 1 && $installmentResult['allowPlan'] != 'exceed_amount') {
+        $ConfigValues      = $this->getConfigFormValues();
+        $cartInstalments   = $ConfigValues['CARTPAGE_PAYRIGHTINSTALLMENTS'];
+
+        if ($cartInstalments == 1 && $installmentResult['moduleShow'] == 1 && $installmentResult['allowPlan'] != 'exceed_amount') {
             return $this->context->smarty->fetch("module:payright/views/templates/hook/cart_payright.tpl");
         }
     }
@@ -757,7 +759,6 @@ class Payright extends PaymentModule
 
         $rateUnserialized = $getPayrightConfigurationValue['rates'];
 
-
         //  $rateUnserialized = ($rateCard);
         if (!empty($rateUnserialized)) {
             $PayRightCalculations = new Payright\api\Calculations();
@@ -782,8 +783,6 @@ class Payright extends PaymentModule
         $payRightAuth    = $PayRightApiCall->payRightAuth($PayRightConfig);
         $payRightAuthObj = json_decode($payRightAuth, true);
 
-
-
         if (isset($payRightAuthObj['error'])) {
             return "error";
         } else {
@@ -803,7 +802,7 @@ class Payright extends PaymentModule
 
     public function getPayrightInstallments()
     {
-        $ConfigValues = $this->getConfigFormValues();
+        $ConfigValues    = $this->getConfigFormValues();
         $PayRightConfig  = new Payright\api\PayRightConfig($ConfigValues, null);
         $PayRightApiCall = new Payright\api\Call($PayRightConfig);
         $payRightAuth    = $PayRightApiCall->payRightAuth($PayRightConfig);
