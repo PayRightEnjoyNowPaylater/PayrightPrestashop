@@ -702,6 +702,11 @@ class Payright extends PaymentModule
             return;
         }
 
+        // This resets payright_instalment_breakdown to a default value. Necessary when this hook is being run in a loop i.e. multiple
+        // products listed in one page. Otherwise the value of payright_instalment_breakdown could still hold the breakdown for the 
+        // previous product if the value is not set/cleared.
+        $this->context->smarty->assign("payright_instalment_breakdown", 0);
+
         if ($current_controller == 'category' && $params["type"] == 'unit_price' && $categoryInstalments == 1) {
             $payRightInstallmentBreakDown = $this->getCurrentInstalmentsDisplay($params["product"]["price_amount"]);
 
