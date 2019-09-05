@@ -36,7 +36,7 @@ class Payright extends PaymentModule
     {
         $this->name                   = 'payright';
         $this->tab                    = 'payments_gateways';
-        $this->version                = '1.0.1';
+        $this->version                = '1.0.4';
         $this->ps_versions_compliancy = array('min' => '1.7', 'max' => _PS_VERSION_);
         $this->author                 = 'PrestaShop';
         $this->controllers            = array('validation');
@@ -132,7 +132,7 @@ class Payright extends PaymentModule
             ->setAction($this->context->link->getModuleLink($this->name, 'validation', array(), true))
             ->setAdditionalInformation($this->context->smarty->
                     fetch('module:payright/views/templates/front/payment_infos.tpl'))
-            ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_ . $this->name . '/payment.jpg'));
+            ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_ . $this->name . '/views/img/payment.jpg'));
 
         return $offlineOption;
     }
@@ -216,7 +216,7 @@ class Payright extends PaymentModule
             ->setAdditionalInformation(
                 $this->context->smarty->fetch('module:payright/views/templates/front/payment_infos.tpl')
             )
-            ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_ . $this->name . '/payment.jpg'));
+            ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_ . $this->name . '/views/img/payment.jpg'));
 
         return $embeddedOption;
     }
@@ -229,7 +229,7 @@ class Payright extends PaymentModule
             ->setAdditionalInformation(
                 $this->context->smarty->fetch('module:payright/views/templates/front/payment_infos.tpl')
             )
-            ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_ . $this->name . '/payment.jpg'));
+            ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_ . $this->name . '/views/img/payment.jpg'));
 
         return $iframeOption;
     }
@@ -513,7 +513,10 @@ class Payright extends PaymentModule
     {
         return array(
             'PAYRIGHT_LIVE_MODE'                   => Configuration::get('PAYRIGHT_LIVE_MODE', true),
-            'PAYRIGHT_ACCOUNT_EMAIL'               => Configuration::get('PAYRIGHT_ACCOUNT_EMAIL', 'contact@prestashop.com'),
+            'PAYRIGHT_ACCOUNT_EMAIL'               => Configuration::get(
+                'PAYRIGHT_ACCOUNT_EMAIL',
+                'contact@prestashop.com'
+            ),
             'PAYRIGHT_ACCOUNT_PASSWORD'            => Configuration::get('PAYRIGHT_ACCOUNT_PASSWORD', null),
             'PS_PAYRIGHT_APIKEY'                   => Configuration::get('PS_PAYRIGHT_APIKEY', null),
             'PS_PAYRIGHT_USERNAME'                 => Configuration::get('PS_PAYRIGHT_USERNAME', null),
@@ -642,7 +645,9 @@ class Payright extends PaymentModule
         $ConfigValues      = $this->getConfigFormValues();
         $cartInstalments   = $ConfigValues['CARTPAGE_PAYRIGHTINSTALLMENTS'];
 
-        if ($cartInstalments == 1 && $installmentResult['moduleShow'] == 1 && $installmentResult['allowPlan'] != 'exceed_amount') {
+        if ($cartInstalments == 1
+            && $installmentResult['moduleShow'] == 1
+            && $installmentResult['allowPlan'] != 'exceed_amount') {
             return $this->context->smarty->fetch("module:payright/views/templates/hook/cart_payright.tpl");
         }
     }
@@ -702,9 +707,9 @@ class Payright extends PaymentModule
             return;
         }
 
-        // This resets payright_instalment_breakdown to a default value. Necessary when this hook is being run in a loop i.e. multiple
-        // products listed in one page. Otherwise the value of payright_instalment_breakdown could still hold the breakdown for the 
-        // previous product if the value is not set/cleared.
+        // This resets payright_instalment_breakdown to a default value. Necessary when this hook is being run in a
+        // loop i.e. multiple products listed in one page. Otherwise the value of payright_instalment_breakdown could
+        // still hold the breakdown for the previous product if the value is not set/cleared.
         $this->context->smarty->assign("payright_instalment_breakdown", 0);
 
         if ($current_controller == 'category' && $params["type"] == 'unit_price' && $categoryInstalments == 1) {

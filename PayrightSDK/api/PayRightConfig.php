@@ -173,9 +173,8 @@ class PayRightConfig
     {
         //Set Merchant Id, Secret Key and Callback Url
         //
-       
-       if ($this->getMode() == 1) {
-           
+
+        if ($this->getMode() == 1) {
             /*$this->setAuthUrl('http://ecommerceapi.payright.local/oauth/token');
             $this->setConfigUrl('http://ecommerceapi.payright.local/api/v1/configuration');
             $this->setIntialiseTransactionUrl('http://ecommerceapi.payright.local/api/v1/intialiseTransaction');
@@ -192,7 +191,6 @@ class PayRightConfig
             $this->setPlanStatusChangeUrl('https://api.payright.com.au/api/v1/changePlanStatus');
             $this->setTransactionConfigUrl('https://api.payright.com.au/api/v1/initialTransactionConfiguration');
         } else {
-            
             $this->setAuthUrl('https://liveapi.payright.com.au/oauth/token');
             $this->setConfigUrl('https://liveapi.payright.com.au/api/v1/configuration');
             $this->setIntialiseTransactionUrl('https://liveapi.payright.com.au/api/v1/intialiseTransaction');
@@ -404,7 +402,7 @@ class PayRightConfig
         return $this;
     }
 
-     /**
+    /**
      * @return mixed
      */
     public function getTransactionConfigUrl()
