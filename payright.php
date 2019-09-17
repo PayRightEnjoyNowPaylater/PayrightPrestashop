@@ -33,7 +33,8 @@ class Payright extends PaymentModule
     public $extra_mail_vars;
 
     private $payrightConfigurationValue;
-    const CACHE_EXPIRY_IN_SECS = 60 * 60; // 1 hour
+    const CACHE_EXPIRY_IN_SECS = 3600; // 1 hour
+    const EXPRESS_CHECKOUT_DISABLED = true;
 
     public function __construct()
     {
@@ -449,7 +450,8 @@ class Payright extends PaymentModule
                             'name' => 'name',
                         ),
                     ),
-                    array(
+                    // Temporarily disabling express checkout until a better more performant solution is found
+                    /*array(
                         'type' => 'select',
                         'label' => $this->l('Cart Page'),
                         'desc' => $this->l('Show Payright Installments information on cart page'),
@@ -460,7 +462,7 @@ class Payright extends PaymentModule
                             'id' => 'id_option',
                             'name' => 'name',
                         ),
-                    ),
+                    ),*/
 
                     array(
                         'type' => 'select',
@@ -566,6 +568,11 @@ class Payright extends PaymentModule
             return;
         }
 
+        // Temporarily disable express checkout link until a more performant solution is found
+        if (self::EXPRESS_CHECKOUT_DISABLED === true) {
+            return;
+        }
+
         $cartTotal = 0;
 
         $sugarAuthToken = '';
@@ -662,6 +669,10 @@ class Payright extends PaymentModule
 
     public function hookDisplayShoppingCartFooter($params)
     {
+        // Temporarily disable express checkout link until a more performant solution is found
+        if (self::EXPRESS_CHECKOUT_DISABLED === true) {
+            return;
+        }
         $installmentResult = $this->getPayrightInstallments();
         $ConfigValues = $this->getConfigFormValues();
         $cartInstalments = $ConfigValues['CARTPAGE_PAYRIGHTINSTALLMENTS'];
