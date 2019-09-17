@@ -336,6 +336,8 @@ class Payright extends PaymentModule
             ),
         );
 
+        // Temporarily disabling express checkout until a better more performant solution is found
+        /*
         $cartPageOptions = array(
             array(
                 'id_option' => 1, // The value of the 'value' attribute of the <option> tag.
@@ -345,7 +347,7 @@ class Payright extends PaymentModule
                 'id_option' => 2,
                 'name' => 'No',
             ),
-        );
+        );*/
 
         $modalOptions = array(
             array(
@@ -873,7 +875,6 @@ class Payright extends PaymentModule
         $PayRightApiCall = new Payright\api\Call($PayRightConfig);
 
         if (!isset($this->context->cookie->access_token)) {
-
             $payRightAuth = $PayRightApiCall->payRightAuth($PayRightConfig);
             $payRightAuthObj = json_decode($payRightAuth, true);
 
