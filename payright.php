@@ -111,6 +111,15 @@ class Payright extends PaymentModule
             $this->getExternalPaymentOption(),
         );
 
+        $ConfigValues = $this->getConfigFormValues();
+        $minAmount = $ConfigValues['PS_PAYRIGHT_MINAMOUNT'];
+        $orderTotal = $this->context->cart->getOrderTotal();
+
+        if(!($orderTotal >= $minAmount)){
+            return;
+        }
+
+
         return $payment_options;
     }
 
@@ -429,6 +438,14 @@ class Payright extends PaymentModule
                         'label' => $this->l('Merchant Password'),
                     ),
                     array(
+                        'type' => 'text',
+                        'label' => $this->l('Minimum Amount'),
+                        'name' => 'PS_PAYRIGHT_MINAMOUNT',
+                        'col' => '3',
+                        'required' => false,
+                        'desc' => $this->l('please enter Minimum Amount for instalments to be displayed'),
+                    ),
+                    array(
                         'type' => 'select',
                         'label' => $this->l('Product Page'),
                         'desc' => $this->l('Show Payright Installments information on product page'),
@@ -504,7 +521,6 @@ class Payright extends PaymentModule
                             'name' => 'name',
                         ),
                     ),
-
                 ),
                 'submit' => array(
                     'title' => $this->l('Save'),
@@ -536,6 +552,7 @@ class Payright extends PaymentModule
             'INFOMODAL_TEMPLATE' => Configuration::get('INFOMODAL_TEMPLATE', null),
             'PAYRIGHT_MERCHANTUSERNAME' => Configuration::get('PAYRIGHT_MERCHANTUSERNAME', null),
             'PAYRIGHT_MERCHANTPASSWORD' => Configuration::get('PAYRIGHT_MERCHANTPASSWORD', null),
+            'PS_PAYRIGHT_MINAMOUNT' => Configuration::get('PS_PAYRIGHT_MINAMOUNT',null),
 
         );
     }
@@ -581,6 +598,7 @@ class Payright extends PaymentModule
 
         $ConfigValues = $this->getConfigFormValues();
         $cartInstalments = $ConfigValues['CARTPAGE_PAYRIGHTINSTALLMENTS'];
+        $minAmount = $ConfigValues['PS_PAYRIGHT_MINAMOUNT'];
 
         $cart = $this->context->cart;
 
@@ -590,7 +608,7 @@ class Payright extends PaymentModule
             }
         }
 
-        if (isset($this->context->cookie->access_token) && $cartTotal > 0) {
+        if (isset($this->context->cookie->access_token) && $cartTotal > 0 &&  $cartTotal >= $minAmount) {
             $PayRightConfig = new Payright\api\PayRightConfig($ConfigValues, null);
             $PayRightApiCall = new Payright\api\Call($PayRightConfig);
             $payRightAuth = $PayRightApiCall->payRightAuth($PayRightConfig);
@@ -637,7 +655,7 @@ class Payright extends PaymentModule
             $moduleShow = false;
         }
 
-        if ($moduleShow == 1 && $allowPlan != 'exceed_amount' && $cartInstalments == 1) {
+        if ($moduleShow == 1 && $allowPlan != 'exceed_amount' && $cartInstalments == 1 && $cartTotal >= $minAmount) {
             return $this->context->smarty->fetch("module:payright/views/templates/hook/cart_payright.tpl");
         }
     }
@@ -675,6 +693,7 @@ class Payright extends PaymentModule
         if (self::EXPRESS_CHECKOUT_DISABLED === true) {
             return;
         }
+
         $installmentResult = $this->getPayrightInstallments();
         $ConfigValues = $this->getConfigFormValues();
         $cartInstalments = $ConfigValues['CARTPAGE_PAYRIGHTINSTALLMENTS'];
@@ -802,9 +821,10 @@ class Payright extends PaymentModule
         $getPayrightConfigurationValue = $this->getPayrightConfigurationValue();
 
         $rateUnserialized = $getPayrightConfigurationValue['rates'];
-
+        $ConfigValues = $this->getConfigFormValues();
+        $minAmount = $ConfigValues['PS_PAYRIGHT_MINAMOUNT'];
         //  $rateUnserialized = ($rateCard);
-        if (!empty($rateUnserialized)) {
+        if (!empty($rateUnserialized) && ($productTotal >= $minAmount)) {
             $PayRightCalculations = new Payright\api\Calculations();
             $PayrightCalculations = $PayRightCalculations->calculateSingleProductInstallment(
                 $getPayrightConfigurationValue,
@@ -873,7 +893,6 @@ class Payright extends PaymentModule
         $ConfigValues = $this->getConfigFormValues();
         $PayRightConfig = new Payright\api\PayRightConfig($ConfigValues, null);
         $PayRightApiCall = new Payright\api\Call($PayRightConfig);
-
         if (!isset($this->context->cookie->access_token)) {
             $payRightAuth = $PayRightApiCall->payRightAuth($PayRightConfig);
             $payRightAuthObj = json_decode($payRightAuth, true);
