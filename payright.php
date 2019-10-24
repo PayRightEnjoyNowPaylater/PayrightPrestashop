@@ -560,13 +560,42 @@ class Payright extends PaymentModule
     /**
      * Retrieves the cached PayRight configuration response. This response contains the merchant rates
      * which will be used for calculations of instalments
+     *
+     * @return array | false
      */
     protected function getConfigCacheValues()
     {
-        return array(
-            'PAYRIGHT_CONFIG_CACHE' => Configuration::get('PAYRIGHT_CONFIG_CACHE', null),
-            'PAYRIGHT_CONFIG_LAST_UPDATED' => Configuration::get('PAYRIGHT_CONFIG_LAST_UPDATED', null),
-        );
+        $configCache = Configuration::get('PAYRIGHT_CONFIG_CACHE', null, null, null, '');
+        $configLastUpdated = Configuration::get('PAYRIGHT_CONFIG_LAST_UPDATED', null, null, null, '');
+
+        if ($configCache !== '' && $configLastUpdated !== '') {
+            return array(
+                'PAYRIGHT_CONFIG_CACHE' => $configCache,
+                'PAYRIGHT_CONFIG_LAST_UPDATED' => $configLastUpdated,
+            );
+        }
+
+        return false;
+    }
+
+    /***
+     * Clears the config cache values
+     *
+     * @return void
+     */
+    protected function flushConfigCacheValues()
+    {
+        Configuration::updateValue('PAYRIGHT_CONFIG_CACHE', '');
+        Configuration::updateValue('PAYRIGHT_CONFIG_LAST_UPDATED', '');
+    }
+
+    /***
+     * @param int $lastUpdated Unix timestamp of when the config cache was last updated
+     * @return bool
+     */
+    protected function isConfigCacheExpired($lastUpdated)
+    {
+        return time() > $lastUpdated + self::CACHE_EXPIRY_IN_SECS;
     }
 
     /**
@@ -715,6 +744,8 @@ class Payright extends PaymentModule
         foreach (array_keys($form_values) as $key) {
             Configuration::updateValue($key, Tools::getValue($key));
         }
+
+        $this->flushConfigCacheValues();
     }
 
     /**
@@ -846,9 +877,8 @@ class Payright extends PaymentModule
 
         // Retrieve the cached configuration from the DB
         $payrightConfigurationCache = $this->getConfigCacheValues();
-        if ($payrightConfigurationCache['PAYRIGHT_CONFIG_CACHE'] !== false &&
-            $payrightConfigurationCache['PAYRIGHT_CONFIG_LAST_UPDATED'] !== false &&
-            time() < $payrightConfigurationCache['PAYRIGHT_CONFIG_LAST_UPDATED'] + self::CACHE_EXPIRY_IN_SECS
+        if ($payrightConfigurationCache !== false &&
+            !$this->isConfigCacheExpired($payrightConfigurationCache['PAYRIGHT_CONFIG_LAST_UPDATED'])
         ) {
             $this->payrightConfigurationValue = (array) json_decode(
                 $payrightConfigurationCache['PAYRIGHT_CONFIG_CACHE']
