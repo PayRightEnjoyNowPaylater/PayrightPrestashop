@@ -40,7 +40,7 @@ class Payright extends PaymentModule
     {
         $this->name = 'payright';
         $this->tab = 'payments_gateways';
-        $this->version = '1.0.5';
+        $this->version = '1.0.6';
         $this->ps_versions_compliancy = array('min' => '1.7', 'max' => _PS_VERSION_);
         $this->author = 'PrestaShop';
         $this->controllers = array('validation');
@@ -115,7 +115,7 @@ class Payright extends PaymentModule
         $minAmount = $ConfigValues['PS_PAYRIGHT_MINAMOUNT'];
         $orderTotal = $this->context->cart->getOrderTotal();
 
-        if(!($orderTotal >= $minAmount)){
+        if (!($orderTotal >= $minAmount)) {
             return;
         }
 
@@ -144,7 +144,7 @@ class Payright extends PaymentModule
         $offlineOption->setCallToActionText($this->l('Pay offline'))
             ->setAction($this->context->link->getModuleLink($this->name, 'validation', array(), true))
             ->setAdditionalInformation($this->context->smarty->
-                    fetch('module:payright/views/templates/front/payment_infos.tpl'))
+            fetch('module:payright/views/templates/front/payment_infos.tpl'))
             ->setLogo(Media::getMediaPath(_PS_MODULE_DIR_ . $this->name . '/views/img/payment.jpg'));
 
         return $offlineOption;
@@ -284,7 +284,7 @@ class Payright extends PaymentModule
         $helper->identifier = $this->identifier;
         $helper->submit_action = 'submitPayrightModule';
         $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false)
-        . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name;
+            . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name;
         $helper->token = Tools::getAdminTokenLite('AdminModules');
 
         $helper->tpl_vars = array(
@@ -422,6 +422,8 @@ class Payright extends PaymentModule
                         'label' => $this->l('Password'),
                         'col' => '3',
                         'required' => true,
+                        'desc' => $this->l('Please enter your password provided by Payright. ' .
+                            'Leave as blank to keep current password'),
                     ),
                     array(
                         'col' => 3,
@@ -439,11 +441,12 @@ class Payright extends PaymentModule
                     ),
                     array(
                         'type' => 'text',
-                        'label' => $this->l('Minimum Amount'),
+                        'label' => $this->l('Minimum Amount ($)'),
                         'name' => 'PS_PAYRIGHT_MINAMOUNT',
                         'col' => '3',
                         'required' => false,
-                        'desc' => $this->l('please enter Minimum Amount for instalments to be displayed'),
+                        'desc' => $this->l('Please enter the minimum sale amount in order for instalments '
+                            . 'to be displayed'),
                     ),
                     array(
                         'type' => 'select',
@@ -552,7 +555,7 @@ class Payright extends PaymentModule
             'INFOMODAL_TEMPLATE' => Configuration::get('INFOMODAL_TEMPLATE', null),
             'PAYRIGHT_MERCHANTUSERNAME' => Configuration::get('PAYRIGHT_MERCHANTUSERNAME', null),
             'PAYRIGHT_MERCHANTPASSWORD' => Configuration::get('PAYRIGHT_MERCHANTPASSWORD', null),
-            'PS_PAYRIGHT_MINAMOUNT' => Configuration::get('PS_PAYRIGHT_MINAMOUNT',null),
+            'PS_PAYRIGHT_MINAMOUNT' => Configuration::get('PS_PAYRIGHT_MINAMOUNT', null, null, null, 1),
 
         );
     }
@@ -742,6 +745,10 @@ class Payright extends PaymentModule
         $form_values = $this->getConfigFormValues();
 
         foreach (array_keys($form_values) as $key) {
+            if ($key === 'PAYRIGHT_ACCOUNT_PASSWORD' && Tools::getValue($key) === '') {
+                continue;
+            }
+
             Configuration::updateValue($key, Tools::getValue($key));
         }
 

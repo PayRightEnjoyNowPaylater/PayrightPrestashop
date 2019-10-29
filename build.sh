@@ -33,7 +33,7 @@ rm -rf ${TEMP_FOLDER}
 rm -f ./dist/${ZIP_FILENAME}
 
 # Copy source files to temp folder
-rsync -rP --exclude "/dist" --exclude "/README.md" --exclude "/build.sh" --exclude ".git" ./ ${TEMP_FOLDER}
+rsync -rP --exclude "/dist" --exclude "/.idea" --exclude "/README.md" --exclude "/build.sh" --exclude ".git" ./ ${TEMP_FOLDER}
 
 # Clean up folder (i.e. remove .DS_Store)
 find ${TEMP_FOLDER} -name '.DS_Store' -type f -delete
