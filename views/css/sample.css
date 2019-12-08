@@ -657,18 +657,18 @@ text-decoration-line: underline;
 
 #products .product-description, .featured-products .product-description, .product-accessories .product-description, .product-miniature .product-description {
  
-    height: auto;
+    height: auto !important;
 }
 #products .highlighted-informations, .featured-products .highlighted-informations, .product-accessories .highlighted-informations, .product-miniature .highlighted-informations {
     
-    height: 7.125rem;
+    height: 7.125em !important;
    
 }
 
 span#payright-logo > img
 {
-  height:30px;
-  margin-left: -4px;
+  height:30px !important;
+  margin-left: -4px !important;
 }
 
 
