@@ -143,16 +143,6 @@ header {
 		text-decoration-line: none;
 	}
 
-
-/*button {
-	background-color: #275f95;
-	color: #ffffff;
-	font-size: 28px;
-	width: 100%;
-	text-align: center;
-	padding: 10px; 
-}
-*/
 header {
 	padding: 40px 0;
 }
@@ -431,13 +421,6 @@ color: #ffffff;
     height: auto !important;
 }
 
-
-/*#prlogo2
-{
-  height:40px;
-  margin-left: -10px;
-
-}*/
 span.payright-logo-product > img{
 
   height:40px;
