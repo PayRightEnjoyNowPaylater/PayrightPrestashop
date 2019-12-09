@@ -107,7 +107,7 @@ a {
 	position: absolute;
 	left: 50%;
 	top: 50%;
-	transform: translate(-50%, -50%);  /* tweak for precise centering; details:*/  /// -40 and -35
+	transform: translate(-50%, -50%);  /* tweak for precise centering; details:*/ 
 }
 
 .payRightimg   {
@@ -313,9 +313,6 @@ color: #ffffff;
 	}
 	br {
 		display: inline !important;
-	}
-	button {
-		font-size: 22px;
 	}
 	.imgCol {
 		text-align: center;

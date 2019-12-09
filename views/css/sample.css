@@ -75,7 +75,7 @@ h6.payRightH6
   }
   .modal-content{
 
- max-width: 1152px;
+ max-width: 800px;
     width: auto;
     padding: 20px;
     cursor: pointer;
@@ -85,11 +85,11 @@ h6.payRightH6
 
 @media screen and (max-width: 1471px) {
   .payRight_container.is-fullhd {
-    max-width: 1344px;
+    max-width: 900px;
     width: auto;
   }
   .modal-content{
- max-width: 1152px;
+ max-width: 800px;
     width: auto;
     padding: 20px;
   }
@@ -97,11 +97,11 @@ h6.payRightH6
 
 @media screen and (min-width: 1280px) {
   .payRight_container {
-    max-width: 1152px;
-    width: 1152px;
+    max-width: 800px;
+    width: 800px;
   }
   .modal-content{
- max-width: 1152px;
+ max-width: 800px;
     width: auto;
     padding: 20px;
   }
@@ -109,11 +109,11 @@ h6.payRightH6
 
 @media screen and (min-width: 1472px) {
   .payRight_container {
-    max-width: 1344px;
+    max-width: 800px;
     width: 1344px;
   }
   .modal-content{
- max-width: 1152px;
+ max-width: 800px;
     width: auto;
     padding: 20px;
   }
@@ -559,8 +559,8 @@ a.tellmemore {
     -webkit-animation-name: animatetop;
     -webkit-animation-duration: 0.4s;
     animation-name: animatetop;
-    animation-duration: 0.4s
-       cursor: pointer;
+    animation-duration: 0.4s;
+    cursor: pointer;
 }
 
 /* Add Animation */
