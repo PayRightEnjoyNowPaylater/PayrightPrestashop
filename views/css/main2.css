@@ -34,14 +34,6 @@ p.payRightp {
 a {
 	color: #275f95;
 }
-button {
-	background-color: #275f95;
-	color: #ffffff;
-	font-size: 28px;
-	width: 100%;
-	text-align: center;
-	padding: 10px; 
-}
 
 header {
 	padding: 40px 0;
@@ -155,9 +147,6 @@ header {
 	}
 	br {
 		display: inline !important;
-	}
-	button {
-		font-size: 22px;
 	}
 	.headerLast {
 		height: 0px;

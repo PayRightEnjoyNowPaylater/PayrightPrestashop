@@ -1,26 +1,7 @@
-@-webkit-keyframes spinAround {
-  from {
-    -webkit-transform: rotate(0deg);
-            transform: rotate(0deg);
-  }
-  to {
-    -webkit-transform: rotate(359deg);
-            transform: rotate(359deg);
-  }
-}
-@keyframes spinAround {
-  from {
-    -webkit-transform: rotate(0deg);
-            transform: rotate(0deg);
-  }
-  to {mobile
-    -webkit-transform: rotate(359deg);
-            transform: rotate(359deg);
-  }
-}
+
 
 img.payRightimg{
-  height: auto;ƒ
+  height: auto;
   max-width: 100%;
 }
 
@@ -39,30 +20,13 @@ img.payRightimg{
 
 }
 
-
-
-body,
-button,
-input,
-select,
-textarea {
-  font-family: BlinkMacSystemFont, -apple-system, "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
-}
-
-
-span {
-  font-style: inherit;
-  font-weight: inherit;
-}
-
-body,
 p,
 h1.payRightH1,
 h2.payRightH2,
 h3.payRightH3,
 h4.payRightH4,
 h5.payRightH5,
-h6.payRightH6,
+h6.payRightH6
  {
   margin: 0;
   padding: 0;
@@ -79,12 +43,9 @@ h6.payRightH6,
   background-color: green;
 
 }
-*, *::before, *::after {
+/* *, *::before, *::after {
   box-sizing: inherit;
-}
-
-html
-{min-width: 300px;}
+} */
 
 
 /* payRight_container */
@@ -114,7 +75,7 @@ html
   }
   .modal-content{
 
- max-width: 1152px;
+ max-width: 800px;
     width: auto;
     padding: 20px;
     cursor: pointer;
@@ -124,11 +85,11 @@ html
 
 @media screen and (max-width: 1471px) {
   .payRight_container.is-fullhd {
-    max-width: 1344px;
+    max-width: 900px;
     width: auto;
   }
   .modal-content{
- max-width: 1152px;
+ max-width: 800px;
     width: auto;
     padding: 20px;
   }
@@ -136,11 +97,11 @@ html
 
 @media screen and (min-width: 1280px) {
   .payRight_container {
-    max-width: 1152px;
-    width: 1152px;
+    max-width: 800px;
+    width: 800px;
   }
   .modal-content{
- max-width: 1152px;
+ max-width: 800px;
     width: auto;
     padding: 20px;
   }
@@ -148,11 +109,11 @@ html
 
 @media screen and (min-width: 1472px) {
   .payRight_container {
-    max-width: 1344px;
+    max-width: 800px;
     width: 1344px;
   }
   .modal-content{
- max-width: 1152px;
+ max-width: 800px;
     width: auto;
     padding: 20px;
   }
@@ -383,7 +344,6 @@ a.tellmemore {
   }
 .insideColumns.payRight_is-3-tablet, .payRight_is-3-tablet {
   flex: none;
-  /*check*/
    margin-left: 25%;
     width: 25%
   }
@@ -599,8 +559,8 @@ a.tellmemore {
     -webkit-animation-name: animatetop;
     -webkit-animation-duration: 0.4s;
     animation-name: animatetop;
-    animation-duration: 0.4s
-       cursor: pointer;
+    animation-duration: 0.4s;
+    cursor: pointer;
 }
 
 /* Add Animation */
