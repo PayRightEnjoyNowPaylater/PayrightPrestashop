@@ -91,7 +91,7 @@ class Payright extends PaymentModule
             || !Configuration::updateValue('CATEGORYPAGE_PAYRIGHTINSTALLMENTS', '')
             || !Configuration::updateValue('INFOMODAL_TEMPLATE', '')
             || !Configuration::updateValue('PAYRIGHT_MERCHANTPASSWORD', '')
-            || !Configuration::updateValue('PS_PAYRIGHT_CUSTOMCSS','')
+            || !Configuration::updateValue('PS_PAYRIGHT_CUSTOMCSS', '')
         ) {
             return false;
         }
@@ -568,7 +568,7 @@ class Payright extends PaymentModule
             'PAYRIGHT_MERCHANTUSERNAME' => Configuration::get('PAYRIGHT_MERCHANTUSERNAME', null),
             'PAYRIGHT_MERCHANTPASSWORD' => Configuration::get('PAYRIGHT_MERCHANTPASSWORD', null),
             'PS_PAYRIGHT_MINAMOUNT' => Configuration::get('PS_PAYRIGHT_MINAMOUNT', null, null, null, 1),
-            'PS_PAYRIGHT_CUSTOMCSS' => Configuration::get('PS_PAYRIGHT_CUSTOMCSS',null),
+            'PS_PAYRIGHT_CUSTOMCSS' => Configuration::get('PS_PAYRIGHT_CUSTOMCSS', null)
 
         );
     }
@@ -723,11 +723,10 @@ class Payright extends PaymentModule
         $ConfigValues = $this->getConfigFormValues();
         $payrightcss = $ConfigValues['PS_PAYRIGHT_CUSTOMCSS'];
 
-        if($payrightcss !== null){ 
-        $this->smarty->assign('payrightcss', $payrightcss);    
-        return $this->display(__FILE__, 'payrightcustom_css.tpl');
+        if ($payrightcss !== null) {
+            $this->smarty->assign('payrightcss', $payrightcss);
+            return $this->display(__FILE__, 'payrightcustom_css.tpl');
         }
-
     }
 
     /**
