@@ -40,7 +40,7 @@ class Payright extends PaymentModule
     {
         $this->name = 'payright';
         $this->tab = 'payments_gateways';
-        $this->version = '1.0.7';
+        $this->version = '1.0.8';
         $this->ps_versions_compliancy = array('min' => '1.7', 'max' => _PS_VERSION_);
         $this->author = 'PrestaShop';
         $this->controllers = array('validation');
@@ -91,6 +91,7 @@ class Payright extends PaymentModule
             || !Configuration::updateValue('CATEGORYPAGE_PAYRIGHTINSTALLMENTS', '')
             || !Configuration::updateValue('INFOMODAL_TEMPLATE', '')
             || !Configuration::updateValue('PAYRIGHT_MERCHANTPASSWORD', '')
+            || !Configuration::updateValue('PS_PAYRIGHT_CUSTOMCSS', '')
         ) {
             return false;
         }
@@ -524,7 +525,18 @@ class Payright extends PaymentModule
                             'name' => 'name',
                         ),
                     ),
+                    array(
+                        'type' => 'textarea',
+                        'label' => $this->l('Custom CSS'),
+                        'name' => 'PS_PAYRIGHT_CUSTOMCSS',
+                        'col' => '5',
+                        'rows' => '5',
+                        'required' => false,
+                        'desc' => $this->l('Custom css can be added here for the module'),
+                    ),
                 ),
+
+         
                 'submit' => array(
                     'title' => $this->l('Save'),
                 ),
@@ -556,6 +568,7 @@ class Payright extends PaymentModule
             'PAYRIGHT_MERCHANTUSERNAME' => Configuration::get('PAYRIGHT_MERCHANTUSERNAME', null),
             'PAYRIGHT_MERCHANTPASSWORD' => Configuration::get('PAYRIGHT_MERCHANTPASSWORD', null),
             'PS_PAYRIGHT_MINAMOUNT' => Configuration::get('PS_PAYRIGHT_MINAMOUNT', null, null, null, 1),
+            'PS_PAYRIGHT_CUSTOMCSS' => Configuration::get('PS_PAYRIGHT_CUSTOMCSS', null)
 
         );
     }
@@ -704,8 +717,16 @@ class Payright extends PaymentModule
         } else {
             $this->context->cookie->error = '';
         }
-
+      
         $this->context->smarty->assign("payright_base_url", Context::getContext()->shop->getBaseURL(true));
+    
+        $ConfigValues = $this->getConfigFormValues();
+        $payrightcss = $ConfigValues['PS_PAYRIGHT_CUSTOMCSS'];
+
+        if ($payrightcss !== null) {
+            $this->smarty->assign('payrightcss', $payrightcss);
+            return $this->display(__FILE__, 'payrightcustom_css.tpl');
+        }
     }
 
     /**
