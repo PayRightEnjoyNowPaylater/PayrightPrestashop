@@ -40,7 +40,7 @@ class Payright extends PaymentModule
     {
         $this->name = 'payright';
         $this->tab = 'payments_gateways';
-        $this->version = '1.0.7';
+        $this->version = '1.0.8';
         $this->ps_versions_compliancy = array('min' => '1.7', 'max' => _PS_VERSION_);
         $this->author = 'PrestaShop';
         $this->controllers = array('validation');
