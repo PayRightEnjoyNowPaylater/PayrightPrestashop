@@ -36,9 +36,9 @@
 
 <span class="payright-logo-product" ><img  src="{$urls.base_url|escape:'htmlall':'UTF-8'}modules/payright/views/img/payrightlogo_rgb.png" /></span>
 {if $templateValue == '1'}
-<a style='color:#275f95' id="opener"  class="payright-modal-popup-trigger2" > Info</a> </p>
+<a style='color:#275f95; cursor:pointer;' id="opener"  class="payright-modal-popup-trigger2" > Info</a> </p>
 {else}
-<a style='color:#275f95' id="opener"  class="payright-modal-popup-trigger" > Info</a> </p>
+<a style='color:#275f95; cursor:pointer;' id="opener"  class="payright-modal-popup-trigger" > Info</a> </p>
 {/if}
 
 {/if}
@@ -99,7 +99,7 @@
 
                             <div class="important-info">
                                 <h2>Important Information:</h2>
-                                <p>We want to ensure you have a positive payment experience and have made the checkout process simple. We take responsible lending seriously so credit is only extended to approved customers. Please ensure you read the <a href="#" target="_blank">terms and conditions</a> for further information and note that PayRight is not available on all purchases.</p>
+                                <p>We want to ensure you have a positive payment experience and have made the checkout process simple. We take responsible lending seriously so credit is only extended to approved customers. Please ensure you read the <a href="https://payright.com/terms-and-conditions/" target="_blank">terms and conditions</a> for further information and note that PayRight is not available on all purchases.</p>
                             </div>
 
                             <a href="https://www.payright.com.au/" class="tellmemore">Tell me more</a>
@@ -274,7 +274,7 @@
                         Important Information:
                     </h3>
                     <p>
-                        We want to ensure you have a positive payment experience and have made the checkout process simple. We take responsible lending seriously so credit is only extended to approved customers. Please ensure you read the <a href="#" target="_blank">terms and conditions</a>for further information and note that PayRight is not available on all purchases.
+                        We want to ensure you have a positive payment experience and have made the checkout process simple. We take responsible lending seriously so credit is only extended to approved customers. Please ensure you read the <a href="https://payright.com/terms-and-conditions/" target="_blank">terms and conditions</a>for further information and note that PayRight is not available on all purchases.
                     </p>
                 </div>
                 <a class="tellmemore" href="https://www.payright.com.au/" target=" ">Tell me more</a>

@@ -1,6 +1,6 @@
 <?php
 /**
- * Placeholder for Cancel Response
+ * Placeholder for Cancel Response (Deprecated)
  *
  * @author Payright
  * @copyright 2016-2019 https://www.payright.com.au
@@ -55,20 +55,13 @@ class PayrightCancelModuleFrontController extends ModuleFrontController
     */
     public function postProcess()
     {
-        $this->params = $_REQUEST;
+        $this->checkoutId = $_REQUEST['checkoutId'];
 
         $this->context->smarty->assign(array(
-            "params" => $this->params,
+            "checkoutId" => $this->checkoutId,
         ));
 
-        $params = $_REQUEST;
-        $validate_error = $this->validateCredentials($params);
-        $error = array();
-        if (count($validate_error)) {
-            $error["message"] = $this->module->l("Invalid Response: Missing Payright transaction " .
-                implode($validate_error, ", "), "validation");
-            $this->checkoutErrorRedirect($error);
-        }
+        $checkoutId = $_REQUEST['checkoutId'];
 
         $this->retrievePayrightConfiguration();
         $ConfigValues = $this->getConfigFormValues();
@@ -78,29 +71,18 @@ class PayrightCancelModuleFrontController extends ModuleFrontController
         $PayRightConfig = new Payright\api\PayRightConfig($ConfigValues, null);
         $PayRightApiCall = new Payright\api\Call($PayRightConfig);
 
-        $ecommerceToken = $this->params['ecommtoken'];
+        if (isset($checkoutId)) {
 
-        $GetTokenData = $PayRightApiCall->getPlanDataByToken($ecommerceToken, $PayRightConfig);
-        $TokenObject = json_decode($GetTokenData);
+            $status = $PayRightApiCall->planStatusChange($PayRightConfig, $checkoutId);
 
-        $transactionObj = json_decode($TokenObject->transactionResult);
+            if (array_key_exists('error', $status['data'])) {
+                $planResult = $status['data']['error_message'];
+            } else {
+                $planResult = $status['data']['message'];
+            }
 
-        $error["error"]     =   true;
-        $error["message"]   =   "Payright Transaction Failed, please contact Payright 1300 338 496";
-
-        if (isset($transactionObj->planId)) {
-            $PayRightApiCall->planStatusChange($PayRightConfig, $transactionObj->planId);
+            PayrightOrder::updatePaymentStatus($planResult, $checkoutId);
         }
-
-       
-
-
-        if (!empty($error["error"]) && $error["error"]) {
-            ### redirect to the error page
-            $this->checkoutErrorRedirect($error);
-        }
-       
-        $this->setTemplate("module:payright/views/templates/front/payment_return.tpl");
     }
 
 
@@ -116,19 +98,11 @@ class PayrightCancelModuleFrontController extends ModuleFrontController
     {
         ###
         $this->payrightLiveMode     =   Configuration::get('PAYRIGHT_LIVE_MODE');
-        $this->payrightAccountEmail  = Configuration::get('PAYRIGHT_ACCOUNT_EMAIL');
-
-        $this->payrightAccountPassword = Configuration::get('PAYRIGHT_ACCOUNT_PASSWORD');
+        $this->payrightRegion     =   Configuration::get('PAYRIGHT_REGION');
         $this->payrightApiKey  = Configuration::get('PS_PAYRIGHT_APIKEY');
-
-        $this->payrightUserName = Configuration::get('PS_PAYRIGHT_USERNAME');
-        $this->payrightClientID = Configuration::get('PS_PAYRIGHT_CLIENTID');
 
         $this->payrightProductInstallments = Configuration::get('CATEGORYPAGE_PAYRIGHTINSTALLMENTS');
         $this->payrightinfoModal = Configuration::get('INFOMODAL_TEMPLATE');
-
-        $this->payrightMerchantUsername = Configuration::get('PAYRIGHT_MERCHANTUSERNAME');
-        $this->payrightMerchantPassword = Configuration::get('PAYRIGHT_MERCHANTPASSWORD');
     }
 
 
@@ -136,16 +110,11 @@ class PayrightCancelModuleFrontController extends ModuleFrontController
     {
         return array(
             'PAYRIGHT_LIVE_MODE' => Configuration::get('PAYRIGHT_LIVE_MODE', true),
-            'PAYRIGHT_ACCOUNT_EMAIL' => Configuration::get('PAYRIGHT_ACCOUNT_EMAIL', 'contact@prestashop.com'),
-            'PAYRIGHT_ACCOUNT_PASSWORD' => Configuration::get('PAYRIGHT_ACCOUNT_PASSWORD', null),
+            'PAYRIGHT_REGION' => Configuration::get('PAYRIGHT_REGION', true),
             'PS_PAYRIGHT_APIKEY' => Configuration::get('PS_PAYRIGHT_APIKEY', null),
-            'PS_PAYRIGHT_USERNAME'=> Configuration::get('PS_PAYRIGHT_USERNAME', null),
-            'PS_PAYRIGHT_CLIENTID'=> Configuration::get('PS_PAYRIGHT_CLIENTID', null),
-            'PRODUCTPAGE_PAYRIGHTINSTALLMENTS' => Configuration::get('PS_PAYRIGHT_CLIENTID', null),
+            'PRODUCTPAGE_PAYRIGHTINSTALLMENTS' => Configuration::get('PRODUCTPAGE_PAYRIGHTINSTALLMENTS', null),
             'CATEGORYPAGE_PAYRIGHTINSTALLMENTS' => Configuration::get('CATEGORYPAGE_PAYRIGHTINSTALLMENTS', null),
-            'INFOMODAL_TEMPLATE' => Configuration::get('INFOMODAL_TEMPLATE', null) ,
-            'PAYRIGHT_MERCHANTUSERNAME' => Configuration::get('PAYRIGHT_MERCHANTUSERNAME', null),
-            'PAYRIGHT_MERCHANTPASSWORD' => Configuration::get('PAYRIGHT_MERCHANTPASSWORD', null)
+            'INFOMODAL_TEMPLATE' => Configuration::get('INFOMODAL_TEMPLATE', null) 
         );
     }
 }

@@ -24,15 +24,10 @@ class Calculations
     public function calculateSingleProductInstallment($getPayrightConfigurationValue, $saleAmount)
     {
         $unserializeRatesArray = $getPayrightConfigurationValue['rates'];
-        $payrightInstallmentApproval = $this->getMaximumSaleAmount($unserializeRatesArray, $saleAmount);
-
-        // echo "<pre>";
-        //     print_r($payrightInstallmentApproval);
-        // echo "</pre>";
         
-        if ($payrightInstallmentApproval == 0 && $saleAmount > 0) {
-            $accountKeepingFees = $getPayrightConfigurationValue['conf']->{'Monthly Account Keeping Fee'};
-            $paymentProcessingFee = $getPayrightConfigurationValue['conf']->{'Payment Processing Fee'};
+        if ($unserializeRatesArray && $saleAmount > 0) {
+            $accountKeepingFees = $getPayrightConfigurationValue['account_keeping_fee'];
+            $paymentProcessingFee = $getPayrightConfigurationValue['payment_processing_fee'];
      
             $LoanTerm = $this->fetchLoanTermForSale($unserializeRatesArray, $saleAmount);
 
@@ -42,6 +37,9 @@ class Calculations
             $calculatedNoofRepayments = $getFrequancy['numberofRepayments'];
             $calculatedAccountKeepingFees = $getFrequancy['accountKeepingFees'];
 
+            if ($calculatedNoofRepayments == 0){
+                return false;
+            }
 
             $LoanAmount = $saleAmount - $getMinDeposit;
 
@@ -74,63 +72,32 @@ class Calculations
             $dataResponseArray['noofrepayments'] = $calculatedNoofRepayments;
             $dataResponseArray['repaymentfrequency'] = 'Fortnightly';
             $dataResponseArray['LoanAmountPerPayment'] =  $CalculateRepayments;
-
   
             return $dataResponseArray;
-        
-        // } else {
-        //     return "exceed_amount";
-        // }
         } else {
             return "exceed_amount";
         }
     }
 
-    /**
-     * Get the maximum limit for sale amount
-     * @param array $getRates get the rates for merchant
-     * @param float $saleAmount price of purchased amount
-     * @return int allowed loanlimit in form 0 or 1, 0 means sale amount is still in limit and 1 is over limit
-     */
-
-    public function getMaximumSaleAmount($getRates, $saleAmount)
-    {
-        $chkLoanlimit = 0;
-       
-        $keys = array_keys($getRates);
-        $getVal = array();
-        for ($i = 0; $i < count($getRates); $i++) {
-            foreach ($getRates[$keys[$i]] as $key => $value) {
-                if ($key == 4) {
-                    $getVal[] = $value;
-                }
-            }
-        }
-
-        if (max($getVal) < $saleAmount) {
-            $chkLoanlimit = 1;
-        }
-
-        return $chkLoanlimit;
-    }
-
-
     public function fetchLoanTermForSale($rates, $saleAmount)
     {
-        $ratesArray = array();
-        $generateLoanTerm = array();
-        foreach ($rates as $key => $rate) {
-            $ratesArray[$key]['Term'] = $rate['2'];
-            $ratesArray[$key]['Min'] = $rate['3'];
-            $ratesArray[$key]['Max'] = $rate['4'];
-        
+        $rates_array = array();
 
-            if (($saleAmount >= $ratesArray[$key]['Min'] && $saleAmount <= $ratesArray[$key]['Max'])) {
-                $generateLoanTerm[] = $ratesArray[$key]['Term'];
+        foreach ($rates as $key => $rate) {
+            $rates_array[$key]['term'] = $rate->term;
+            $rates_array[$key]['minimumPurchase']  = $rate->minimumPurchase;
+            $rates_array[$key]['maximumPurchase']  = $rate->maximumPurchase;
+
+            if (($saleAmount >= $rates_array[$key]['minimumPurchase'] && $saleAmount <= $rates_array[$key]['maximumPurchase'])) {
+                
+                $generate_loan_term[] = $rates_array[$key]['term'];
             }
         }
-        if (count($generateLoanTerm) > 0) {
-            return min($generateLoanTerm);
+
+        if (isset($generate_loan_term)) {
+            return min($generate_loan_term);
+        } else {
+            return 0;
         }
     }
 
@@ -145,20 +112,19 @@ class Calculations
 
     public function calculateMinDeposit($getRates, $saleAmount, $loanTerm)
     {
-        $per = array();
-        for ($i = 0; $i < count($getRates); $i++) {
-            for ($l = 0; $l < count($getRates[$i]); $l++) {
-                if ($getRates[$i][2] == $loanTerm) {
-                    $per[] = $getRates[$i][1];
-                }
+        // Iterate through each term, apply the minimum deposit to the sale amount and see if it fits in the rate card. If not found, move to a higher term
+        foreach ($getRates as $rate) {
+            $minimumDepositPercentage = $rate->minimumDepositPercentage;
+            $depositAmount = $saleAmount * ($minimumDepositPercentage / 100);
+            $loanAmount = $saleAmount - $depositAmount;
+
+            // Check if loan amount is within range
+            if ($loanAmount >= $rate->minimumPurchase && $loanAmount <= $rate->maximumPurchase) {
+                return sprintf('%01.2f', $depositAmount);
             }
         }
-        
-        if (count($per) > 0) {
-            $percentage = min($per);
-            $value = $percentage/100*$saleAmount;
-            return money_format('%.2n', $value);
-        }
+        // No valid term and deposit found
+        return 0;
     }
 
 
@@ -208,14 +174,15 @@ class Calculations
     {
         $fee_bandArray = array();
         $feebandCalculator = 0;
+        $h = 0;
        
         foreach ($establishmentFees as $key => $row) {
             $fee_bandArray[$key]['term'] = $row->term;
-            $fee_bandArray[$key]['initial_est_fee'] = $row->initial_est_fee;
-            $fee_bandArray[$key]['repeat_est_fee'] = $row->repeat_est_fee;
+            $fee_bandArray[$key]['initial_est_fee'] = $row->initialEstFee;
+            $fee_bandArray[$key]['repeat_est_fee'] = $row->repeatEstFee;
 
             if ($fee_bandArray[$key]['term'] == $LoanTerm) {
-                $h = $row->initial_est_fee;
+                $h = $row->initialEstFee;
             }
 
             $feebandCalculator++;
@@ -241,21 +208,11 @@ class Calculations
         $LoanAmount,
         $paymentProcessingFee
     ) {
-        $establishmentFees = (float)$establishmentFees;
-        $LoanAmount = (float)$LoanAmount;
-        $AccountKeepingFees = (float)$AccountKeepingFees;
-        $paymentProcessingFee = (float)$paymentProcessingFee;
+        $repayment_amount_init = ((floatval($establishmentFees) + floatval($LoanAmount)) / $numberOfRepayments);
 
+        $repayment_amount = floatval($repayment_amount_init) + floatval($AccountKeepingFees) + floatval($paymentProcessingFee);
 
-
-        $RepaymentAmountInit = (($establishmentFees + $LoanAmount) / $numberOfRepayments);
-        $RepaymentAmountInit = (float)$RepaymentAmountInit;
-        $RepaymentAmount = $RepaymentAmountInit + $AccountKeepingFees;
-
-        $RepaymentAmountCalc = $RepaymentAmount + $paymentProcessingFee;
-
-        $RepaymentAmountCalc = $RepaymentAmountCalc / 1;
-        return number_format((float)$RepaymentAmountCalc, 2, '.', '');
+        return number_format((float)$repayment_amount, 2, '.', '');
     }
 
 

@@ -78,7 +78,6 @@ h6.payRightH6
  max-width: 800px;
     width: auto;
     padding: 20px;
-    cursor: pointer;
 
   }
 }
@@ -539,7 +538,6 @@ a.tellmemore {
     overflow: auto; /* Enable scroll if needed */
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-       cursor: pointer;
 }
 
 .modalopener{
@@ -560,7 +558,6 @@ a.tellmemore {
     -webkit-animation-duration: 0.4s;
     animation-name: animatetop;
     animation-duration: 0.4s;
-    cursor: pointer;
 }
 
 /* Add Animation */

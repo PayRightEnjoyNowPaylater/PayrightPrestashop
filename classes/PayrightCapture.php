@@ -15,9 +15,9 @@ class PayrightCapture
     {
     }
 
-    public function createCapturePayment($planName, $planId)
+    public function createCapturePayment($planId, $checkoutId)
     {
-        $this->createOrder($planName, $planId);
+        $this->createOrder($planId, $checkoutId);
 
         $return          = array();
         $return['error'] = false;
@@ -31,8 +31,9 @@ class PayrightCapture
      * @param string $afterpay_order_id
      * since 1.0.0
      */
-    private function createOrder($payrightPlanName, $planId)
+    private function createOrder($planId, $checkoutId)
     {
+        $payrightPlanName = 'Payright_plan_name_' . $planId;
         $cart = Context::getContext()->cart;
 
         $order_status = (int) Configuration::get("PS_OS_PAYMENT");
@@ -49,7 +50,7 @@ class PayrightCapture
             $cart->id,
             $order_status,
             $order_total,
-            "payright",
+            "Payright",
             null,
             $extra_vars,
             null,
@@ -74,7 +75,7 @@ class PayrightCapture
         $payright_order->id_order        = $order->id;
         $payright_order->id_cart         = $cart->id;
         $payright_order->plan_name       = $payrightPlanName;
-        $payright_order->plan_id         = $planId;
+        $payright_order->plan_id         = $checkoutId;
         $payright_order->order_reference = $order->reference;
         $payright_order->payment_method   = $order->payment;
         $payright_order->payment_status   = " ";

@@ -43,31 +43,29 @@ class PayrightValidationModuleFrontController extends ModuleFrontController
            'params' => $_REQUEST,
         ));
 
-
-         
-        $payrightAccessToken = $_REQUEST['payrightauth'];
-
-        $clientId = $_REQUEST['clientid'];
-
         $ConfigValues = $this->getConfigFormValues();
         $PayRightConfig = new Payright\api\PayRightConfig($ConfigValues, null);
-
-
-
         $PayRightApiCall = new Payright\api\Call();
+        
         $transactionData = array();
-        $transactionData['transactionRef'] = $cart->id."_".$clientId.rand();
-        $transactionData['clientId'] = $clientId;
+        $cart_id = $cart->id;
+        $transactionData['transactionRef'] = $cart_id.rand();
+        $transactionData['id_cart'] = $cart_id;
+        $baseUrl = Tools::getHttpHost(true).__PS_BASE_URI__;
+        $order_total = $cart->getOrderTotal();
+        $redirect_Url = 'module/payright/return';
 
-        $intializeTransaction = $PayRightApiCall->intializeTransaction(
-            $cart->getOrderTotal(),
-            $payrightAccessToken,
+        $initialiseTransaction = $PayRightApiCall->initialiseTransaction(
+            $order_total,
             $transactionData,
-            $PayRightConfig
+            $PayRightConfig,
+            $baseUrl.$redirect_Url
         );
-        $intializeTransactionData = json_decode($intializeTransaction);
-        $ecommToken = $intializeTransactionData->ecommToken;
-        Tools::redirect($PayRightConfig->ecomUrl.$ecommToken);
+        
+        $initialiseTransactionData = json_decode($initialiseTransaction);
+        $redirectUrl = $initialiseTransactionData->data->redirectEndpoint;
+
+        Tools::redirect($redirectUrl);
     }
 
       /**
@@ -77,16 +75,11 @@ class PayrightValidationModuleFrontController extends ModuleFrontController
     {
         return array(
             'PAYRIGHT_LIVE_MODE' => Configuration::get('PAYRIGHT_LIVE_MODE', true),
-            'PAYRIGHT_ACCOUNT_EMAIL' => Configuration::get('PAYRIGHT_ACCOUNT_EMAIL', 'contact@prestashop.com'),
-            'PAYRIGHT_ACCOUNT_PASSWORD' => Configuration::get('PAYRIGHT_ACCOUNT_PASSWORD', null),
+            'PAYRIGHT_REGION' => Configuration::get('PAYRIGHT_REGION', true),
             'PS_PAYRIGHT_APIKEY' => Configuration::get('PS_PAYRIGHT_APIKEY', null),
-            'PS_PAYRIGHT_USERNAME'=> Configuration::get('PS_PAYRIGHT_USERNAME', null),
-            'PS_PAYRIGHT_CLIENTID'=> Configuration::get('PS_PAYRIGHT_CLIENTID', null),
-            'PRODUCTPAGE_PAYRIGHTINSTALLMENTS' => Configuration::get('PS_PAYRIGHT_CLIENTID', null),
+            'PRODUCTPAGE_PAYRIGHTINSTALLMENTS' => Configuration::get('PRODUCTPAGE_PAYRIGHTINSTALLMENTS', null),
             'CATEGORYPAGE_PAYRIGHTINSTALLMENTS' => Configuration::get('CATEGORYPAGE_PAYRIGHTINSTALLMENTS', null),
-            'INFOMODAL_TEMPLATE' => Configuration::get('INFOMODAL_TEMPLATE', null) ,
-            'PAYRIGHT_MERCHANTUSERNAME' => Configuration::get('PAYRIGHT_MERCHANTUSERNAME', null),
-            'PAYRIGHT_MERCHANTPASSWORD' => Configuration::get('PAYRIGHT_MERCHANTPASSWORD', null)
+            'INFOMODAL_TEMPLATE' => Configuration::get('INFOMODAL_TEMPLATE', null)
 
         );
     }

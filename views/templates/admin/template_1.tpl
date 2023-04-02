@@ -31,8 +31,8 @@
 			<h4>{l s='Enjoy Now.Pay Later' mod='payright'}</h4>
 		</div>
 		<div class="col-xs-12 col-md-4 text-center">
-			<a target="_blank" href="https://www.payright.com.au/contact-us/" class="btn btn-primary" id="create-account-btn">{l s='Create an account now!' mod='payright'}</a><br />
-			{l s='Already have an account?' mod='payright'}<a href="#" onclick="javascript:return false;"> {l s='Log in' mod='payright'}</a>
+			<a target="_blank" href="https://developers.payright.com.au/documentation" class="btn btn-primary" id="create-account-btn">{l s='Create an account now!' mod='payright'}</a><br />
+			{l s='Already have an account?' mod='payright'}<a target="_blank" href="https://developers.payright.com.au/"> {l s='Log in' mod='payright'}</a>
 		</div>
 	</div>
 

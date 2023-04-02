@@ -10,6 +10,7 @@
 namespace Payright\api;
 
 use Payright\api\customException;
+use GuzzleHttp;
 
 class Call
 {
@@ -19,73 +20,31 @@ class Call
 */
 
     protected $configObj;
-    protected $payrightAuthObj;
     protected $payrightConfigObj;
-
-    public function getCallEndApi()
-    {
-        $curlURL = $this->apiConfigObj->getOrderUrl();
-        $curlResponse = $this->execute($curlURL, 'POST');
-        return $curlResponse;
-    }
-
 
     public function __construct()
     {
     }
 
-    public function payRightAuth($configObj)
+    public function payRightConfigurationTokenMethod($configobj)
     {
-        $AuthFields = array(
-        'username' => $configObj->getUsername(),
-        'password' => $configObj->getPassword(),
-        'grant_type' => 'password',
-        'client_id' => $configObj->getClientID(),
-        'client_secret' => $configObj->getApiKey()
-        //'client_secret' => uBtLxIXPUMs4a0l0ViqxP1QVBGr62FG8YIGi5iMl
-        );
-
-      
-
-        try {
-            $responseAuth =  $this->execute($configObj->getAuthUrl(), $AuthFields, false, null);
-           
-            ## now set this object
-            $this->setPayrightAuthObj($responseAuth);
-            return $responseAuth;
-        } catch (customException $e) {
-            return $e->errorMessage();
-        }
-    }
-
-
-    public function payRightConfigurationTokenMethod($configobj, $paraAccessToken)
-    {
-        $ConfigFields = array(
-        'merchantusername' => $configobj->getMerchantusername(),
-        'merchantpassword' => $configobj->getMerchantpassword()
-        );
-
-      
+        $token = $configobj->getApiKey();
+        $ConfigFields = array();
+ 
         try {
             $response =  json_decode(
                 $this->execute(
                     $configobj->getConfigUrl(),
                     $ConfigFields,
-                    "Bearer",
-                    $paraAccessToken
+                    $token
                 )
             );
 
-  
-
             $returnArray = array();
-            $returnArray['configToken'] = $response->data->configToken;
             $returnArray['rates'] = $response->data->rates;
-            $returnArray['conf'] = $response->data->conf;
-            $returnArray['establishment_fee'] = $response->data->establishment_fee;
-            $returnArray['client_id'] = $configobj->getClientID();
-
+            $returnArray['establishment_fee'] = $response->data->establishmentFees;
+            $returnArray['account_keeping_fee'] = $response->data->otherFees->monthlyAccountKeepingFee;
+            $returnArray['payment_processing_fee'] = $response->data->otherFees->paymentProcessingFee;
 
             return $returnArray;
         } catch (customException $e) {
@@ -94,22 +53,17 @@ class Call
     }
 
 
-    public function payRightTranscationConfigurationTokenMethod($configobj, $paraAccessToken)
+    // This function is not in used as Express Checkout is disabled
+    public function payRightTranscationConfigurationTokenMethod($configobj)
     {
-        $ConfigFields = array(
-        'merchantusername' => $configobj->getMerchantusername(),
-        'merchantpassword' => $configobj->getMerchantpassword()
-        );
-
-
+        $ConfigFields = array();
        
         try {
             $response =  json_decode(
                 $this->execute(
-                    $configobj->getTransactionConfigUrl(),
+                    $configobj->getConfigUrl(),
                     $ConfigFields,
-                    "Bearer",
-                    $paraAccessToken
+                    $configobj->getApiKey()
                 )
             );
 
@@ -125,49 +79,33 @@ class Call
             $returnArray['client_id'] = $configobj->getClientID();
 
             return $returnArray;
-        } catch (customException $e) {
+        } catch (customException $e) {;
             return $e->errorMessage();
         }
     }
 
 
-    public function intializeTransaction($orderTotal, $accessToken, $transActionData, $configobj)
+    public function initialiseTransaction($orderTotal, $transActionData, $configobj, $redirectUrl)
     {
-        $transactionDataArray = array();
-        $transactionDataArray['platform_type'] = 'prestashop';
-        $transactionDataArray['transactionTotal'] = number_format((float)$orderTotal, 2, '.', '');
-        $transactionDataArray['merchantreference'] = $transActionData['transactionRef'];
-
-        if (!isset($_REQUEST['sugarauthtoken'])) {
-            $sugarAuthToken = $transActionData['sugarAuthToken'];
-        } else {
-            $sugarAuthToken = $_REQUEST['sugarauthtoken'];
-        }
-
-        if (!isset($_REQUEST['configtoken'])) {
-            $configToken = $transActionData['configToken'];
-        } else {
-            $configToken = $_REQUEST['configtoken'];
-        }
  
         $paramsPayright = array(
-        'Token' => $sugarAuthToken,
-        'ConfigToken' =>   $configToken,
-        'transactiondata' => json_encode($transactionDataArray),
-        'totalAmount' => number_format((float)$orderTotal, 2, '.', ''),
-        'merchantReference' => $transActionData['transactionRef'],
-        'clientId' => $transActionData['clientId']
+            'applicationCompletedBy' => 'Ecommerce',
+            'saleAmount' => number_format((float)$orderTotal, 2, '.', ''),
+            'merchantReference' => 'PsPr_'.$transActionData['transactionRef'],
+            'redirectUrl' => $redirectUrl,
+            'type' => 'standard',
         );
-
       
         try {
             $response =  $this->execute(
-                $configobj->getIntialiseTransactionUrl(),
+                $configobj->getApiEndPoint(),
                 $paramsPayright,
-                "Bearer",
-                $accessToken
+                $configobj->getApiKey(),
+                'post'
             );
+
             return $response;
+
         } catch (customException $e) {
             return $e->errorMessage();
         }
@@ -177,98 +115,60 @@ class Call
 
     /**
         * Execute API Request
-        * @param string $curlURL:q!
-        * @param string $curlMethod
-        * @param Object $dataObject
+        * @param string $apiUrl URL of the endpoint
+        * @param array $fields Fields to be sent within the body of the call
+        * @param string $tokenAuth User's Access token
+        * @param string $requestType (optional) Post, put or null
         * @throws PayrightConfigurationException
         *
         * @return array
      */
-    protected function execute($curlURL, $fields, $tokenAuth, $paraAccess_token = null)
+    protected function execute($apiURL, $fields, $tokenAuth, $requestType=null)
     {
-        
+        $client = new GuzzleHttp\Client();
 
-        //Check if CURL module exists.
-        if (!function_exists("curl_init")) {
-            return "error";
-        }
+        try{
 
-        //url-ify the data for the POST
-        $fields_string = '';
-        foreach ($fields as $key => $value) {
-            $fields_string .= $key.'='.$value.'&';
-        }
-        rtrim($fields_string, '&');
-
-        //open connection
-        try {
-            $ch = curl_init();
-
-            if ($tokenAuth == 'Bearer') {
-                //$authObj = json_decode($this->getPayrightAuthObj());
-                if ($paraAccess_token == null) {
-                    $access_token = '';
-                } else {
-                    $access_token = $paraAccess_token;
-                }
-
-
-                // return;
-
-                $headers = array(
-                "Authorization: Bearer ".$access_token,
+            if ($requestType == 'post'){
+                $res = $client->post($apiURL, 
+                    ['headers' => 
+                        [
+                            'Content-Type' =>  'application/json', 
+                            'Accept' => 'application/json', 
+                            'Authorization' => "Bearer {$tokenAuth}"
+                        ],
+                        'body' => json_encode($fields)
+                    ]
                 );
 
-                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-            }
+            }else if ($requestType == 'put'){
 
-            curl_setopt_array($ch, array(
-              CURLOPT_URL => $curlURL,
-              CURLOPT_RETURNTRANSFER => true,
-              CURLOPT_ENCODING => "",
-              CURLOPT_MAXREDIRS => 10,
-              CURLOPT_TIMEOUT => 30,
-              CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-              CURLOPT_CUSTOMREQUEST => "POST",
-              CURLOPT_POSTFIELDS => $fields_string
-            ));
+                $res = $client->put($apiURL,
+                        ['headers' => 
+                            [
+                                'Content-Type' =>  'application/json', 
+                                'Accept' => 'application/json', 
+                                'Authorization' => "Bearer {$tokenAuth}"
+                            ],
+                            'body' => json_encode($fields)
+                        ]
+                    );
 
-            $response = curl_exec($ch);
-
-
-            $err = curl_error($ch);
-
-
-
-            curl_close($ch);
-
-            if ($err) {
-                return "error";
-            } else {
-                return $response;
-            }
-        } catch (customException $e) {
-            return $e->errorMessage();
-        }
-    }
-
-
-    public function getPlanDataByToken($ecommerceToken, $configObj)
-    {
-        $paramsPayright = array(
-        'ecomToken' => $ecommerceToken
-        );
-
-        $payRightAuthToken = $this->payRightAuth($configObj);
-        $payRightAuthObj = json_decode($payRightAuthToken);
-
-        try {
-            $response =  $this->execute(
-                $configObj->getEcomTokenDataUrl(),
-                $paramsPayright,
-                "Bearer",
-                $payRightAuthObj->access_token
+            }else {
+                            
+            $res = $client->get($apiURL, 
+                ['headers' => 
+                    ['Content-Type' =>  'application/json', 
+                    'Accept' => 'application/json', 
+                    'Authorization' => "Bearer {$tokenAuth}"],
+                'body' => json_encode($fields)
+                ]
             );
+
+            }
+
+            $response = $res->getBody()->getContents();
+            
             return $response;
         } catch (customException $e) {
             return $e->errorMessage();
@@ -276,96 +176,79 @@ class Call
     }
 
     /**
-        * Create a function for change the status of plan
-        * @param integer PlanId
-        * @return array return the plan array with change status
-        */
+     * Function to get a plan's information by its checkout Id
+     * @param object configObj
+     * @param integer checkoutId
+     */
 
-
-    public function planStatusChange($configObj, $planId)
+    public function getPlanDataById($configObj, $checkoutId)
     {
-        $payRightAuthToken = $this->payRightAuth($configObj);
-        $payRightAuthObj = json_decode($payRightAuthToken);
-
-
-        $ConfigFields = array(
-        'merchantusername' => $configObj->getMerchantusername(),
-        'merchantpassword' => $configObj->getMerchantpassword()
-         );
-       
-        $response =  json_decode($this->execute(
-            $configObj->getTransactionConfigUrl(),
-            $ConfigFields,
-            "Bearer",
-            $payRightAuthObj->access_token
-        ));
-        $paramsPayright = array(
-        'id' => $planId,
-        'status' => 'Cancelled',
-        'Token' => $response->data->auth->{'auth-token'}
-        );
-       
+        $paramsPayright = array();
+            
         try {
-            $updatePlanStatus =  $this->execute(
-                $configObj->getPlanStatusChangeUrl(),
+            $response =  $this->execute(
+                $configObj->getApiEndpoint() . $checkoutId,
                 $paramsPayright,
-                "Bearer",
-                $payRightAuthObj->access_token
+                $configObj->getApiKey()
             );
-            return $updatePlanStatus;
+            return $response;
+
         } catch (customException $e) {
             return $e->errorMessage();
         }
     }
 
     /**
-    activate plan
+    * Create a function for changing the status of a plan to cancel (NOT IN USED)
+    * @param object configObj
+    * @param integer checkoutId
+    * @return array return the plan array with change status
     */
 
-    public function planStatusActivate($configObj, $planId)
+
+    public function planStatusChange($configObj, $checkoutId)
     {
-//           var_dump($configObj);
-        // die();
-        $payRightAuthToken = $this->payRightAuth($configObj);
-        $payRightAuthObj   = json_decode($payRightAuthToken);
 
-        $ConfigFields = array(
-            'merchantusername' => $configObj->getMerchantusername(),
-            'merchantpassword' => $configObj->getMerchantpassword(),
-        );
+        $paramsPayright = array();
+       
+        try {
+            $updatePlanStatus =  $this->execute(
+                $configObj->getApiEndpoint() . $checkoutId . '/cancel',
+                $paramsPayright,
+                $configObj->getApiKey(),
+                'put'
+            );
 
-        $response = json_decode($this->execute(
-            $configObj->getTransactionConfigUrl(),
-            $ConfigFields,
-            "Bearer",
-            $payRightAuthObj->access_token
-        ));
-        // var_dump($response->data->configToken);
-        // die();
-        $paramsPayright = array(
-            'Token'       => $response->data->auth->{'auth-token'},
-            'ConfigToken' => $response->data->configToken,
-            'id'          => $planId,
-            'status'      => 'Active',
+            $result = json_decode($updatePlanStatus, true);
 
-        );
-        //    $paramsPayright = [
-        //         'Token' => $sugarToken,
-        //         'ConfigToken' =>  $configToken,
-        //         'id' => $PayRightPlanId,
-        //         'status'=> 'Active'
-        //     ];
+            return $result;
+
+        } catch (customException $e) {
+            return $e->errorMessage();
+        }
+    }
+
+    /**
+    * Function for setting a plan status to Active
+    * @param object configObj
+    * @param integer checkoutId
+    * @return array array returned by the api endpoint
+    */
+
+    public function planStatusActivate($configObj, $checkoutId)
+    {
+        $paramsPayright = array();
 
         try {
             $updatePlanStatus = $this->execute(
-                $configObj->getPlanStatusChangeUrl(),
+                $configObj->getApiEndpoint() . $checkoutId . '/activate',
                 $paramsPayright,
-                "Bearer",
-                $payRightAuthObj->access_token
+                $configObj->getApiKey(),
+                'put'
             );
         
             $result = json_decode($updatePlanStatus, true);
-          
+
             return $result;
         } catch (customException $e) {
             return $e->errorMessage();
@@ -389,26 +272,6 @@ class Call
     public function setConfigObj($configObj)
     {
         $this->configObj = $configObj;
-
-        return $this;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getPayrightAuthObj()
-    {
-        return $this->payrightAuthObj;
-    }
-
-    /**
-     * @param mixed $payrightAuthObj
-     *
-     * @return self
-     */
-    public function setPayrightAuthObj($payrightAuthObj)
-    {
-        $this->payrightAuthObj = $payrightAuthObj;
 
         return $this;
     }

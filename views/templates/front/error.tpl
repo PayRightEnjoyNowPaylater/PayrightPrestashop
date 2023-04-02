@@ -22,5 +22,9 @@
 *  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  International Registered Trademark & Property of PrestaShop SA
 *}
-<link href="/modules/payright/views/css/payright-modal.css" rel="stylesheet" type="text/css"/>
-<div class='error'>Something went wrong in Payright API Connection</div>
+{extends 'page.tpl'}
+
+{block name='page_content'}
+    <link href="/modules/payright/views/css/payright-modal.css" rel="stylesheet" type="text/css"/>
+    <div class='error'>Something went wrong in Payright API Connection</div>
+{/block}
